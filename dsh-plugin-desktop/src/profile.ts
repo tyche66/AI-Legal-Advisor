@@ -55,6 +55,7 @@ const DESKTOP_WINDOWS_PWSH_SANDBOX_PACKAGE = 'dsh-plugin-desktop/windows-pwsh-sa
 const DEFAULT_DESKTOP_SHELL_MODE: DesktopShellMode = 'compatibility'
 const SETTINGS_FILE_PACKAGE = '@deepseek-ai/dsh-settings-file'
 const DESKTOP_SETTINGS_NAMESPACE = 'dsh-desktop'
+const LEGAL_PRESET_DEFAULT = 'legal-chief'
 const UI_LAYOUT_PACKAGE = '@deepseek-ai/dsh-client-ui-layout'
 const UI_SIDEBAR_PACKAGE = '@deepseek-ai/dsh-client-ui-sidebar'
 const UI_CONVERSATION_PACKAGE = '@deepseek-ai/dsh-client-ui-conversation'
@@ -201,6 +202,11 @@ function shippedPresetRoot(): string {
   return join(dirname(require.resolve('@deepseek-ai/dsh/package.json')), 'config', 'agent-presets')
 }
 
+/** Resolve the legal expert presets bundled with this product. */
+function legalPresetRoot(): string {
+  return fileURLToPath(new URL('../bundled/legal-presets/', import.meta.url))
+}
+
 /** Read a row's object config without trusting arbitrary YAML values. */
 function rowConfig(row: EntryOptions | undefined): Record<string, unknown> {
   const config = row?.config
@@ -225,9 +231,30 @@ function rowDisabledOnPlatform(row: EntryOptions, platform: NodeJS.Platform): bo
 /** Find one package manifest using the selected profile's dependency graph. */
 function packageManifestFromProfile(name: string, profilePackageUrl: string): string | undefined {
   try {
-    return findPackageJSON(name, profilePackageUrl)
+    if (typeof findPackageJSON === 'function') return findPackageJSON(name, profilePackageUrl)
+    const profileDir = dirname(fileURLToPath(profilePackageUrl))
+    const packageSegments = name.split('/')
+    let searchDir = profileDir
+    while (true) {
+      const manifest = join(searchDir, 'node_modules', ...packageSegments, 'package.json')
+      if (existsSync(manifest)) return manifest
+      const parent = dirname(searchDir)
+      if (parent === searchDir) break
+      searchDir = parent
+    }
+    const require = createRequire(profilePackageUrl)
+    const resolved = require.resolve(name, { paths: [profileDir] })
+    let directory = dirname(resolved)
+    while (true) {
+      const manifest = join(directory, 'package.json')
+      if (existsSync(manifest)) return manifest
+      const parent = dirname(directory)
+      if (parent === directory) return undefined
+      directory = parent
+    }
   } catch (cause) {
-    if ((cause as NodeJS.ErrnoException).code === 'ERR_MODULE_NOT_FOUND') return undefined
+    const code = (cause as NodeJS.ErrnoException).code
+    if (code === 'ERR_MODULE_NOT_FOUND' || code === 'MODULE_NOT_FOUND') return undefined
     throw cause
   }
 }
@@ -366,7 +393,11 @@ export function prepareDesktopProfile(
       id: 'agent-presets',
       config: {
         ...rowConfig(presets),
-        roots: [{ path: shippedPresetRoot(), trust: 'system' }],
+        default: LEGAL_PRESET_DEFAULT,
+        roots: [
+          { path: legalPresetRoot(), trust: 'system' },
+          { path: shippedPresetRoot(), trust: 'system' },
+        ],
       },
     })
   }

@@ -107,7 +107,7 @@ describe('desktop profile composition', () => {
     })
     expect(inserted).toContainEqual(expect.objectContaining({
       name: DESKTOP_PACKAGE_NAME,
-      config: { mode: 'compatibility' },
+      config: { mode: 'compatibility', openInBrowser: true },
     }))
     expect(patches).toContainEqual(expect.objectContaining({
       id: 'webserver',
@@ -115,7 +115,15 @@ describe('desktop profile composition', () => {
     }))
     expect(patches).toContainEqual(expect.objectContaining({
       id: 'agent-presets',
-      config: expect.objectContaining({ roots: [expect.objectContaining({ trust: 'system' })] }),
+      config: expect.objectContaining({
+        default: 'legal-chief',
+        roots: expect.arrayContaining([
+          expect.objectContaining({
+            path: expect.stringContaining('bundled/legal-presets'),
+            trust: 'system',
+          }),
+        ]),
+      }),
     }))
     expect(readFileSync(prepared.rootConfig, 'utf8')).toBe('[]\n')
     expect(prepared.homeDir).toBe(home)

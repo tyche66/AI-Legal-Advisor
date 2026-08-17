@@ -118,6 +118,8 @@ export interface DesktopTerminalSpec {
 export interface DesktopShellSpec extends DesktopWindowConfig {
   /** Unmodified Web root served by the active DSH profile. */
   url: string
+  /** Open the loopback Web UI in the user's default browser after boot. */
+  openInBrowser?: boolean
   /** Native application and tray label. */
   productName: string
   /** Visible native caption on platforms that retain a title. */

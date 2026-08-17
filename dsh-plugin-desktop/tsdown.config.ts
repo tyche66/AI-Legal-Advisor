@@ -14,6 +14,7 @@ export default defineConfig([
       pnpm: 'src/pnpm.ts',
       profiles: 'src/profiles.ts',
       runtime: 'src/runtime.ts',
+      'legal-persona': 'src/legal-persona.ts',
       'electron-runtime': 'src/electron-runtime.ts',
       'desktop-runtime-environment': 'src/desktop-runtime-environment.ts',
       'desktop-terminal': 'src/desktop-terminal.ts',

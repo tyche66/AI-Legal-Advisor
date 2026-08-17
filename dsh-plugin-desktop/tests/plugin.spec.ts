@@ -20,6 +20,7 @@ import { RENDERER_BOOT_REPORT_PATH, type RendererBootReport } from '../src/rende
 
 const config: DesktopConfig = {
   mode: 'compatibility',
+  openInBrowser: false,
   width: 1280,
   height: 840,
   minWidth: 900,
@@ -187,8 +188,9 @@ describe('desktop Host plugin', () => {
     expect(harness.shell()).toEqual(expect.objectContaining({
       mode: 'compatibility',
       url: 'http://127.0.0.1:43120/?dsh-desktop-mode=compatibility&dsh-desktop-platform=darwin',
-      productName: 'DSH Desktop',
-      windowTitle: 'DeepSeek Harness Desktop',
+      productName: '法助桌面',
+      windowTitle: '法助桌面｜中国法 AI 工作台',
+      openInBrowser: false,
       readThemeSource: expect.any(Function),
     }))
     expect(harness.shell()?.iconPath.endsWith(join('build', 'app-icon-mac.png'))).toBe(true)

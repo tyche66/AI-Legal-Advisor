@@ -138,6 +138,13 @@ export class ElectronDesktopRuntime implements DesktopRuntime {
 
   /** @inheritdoc */
   show(): void {
+    const spec = this.scheduled
+    if (spec?.openInBrowser === true) {
+      void shell.openExternal(spec.url).catch((cause: unknown) => {
+        process.stderr.write(`dsh-plugin-desktop: failed to open browser: ${cause instanceof Error ? cause.message : String(cause)}\n`)
+      })
+      return
+    }
     const window = this.window
     if (window === undefined || window.isDestroyed()) return
     if (window.isMinimized()) window.restore()
@@ -530,7 +537,15 @@ export class ElectronDesktopRuntime implements DesktopRuntime {
       return { action: 'deny' }
     })
 
-    window.once('ready-to-show', show)
+    if (spec.openInBrowser === true) {
+      window.once('ready-to-show', () => {
+        void shell.openExternal(spec.url).catch((cause: unknown) => {
+          process.stderr.write(`dsh-plugin-desktop: failed to open browser: ${cause instanceof Error ? cause.message : String(cause)}\n`)
+        })
+      })
+    } else {
+      window.once('ready-to-show', show)
+    }
     let tray: Tray | undefined
     try {
       await window.loadURL(spec.url)

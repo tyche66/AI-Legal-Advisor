@@ -5,6 +5,7 @@
       name: dsh-plugin-desktop
       config:
         mode: compatibility
+        openInBrowser: true
     - id: desktop-terminal
       name: dsh-plugin-desktop/terminal
       disabled: !!js process.platform === 'linux'

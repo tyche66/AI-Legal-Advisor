@@ -44,6 +44,8 @@ export const DesktopSettingsSchema: z<DesktopSettings> = z.object({
 export interface Config {
   /** Native presentation mode selected before BrowserWindow construction. */
   mode: DesktopShellMode
+  /** Open the Web UI in the system browser instead of requiring the Electron window. */
+  openInBrowser: boolean
   /** Initial window width in CSS pixels. */
   width: number
   /** Initial window height in CSS pixels. */
@@ -57,6 +59,7 @@ export interface Config {
 /** Validated native window configuration. */
 export const Config: z<Config> = z.object({
   mode: z.union(['compatibility', 'advanced'] as const).default('compatibility'),
+  openInBrowser: z.boolean().default(false),
   width: z.number().step(1).min(800).default(1280),
   height: z.number().step(1).min(600).default(840),
   minWidth: z.number().step(1).min(640).default(900),
@@ -168,8 +171,9 @@ export function apply(ctx: Context, config: Config): void {
     () => runtime.schedule({
       ...config,
       url: desktopRendererUrl(ctx.webServer.port, config.mode, runtime.platform),
-      productName: 'DSH Desktop',
-      windowTitle: 'DeepSeek Harness Desktop',
+      openInBrowser: config.openInBrowser,
+      productName: '法助桌面',
+      windowTitle: '法助桌面｜中国法 AI 工作台',
       iconPath,
       trayIcons,
       readThemeSource: () => {

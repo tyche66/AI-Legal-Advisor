@@ -162,8 +162,9 @@ async function start(): Promise<void> {
 
   app.on('second-instance', () => { runtime.show() })
   await app.whenReady()
-  if (process.platform === 'win32') app.setAppUserModelId('ai.deepseek.dsh.desktop')
+  if (process.platform === 'win32') app.setAppUserModelId('cn.legaldesk.desktop')
   if (app.isPackaged && process.cwd() === '/') process.chdir(app.getPath('home'))
+  process.env.DSH_BUNDLED_SKILL_DIR ??= fileURLToPath(new URL('../bundled/legal-zh/.dsh/skills/', import.meta.url))
   const homeDir = resolveDshHome()
   const windowsVolumeConcerns = diagnoseWindowsVolumes(process.platform, [
     { label: 'application install', path: process.execPath },

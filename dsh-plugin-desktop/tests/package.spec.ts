@@ -139,14 +139,15 @@ describe('published package surface', () => {
 
   it('fixes the installed application identity', () => {
     expect(manifest.version).toBe(workspaceManifest.version)
-    expect(manifest.build?.productName).toBe('DSH Desktop')
-    expect(manifest.build?.appId).toBe('ai.deepseek.dsh.desktop')
+    expect(manifest.build?.productName).toBe('法助桌面')
+    expect(manifest.build?.appId).toBe('cn.legaldesk.desktop')
     expect(manifest.build?.asarUnpack).toEqual([
       'package.json',
       'cordis.patch.yml',
       'build/**',
       'lib/**',
       'node_modules/**',
+      'bundled/**',
     ])
     expect(manifest.build?.electronFuses).toEqual({ runAsNode: true })
     expect(manifest.files).toEqual(expect.arrayContaining([
@@ -154,6 +155,7 @@ describe('published package surface', () => {
       'build/app-icon-mac.png',
       'build/tray-icon.svg',
       'build/tray-icon*.png',
+      'bundled/**',
       'docs/**',
     ]))
     expect(manifest.build?.files).toEqual([
@@ -161,6 +163,7 @@ describe('published package surface', () => {
       'build/app-icon-mac.png',
       'build/tray-icon.svg',
       'build/tray-icon*.png',
+      'bundled/**',
       'cordis.patch.yml',
       'lib/**',
       'package.json',
@@ -180,9 +183,9 @@ describe('published package surface', () => {
       createDesktopShortcut: true,
       createStartMenuShortcut: true,
       differentialPackage: false,
-      shortcutName: 'DSH Desktop',
+      shortcutName: '法助桌面',
       useZip: true,
-      artifactName: 'DSH-Desktop-${version}-${arch}-Setup.${ext}',
+      artifactName: 'LegalDesk-${version}-${arch}-Setup.${ext}',
     })
     expect(manifest.build?.linux?.icon).toBe('build/app-icon.png')
   })

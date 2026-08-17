@@ -60,6 +60,13 @@ jobs:
           key: yarn-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
       - run: yarn install --immutable
       - run: yarn workspace dsh-plugin-desktop dist:win
+      - name: Upload LegalDesk Windows installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: legaldesk-windows-installer
+          path: dsh-plugin-desktop/dist/LegalDesk-*-Setup.exe
+          if-no-files-found: error
+          retention-days: 14
 
   # Upstream toolchain smoke: the portable-shell scripts must resolve the
   # pinned submodule's own Yarn/pnpm release on Windows.

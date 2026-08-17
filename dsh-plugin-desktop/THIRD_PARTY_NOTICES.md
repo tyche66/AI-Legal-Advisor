@@ -524,3 +524,11 @@ the package names, versions, and licenses for transparency.
 | zustand | 4.4.7 | MIT |
 | zwitch | 2.0.4 | MIT |
 > Notice-required licenses in use: LGPL-3.0-or-later. Their license texts ship inside node_modules; see the package LICENSE files for the full terms.
+
+## Bundled Chinese legal workflow
+
+This product bundles a snapshot of `CSlawyer1985/claude-for-legal-ZH` for the preinstalled Chinese legal skills and expert presets. The bundled source is located under `bundled/legal-zh/` and is distributed under the Apache License 2.0. The original source repository is available at https://github.com/CSlawyer1985/claude-for-legal-ZH.
+
+The bundled legal workflow contains material derived from `anthropics/claude-for-legal`; see the bundled `LICENSE`, upstream notices, and source repository for the applicable copyright and attribution information. This product is an independent community distribution and is not endorsed by DeepSeek, Anthropic, or Claude.
+
+The product also bundles four product-authored preset compositions under `bundled/legal-presets/`. Those files are part of this repository and are intended to compose the upstream MIT-licensed `@deepseek-ai/dsh-persona` and `@deepseek-ai/dsh-skill-filesystem` packages.
