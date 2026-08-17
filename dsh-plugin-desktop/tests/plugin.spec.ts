@@ -156,7 +156,7 @@ describe('desktop Host plugin', () => {
 
     apply(ctx, config)
 
-    expect(stderr).toHaveBeenCalledWith(expect.stringContaining('desktop launcher'))
+    expect(stderr).toHaveBeenCalledWith(expect.stringContaining('桌面启动器'))
     expect(registerRoute).not.toHaveBeenCalled()
     expect(vi.mocked(ctx.settings.register)).not.toHaveBeenCalled()
     stderr.mockRestore()
@@ -188,8 +188,8 @@ describe('desktop Host plugin', () => {
     expect(harness.shell()).toEqual(expect.objectContaining({
       mode: 'compatibility',
       url: 'http://127.0.0.1:43120/?dsh-desktop-mode=compatibility&dsh-desktop-platform=darwin',
-      productName: '法助桌面',
-      windowTitle: '法助桌面｜中国法 AI 工作台',
+      productName: 'AI法律顾问',
+      windowTitle: 'AI法律顾问｜中国法 AI 工作台',
       openInBrowser: false,
       readThemeSource: expect.any(Function),
     }))

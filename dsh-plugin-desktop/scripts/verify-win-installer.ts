@@ -34,8 +34,8 @@ function packagingNames(desktopRoot: string, version: string): {
   installerName: string
   applicationName: string
 } {
-  let productName = 'DSH Desktop'
-  let artifactName = `DSH-Desktop-${version}-x64-Setup.exe`
+  let productName = 'AI法律顾问'
+  let artifactName = `AI法律顾问-${version}-x64-Setup.exe`
   try {
     const manifest = JSON.parse(readFileSync(join(desktopRoot, 'package.json'), 'utf8')) as {
       build?: { productName?: unknown; nsis?: { artifactName?: unknown } }

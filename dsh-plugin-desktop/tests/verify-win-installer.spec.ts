@@ -27,12 +27,12 @@ function fixture(version = '2.0.0'): {
   writeFileSync(join(root, 'package.json'), JSON.stringify({
     version,
     build: {
-      productName: '法助桌面',
-      nsis: { artifactName: 'LegalDesk-${version}-${arch}-Setup.${ext}' },
+      productName: 'AI法律顾问',
+      nsis: { artifactName: 'AI法律顾问-${version}-${arch}-Setup.${ext}' },
     },
   }))
-  const installer = join(dist, `LegalDesk-${version}-x64-Setup.exe`)
-  const application = join(unpacked, '法助桌面.exe')
+  const installer = join(dist, `AI法律顾问-${version}-x64-Setup.exe`)
+  const application = join(unpacked, 'AI法律顾问.exe')
   writeFileSync(installer, portableExecutable())
   writeFileSync(application, portableExecutable())
   return { root, installer, application }
@@ -56,7 +56,7 @@ describe('Windows installer artifact verification', () => {
     const value = fixture('1.9.0')
 
     expect(() => verifyWindowsInstaller({ desktopRoot: value.root, version: '2.0.0' }))
-      .toThrow('LegalDesk-2.0.0-x64-Setup.exe')
+      .toThrow('AI法律顾问-2.0.0-x64-Setup.exe')
   })
 
   it('rejects an artifact without a Windows PE header', () => {

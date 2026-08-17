@@ -221,8 +221,8 @@ export function apply(ctx: Context, config: Config): void {
       label: () => downloadingVersion === undefined
         ? availableVersion === undefined
           ? checking ? 'Checking for Updates…' : 'Check for Updates…'
-          : `DSH Desktop ${availableVersion} Available`
-        : `Downloading DSH Desktop ${downloadingVersion}…`,
+          : `AI法律顾问 ${availableVersion} 可用`
+        : `正在下载 AI法律顾问 ${downloadingVersion}…`,
       invoke: runManualCheck,
     })
     refreshTray = registration.refresh

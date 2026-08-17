@@ -8,6 +8,7 @@ import type {} from '@deepseek-ai/dsh-client-ui-theme/client'
 import { applyAdvancedShell } from './advanced-shell.ts'
 import { startRendererBootReporter } from './boot-health.ts'
 import { parseDesktopClientEnvironment } from './environment.ts'
+import { applyLegalBrand } from './legal-brand.ts'
 
 export { applyAdvancedShell } from './advanced-shell.ts'
 export {
@@ -33,6 +34,10 @@ export function apply(ctx: ClientContext): void {
   ctx.effect(
     () => startRendererBootReporter(ctx.loader),
     'dsh-plugin-desktop: renderer boot health report',
+  )
+  ctx.effect(
+    () => applyLegalBrand(),
+    'dsh-plugin-desktop: AI法律顾问 brand and legal boundary',
   )
   if (environment.mode === 'advanced') applyAdvancedShell(ctx, environment)
 }

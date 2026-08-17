@@ -93,9 +93,9 @@ export function apply(ctx: Context, config: Config): void {
   const runtime = ctx.get('desktopRuntime')
   if (runtime === undefined) {
     process.stderr.write(
-      'dsh-plugin-desktop: this profile is composed with the DSH Desktop shell, which requires the desktop launcher (desktopRuntime).\n'
-      + 'Start it with `dsh-desktop`, or select this profile inside the packaged DSH Desktop application.\n'
-      + 'The desktop terminal, profile, and update rows stay inactive in an ordinary DSH boot.\n',
+      'AI法律顾问：当前配置需要桌面启动器（desktopRuntime）。\n'
+      + '请使用桌面启动方式，或在已安装的 AI法律顾问 中选择此配置。\n'
+      + '在普通命令行启动模式下，桌面终端、专家配置和更新入口不会启用。\n',
     )
     return
   }
@@ -172,8 +172,8 @@ export function apply(ctx: Context, config: Config): void {
       ...config,
       url: desktopRendererUrl(ctx.webServer.port, config.mode, runtime.platform),
       openInBrowser: config.openInBrowser,
-      productName: '法助桌面',
-      windowTitle: '法助桌面｜中国法 AI 工作台',
+      productName: 'AI法律顾问',
+      windowTitle: 'AI法律顾问｜中国法 AI 工作台',
       iconPath,
       trayIcons,
       readThemeSource: () => {

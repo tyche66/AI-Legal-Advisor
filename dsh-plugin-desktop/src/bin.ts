@@ -11,7 +11,7 @@ export type DesktopCliAction = 'help' | 'version' | 'launch'
 /** Human-readable launcher help. */
 export const DESKTOP_CLI_HELP = `Usage: dsh-plugin-desktop [options]
 
-Launch DSH Desktop with the selected Web-capable profile.
+Launch AI法律顾问 with the selected Web-capable profile.
 
 Options:
   -h, --help     display help
@@ -54,7 +54,7 @@ async function launchElectron(): Promise<number> {
       + '  npm install -g dsh-plugin-desktop\n'
       + 'Or add electron to the profile before launching:\n'
       + '  dsh plugin --profile <name> add electron\n'
-      + 'Or use the packaged DSH Desktop application.\n',
+      + 'Or use the packaged AI法律顾问 application.\n',
     )
     return 1
   }

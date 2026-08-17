@@ -253,9 +253,9 @@ export class ElectronDesktopRuntime implements DesktopRuntime {
     const result = await dialog.showMessageBox({
       type: 'error',
       title: 'Plugin Recovery',
-      message: 'DSH Desktop could not load all plugins.',
-      detail: `Failed plugins:\n${plugins}\n\n${error}\n\nOpen DSH Terminal to update or remove the failing third-party plugin, then restart DSH Desktop.`,
-      buttons: ['Open DSH Terminal', 'Restart DSH Desktop', 'Dismiss'],
+      message: 'AI法律顾问无法加载全部插件。',
+      detail: `加载失败的插件：\n${plugins}\n\n${error}\n\n请打开 AI法律顾问终端更新或移除失败的第三方插件，然后重新启动 AI法律顾问。`,
+      buttons: ['打开终端', '重新启动 AI法律顾问', '关闭'],
       defaultId: 0,
       cancelId: 2,
       noLink: true,
@@ -314,10 +314,10 @@ export class ElectronDesktopRuntime implements DesktopRuntime {
   private async confirmUpdateDownload(version: string): Promise<boolean> {
     const result = await dialog.showMessageBox({
       type: 'info',
-      title: 'DSH Desktop Update Available',
-      message: `DSH Desktop ${version} is available.`,
-      detail: 'Download this update now?',
-      buttons: ['Download', 'Later'],
+      title: 'AI法律顾问有可用更新',
+      message: `AI法律顾问 ${version} 已可用。`,
+      detail: '现在下载此更新吗？',
+      buttons: ['下载', '稍后'],
       defaultId: 1,
       cancelId: 1,
       noLink: true,
@@ -331,9 +331,9 @@ export class ElectronDesktopRuntime implements DesktopRuntime {
       await dialog.showMessageBox({
         type: 'warning',
         title: 'Unable to Check for Updates',
-        message: 'DSH Desktop could not check for updates.',
-        detail: 'Please try again later.',
-        buttons: ['OK'],
+        message: 'AI法律顾问暂时无法检查更新。',
+        detail: '请稍后重试。',
+        buttons: ['确定'],
         defaultId: 0,
         noLink: true,
       })
@@ -343,10 +343,10 @@ export class ElectronDesktopRuntime implements DesktopRuntime {
     if (result.status === 'up-to-date') {
       await dialog.showMessageBox({
         type: 'info',
-        title: 'DSH Desktop Is Up to Date',
-        message: 'No newer version of DSH Desktop is available.',
-        detail: `Installed version: ${result.currentVersion}`,
-        buttons: ['OK'],
+        title: 'AI法律顾问已是最新版本',
+        message: '没有可用的新版本 AI法律顾问。',
+        detail: `当前版本：${result.currentVersion}`,
+        buttons: ['确定'],
         defaultId: 0,
         noLink: true,
       })
@@ -355,10 +355,10 @@ export class ElectronDesktopRuntime implements DesktopRuntime {
 
     await dialog.showMessageBox({
       type: 'info',
-      title: 'DSH Desktop Update Available',
-      message: `DSH Desktop ${result.latestVersion} is available.`,
-      detail: 'Installer downloads are unavailable in this build.',
-      buttons: ['OK'],
+      title: 'AI法律顾问有可用更新',
+      message: `AI法律顾问 ${result.latestVersion} 已可用。`,
+      detail: '此版本暂不支持自动下载安装器。',
+      buttons: ['确定'],
       defaultId: 0,
       noLink: true,
     })
@@ -384,10 +384,10 @@ export class ElectronDesktopRuntime implements DesktopRuntime {
       signal.throwIfAborted()
       await dialog.showMessageBox({
         type: 'info',
-        title: 'DSH Desktop Update Downloaded',
-        message: `DSH Desktop ${version} is ready to install.`,
-        detail: 'The disk image has opened. Replace DSH Desktop in Applications, then reopen it.',
-        buttons: ['OK'],
+        title: 'AI法律顾问更新已下载',
+        message: `AI法律顾问 ${version} 已准备安装。`,
+        detail: '磁盘映像已打开。请在 Applications 中替换 AI法律顾问，然后重新启动。',
+        buttons: ['确定'],
         defaultId: 0,
         noLink: true,
       })
@@ -396,10 +396,10 @@ export class ElectronDesktopRuntime implements DesktopRuntime {
 
     const result = await dialog.showMessageBox({
       type: 'info',
-      title: 'DSH Desktop Update Downloaded',
-      message: `DSH Desktop ${version} is ready to install.`,
-      detail: 'Restart DSH Desktop and run the installer now?',
-      buttons: ['Restart and Install', 'Later'],
+      title: 'AI法律顾问更新已下载',
+      message: `AI法律顾问 ${version} 已准备安装。`,
+      detail: '现在重新启动 AI法律顾问并运行安装程序吗？',
+      buttons: ['重新启动并安装', '稍后'],
       defaultId: 1,
       cancelId: 1,
       noLink: true,

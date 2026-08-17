@@ -140,7 +140,8 @@ if (noticesArg !== -1) {
   const lines = [
     '# Third-Party Notices',
     '',
-    'DSH Desktop distributes the following third-party packages inside its installers.',
+    'AI法律顾问 distributes the following third-party packages inside its installers. The original upstream names below are retained only for copyright, license, source-traceability, and redistribution compliance; they are not product branding or endorsement claims.',
+    '',
     'Each package ships with its own license text in the application files; this list records',
     'the package names, versions, and licenses for transparency.',
     '',

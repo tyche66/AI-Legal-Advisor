@@ -139,7 +139,7 @@ describe('published package surface', () => {
 
   it('fixes the installed application identity', () => {
     expect(manifest.version).toBe(workspaceManifest.version)
-    expect(manifest.build?.productName).toBe('法助桌面')
+    expect(manifest.build?.productName).toBe('AI法律顾问')
     expect(manifest.build?.appId).toBe('cn.legaldesk.desktop')
     expect(manifest.build?.asarUnpack).toEqual([
       'package.json',
@@ -183,9 +183,9 @@ describe('published package surface', () => {
       createDesktopShortcut: true,
       createStartMenuShortcut: true,
       differentialPackage: false,
-      shortcutName: '法助桌面',
+      shortcutName: 'AI法律顾问',
       useZip: true,
-      artifactName: 'LegalDesk-${version}-${arch}-Setup.${ext}',
+      artifactName: 'AI法律顾问-${version}-${arch}-Setup.${ext}',
     })
     expect(manifest.build?.linux?.icon).toBe('build/app-icon.png')
   })
@@ -236,12 +236,12 @@ describe('published package surface', () => {
     }
   })
 
-  it('keeps the iOS Default source icon unmodified', () => {
+  it('keeps the AI法律顾问 source icon stable', () => {
     const digest = createHash('sha256')
       .update(readFileSync(new URL('build/app-icon.png', packageRoot)))
       .digest('hex')
 
-    expect(digest).toBe('315fbc6e57ff1f34894f21f66fb7f9f26deccf78333c71fad21a6cec64e7de80')
+    expect(digest).toBe('cf41c6beffe2bcad82c897f3dab6b6ae5806033d3263ef893654b963fb134627')
   })
 
   it('generates a centered macOS icon with a 100-pixel visual inset', async () => {

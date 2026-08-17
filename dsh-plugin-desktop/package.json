@@ -1,7 +1,7 @@
 {
   "name": "dsh-plugin-desktop",
   "version": "2.0.1",
-  "description": "DSH Desktop: an Electron shell composed as a DeepSeek Harness Cordis plugin",
+  "description": "AI法律顾问：面向企业管理者的中国法 AI 工作台",
   "license": "MIT",
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
@@ -234,7 +234,7 @@
   },
   "build": {
     "appId": "cn.legaldesk.desktop",
-    "productName": "法助桌面",
+    "productName": "AI法律顾问",
     "asar": true,
     "asarUnpack": [
       "package.json",
@@ -291,9 +291,9 @@
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "differentialPackage": false,
-      "shortcutName": "法助桌面",
+      "shortcutName": "AI法律顾问",
       "useZip": true,
-      "artifactName": "LegalDesk-${version}-${arch}-Setup.${ext}"
+      "artifactName": "AI法律顾问-${version}-${arch}-Setup.${ext}"
     },
     "linux": {
       "target": [

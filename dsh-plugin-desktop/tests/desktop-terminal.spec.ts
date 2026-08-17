@@ -50,7 +50,7 @@ function spawnHarness(): SpawnHarness {
 function macOptions(stateDir: string, spawn: DesktopTerminalSpawn): DesktopTerminalOptions {
   return {
     platform: 'darwin',
-    appExecutable: "/Applications/DSH O'Brien.app/Contents/MacOS/DSH Desktop",
+    appExecutable: "/Applications/DSH O'Brien.app/Contents/MacOS/AI法律顾问",
     dshBootstrapPath: "/Applications/DSH O'Brien.app/Contents/Resources/app.asar/lib/dsh-terminal-bootstrap.js",
     pnpmBinPath: "/Applications/DSH O'Brien.app/Contents/Resources/app.asar/node_modules/pnpm/bin/pnpm.mjs",
     electronVersion: '43.4.0',
@@ -72,9 +72,9 @@ function macOptions(stateDir: string, spawn: DesktopTerminalSpawn): DesktopTermi
 function windowsOptions(stateDir: string, spawn: DesktopTerminalSpawn): DesktopTerminalOptions {
   return {
     platform: 'win32',
-    appExecutable: 'C:\\Program Files\\DSH 100% Desktop\\DSH Desktop.exe',
-    dshBootstrapPath: 'C:\\Program Files\\DSH Desktop\\resources\\app.asar\\lib\\dsh-terminal-bootstrap.js',
-    pnpmBinPath: 'C:\\Program Files\\DSH Desktop\\resources\\app.asar\\node_modules\\pnpm\\bin\\pnpm.mjs',
+    appExecutable: 'C:\\Program Files\\DSH 100% Desktop\\AI法律顾问.exe',
+    dshBootstrapPath: 'C:\\Program Files\\AI法律顾问\\resources\\app.asar\\lib\\dsh-terminal-bootstrap.js',
+    pnpmBinPath: 'C:\\Program Files\\AI法律顾问\\resources\\app.asar\\node_modules\\pnpm\\bin\\pnpm.mjs',
     electronVersion: '43.4.0',
     profileName: 'desktop',
     productVersion: '2.0.0',
@@ -139,7 +139,7 @@ describe('desktop terminal environment', () => {
     const dshShim = readFileSync(launch.dshShimPath, 'utf8')
     expect(dshShim).toContain("DSH_DESKTOP_DEFAULT_PROFILE='desktop' ELECTRON_RUN_AS_NODE=1 exec")
     expect(dshShim).toContain('--expose-internals')
-    expect(dshShim).toContain("'/Applications/DSH O'\"'\"'Brien.app/Contents/MacOS/DSH Desktop'")
+    expect(dshShim).toContain("'/Applications/DSH O'\"'\"'Brien.app/Contents/MacOS/AI法律顾问'")
     expect(dshShim).toContain("'/Applications/DSH O'\"'\"'Brien.app/Contents/Resources/app.asar/lib/dsh-terminal-bootstrap.js'")
     expect(dshShim).toContain('"$@"')
     expect(dshShim).not.toContain('npm_config_')
@@ -150,7 +150,7 @@ describe('desktop terminal environment', () => {
     const nodeShim = readFileSync(launch.nodeShimPath, 'utf8')
     expect(nodeShim).toBe([
       '#!/bin/sh',
-      `ELECTRON_RUN_AS_NODE=1 exec '/Applications/DSH O'"'"'Brien.app/Contents/MacOS/DSH Desktop' "$@"`,
+      `ELECTRON_RUN_AS_NODE=1 exec '/Applications/DSH O'"'"'Brien.app/Contents/MacOS/AI法律顾问' "$@"`,
       '',
     ].join('\n'))
     expect(nodeShim).not.toContain('npm_config_')
@@ -159,14 +159,14 @@ describe('desktop terminal environment', () => {
     expect(welcome).toContain('unset ELECTRON_RUN_AS_NODE')
     expect(welcome).not.toContain('ELECTRON_RUN_AS_NODE=1')
     expect(welcome).toContain("printf '\\033[2J\\033[3J\\033[H'")
-    expect(welcome).toContain('DSH Desktop 2.0.0 terminal')
+    expect(welcome).toContain('AI法律顾问 2.0.0 terminal')
     expect(welcome).toContain('Profile: desktop')
     expect(welcome).toContain('Plugin commands without --profile modify the desktop profile.')
     expect(welcome).toContain('dsh --dump-config')
     expect(welcome).toContain('dsh plugin add <third-party-plugin>')
     expect(welcome).toContain('dsh plugin remove <third-party-plugin>')
     expect(welcome).toContain('dsh plugin update')
-    expect(welcome).toContain('Restart DSH Desktop after plugin changes.')
+    expect(welcome).toContain('Restart AI法律顾问 after plugin changes.')
     expect(welcome).not.toContain(' -l')
     expect(welcome).toContain("DSH O'\"'\"'Brien")
     expect(welcome).toContain('exec "${SHELL}" --noprofile --rcfile')
@@ -239,17 +239,17 @@ describe('desktop terminal environment', () => {
     const welcome = readFileSync(launch.welcomePath, 'utf8')
     expect(welcome).toContain('Remove-Item Env:ELECTRON_RUN_AS_NODE -ErrorAction SilentlyContinue')
     expect(welcome).toContain('Set-Location -LiteralPath $env:DSH_DESKTOP_PROFILE_DIRECTORY')
-    expect(welcome).toContain('"DSH Desktop {0} terminal" -f $env:DSH_DESKTOP_PRODUCT_VERSION')
+    expect(welcome).toContain('"AI法律顾问 {0} terminal" -f $env:DSH_DESKTOP_PRODUCT_VERSION')
     expect(welcome).toContain('"Plugin commands without --profile modify the {0} profile."')
     expect(welcome).toContain('dsh --dump-config')
     expect(welcome).toContain('dsh plugin add <third-party-plugin>')
     expect(welcome).toContain('dsh plugin remove <third-party-plugin>')
     expect(welcome).toContain('dsh plugin update')
-    expect(welcome).toContain('Restart DSH Desktop after plugin changes.')
+    expect(welcome).toContain('Restart AI法律顾问 after plugin changes.')
 
     expect(launch.windowsLauncherPath).toBe(join(stateDir, 'launch.cmd'))
     const launcher = readFileSync(launch.windowsLauncherPath!, 'utf8')
-    expect(launcher).toContain('start "DSH Desktop" /D "!DSH_DESKTOP_PROFILE_DIRECTORY!"')
+    expect(launcher).toContain('start "AI法律顾问" /D "!DSH_DESKTOP_PROFILE_DIRECTORY!"')
     expect(launcher).toContain('"!DSH_DESKTOP_SHELL_EXECUTABLE!" -NoLogo -NoExit')
     expect(launcher).toContain('-File "!DSH_DESKTOP_POWERSHELL_WELCOME!"')
 
@@ -308,7 +308,7 @@ describe('desktop terminal environment', () => {
       'new',
       'new-tab',
       '--title',
-      'DSH Desktop',
+      'AI法律顾问',
       '--startingDirectory',
       options.profileDir,
       'C:\\Program Files\\PowerShell\\7\\pwsh.exe',
@@ -417,14 +417,14 @@ describe('desktop terminal environment', () => {
     expect(harness.calls[0]?.options.shell).toBe(false)
   })
 
-  it('keeps Windows scripts ASCII and passes localized paths through the child environment', () => {
+  it('keeps Windows scripts valid UTF-8 and passes localized paths through the child environment', () => {
     const stateDir = join(temporaryDirectory(), '终端 state')
     const harness = spawnHarness()
     const options = windowsOptions(stateDir, harness.spawn)
     options.profileName = '工作 profile'
     options.profileDir = 'C:\\用户\\工作 profile'
     options.homeDir = 'C:\\用户'
-    options.appExecutable = 'C:\\程序\\DSH Desktop.exe'
+    options.appExecutable = 'C:\\程序\\AI法律顾问.exe'
     options.dshBootstrapPath = 'C:\\程序\\resources\\app.asar\\lib\\desktop-cli.js'
     options.pnpmBinPath = 'C:\\程序\\resources\\app.asar.unpacked\\node_modules\\pnpm\\bin\\pnpm.mjs'
 
@@ -440,13 +440,14 @@ describe('desktop terminal environment', () => {
       join(stateDir, 'welcome.cmd'),
       launcherPath!,
     ]) {
-      expect(readFileSync(filename, 'utf8')).toMatch(/^[\x00-\x7F]*$/u)
+      const content = readFileSync(filename, 'utf8')
+      expect(Buffer.from(content, 'utf8').toString('utf8')).toBe(content)
     }
     expect(harness.calls[0]?.options.cwd).toBe(stateDir)
     expect(harness.calls[0]?.options.env).toEqual(expect.objectContaining({
       DSH_HOME: 'C:\\用户',
       DSH_DESKTOP_DEFAULT_PROFILE: '工作 profile',
-      DSH_DESKTOP_APP_EXECUTABLE: 'C:\\程序\\DSH Desktop.exe',
+      DSH_DESKTOP_APP_EXECUTABLE: 'C:\\程序\\AI法律顾问.exe',
       DSH_DESKTOP_DSH_BOOTSTRAP: 'C:\\程序\\resources\\app.asar\\lib\\desktop-cli.js',
       DSH_DESKTOP_ELECTRON_VERSION: '43.4.0',
       DSH_DESKTOP_PNPM_ENTRY: 'C:\\程序\\resources\\app.asar.unpacked\\node_modules\\pnpm\\bin\\pnpm.mjs',

@@ -189,8 +189,8 @@ const spec: DesktopShellSpec = {
   minWidth: 900,
   minHeight: 640,
   url: 'http://127.0.0.1:43120/',
-  productName: 'DSH Desktop',
-  windowTitle: 'DeepSeek Harness Desktop',
+  productName: 'AI法律顾问',
+  windowTitle: 'AI法律顾问',
   iconPath: '/tmp/app-icon.png',
   trayIcons: {
     templatePath: '/tmp/tray-iconTemplate.png',
@@ -262,7 +262,7 @@ describe('Electron compatibility runtime', () => {
     ]) {
       expect(options).not.toHaveProperty(option)
     }
-    expect(electron.browserWindows[0]?.accessibleTitle).toBe('DeepSeek Harness Desktop')
+    expect(electron.browserWindows[0]?.accessibleTitle).toBe('AI法律顾问')
     expect(spec.readThemeSource).not.toHaveBeenCalled()
     expect(electron.nativeTheme.themeSource).toBe('system')
     expect(electron.browserWindows[0]?.removeMenu).not.toHaveBeenCalled()
@@ -293,10 +293,10 @@ describe('Electron compatibility runtime', () => {
     await runtime.mountScheduled()
 
     expect(electron.browserWindowOptions[0]).toEqual(expect.objectContaining({
-      title: 'DeepSeek Harness Desktop',
+      title: 'AI法律顾问',
       autoHideMenuBar: true,
     }))
-    expect(electron.browserWindows[0]?.accessibleTitle).toBe('DeepSeek Harness Desktop')
+    expect(electron.browserWindows[0]?.accessibleTitle).toBe('AI法律顾问')
     expect(electron.browserWindows[0]?.removeMenu).toHaveBeenCalledOnce()
     expect(electron.app.dock.setIcon).not.toHaveBeenCalled()
     expect(electron.trays[0]?.image).toBe(electron.blueIcon)
@@ -391,7 +391,7 @@ describe('Electron compatibility runtime', () => {
 
     const labels = (electron.menuTemplates.at(-1) as Array<{ label?: string }>).map(item => item.label)
     expect(labels).toEqual([
-      'Open DSH Desktop', undefined,
+      'Open AI法律顾问', undefined,
       'Earlier Tool', 'Later Tool', undefined,
       'Check for Updates…', undefined,
       'Switch to Advanced Mode', undefined,
@@ -554,9 +554,9 @@ describe('Electron compatibility runtime', () => {
     expect(electron.dialog.showMessageBox).toHaveBeenCalledWith(expect.objectContaining({
       type: 'error',
       title: 'Plugin Recovery',
-      message: 'DSH Desktop could not load all plugins.',
+      message: 'AI法律顾问无法加载全部插件。',
       detail: expect.stringContaining('dsh-vision-router'),
-      buttons: ['Open DSH Terminal', 'Restart DSH Desktop', 'Dismiss'],
+      buttons: ['打开终端', '重新启动 AI法律顾问', '关闭'],
     }))
     const recoveryCalls = electron.dialog.showMessageBox.mock.calls as unknown as Array<[{ detail?: string }]>
     expect(recoveryCalls[0]?.[0].detail).toContain('vision_crop')
@@ -637,15 +637,15 @@ describe('Electron compatibility runtime', () => {
       latestVersion: '2.0.0',
     })
     expect(electron.dialog.showMessageBox).toHaveBeenLastCalledWith(expect.objectContaining({
-      title: 'DSH Desktop Is Up to Date',
-      detail: 'Installed version: 2.0.0',
-      buttons: ['OK'],
+      title: 'AI法律顾问已是最新版本',
+      detail: '当前版本：2.0.0',
+      buttons: ['确定'],
     }))
 
     await runtime.updates.showManualCheckResult(null)
     expect(electron.dialog.showMessageBox).toHaveBeenLastCalledWith(expect.objectContaining({
       title: 'Unable to Check for Updates',
-      buttons: ['OK'],
+      buttons: ['确定'],
     }))
 
     electron.dialog.showMessageBox.mockResolvedValueOnce({ response: 1, checkboxChecked: false })
@@ -665,8 +665,8 @@ describe('Electron compatibility runtime', () => {
     })
     expect(electron.shell.openPath).toHaveBeenCalledWith('/tmp/DSH-Desktop-2.1.0-mac.dmg')
     expect(electron.dialog.showMessageBox).toHaveBeenLastCalledWith(expect.objectContaining({
-      title: 'DSH Desktop Update Downloaded',
-      buttons: ['OK'],
+      title: 'AI法律顾问更新已下载',
+      buttons: ['确定'],
     }))
 
     runtime.updates.notify({
