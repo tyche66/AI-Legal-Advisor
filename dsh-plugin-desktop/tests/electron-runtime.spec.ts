@@ -344,6 +344,32 @@ describe('Electron compatibility runtime', () => {
     await release()
   })
 
+  it('shows startup status, probes the Web surface, and opens the external browser without a duplicate renderer', async () => {
+    vi.spyOn(process, 'platform', 'get').mockReturnValue('win32')
+    electron.net.fetch.mockResolvedValue({ ok: true, status: 200, arrayBuffer: async () => new ArrayBuffer(0) })
+    const { ElectronDesktopRuntime } = await import('../src/electron-runtime.ts')
+    const runtime = new ElectronDesktopRuntime(async () => {})
+    const release = runtime.schedule({ ...spec, openInBrowser: true })
+
+    await runtime.mountScheduled()
+
+    expect(electron.net.fetch).toHaveBeenCalledWith(spec.url)
+    expect(electron.loadURL).toHaveBeenCalledWith(expect.stringContaining('data:text/html'))
+    expect(electron.browserWindowOptions).toHaveLength(1)
+    expect(electron.browserWindowOptions[0]).toEqual(expect.objectContaining({
+      frame: false,
+      width: 420,
+      height: 240,
+      show: false,
+    }))
+    expect(electron.trays).toHaveLength(1)
+    expect(electron.shell.openExternal).toHaveBeenCalledWith(spec.url)
+
+    await release()
+    expect(electron.trays[0]?.destroy).toHaveBeenCalledOnce()
+    expect(electron.browserWindows[0]?.destroy).toHaveBeenCalledOnce()
+  })
+
   it('persists the opposite mode when its tray command is clicked', async () => {
     vi.spyOn(process, 'platform', 'get').mockReturnValue('darwin')
     const { ElectronDesktopRuntime } = await import('../src/electron-runtime.ts')

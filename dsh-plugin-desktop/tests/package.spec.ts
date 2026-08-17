@@ -23,7 +23,7 @@ const manifest = JSON.parse(readFileSync(new URL('package.json', packageRoot), '
     electronFuses?: unknown
     files?: unknown
     mac?: { hardenedRuntime?: unknown; icon?: unknown; notarize?: unknown; target?: unknown }
-    win?: { icon?: unknown; target?: unknown }
+    win?: { executableName?: unknown; icon?: unknown; target?: unknown }
     nsis?: Record<string, unknown>
     linux?: { icon?: unknown }
   }
@@ -170,6 +170,7 @@ describe('published package surface', () => {
     ])
     expect(manifest.build?.mac?.icon).toBe('build/app-icon-mac.png')
     expect(manifest.build?.win?.icon).toBe('build/app-icon.png')
+    expect(manifest.build?.win?.executableName).toBe('AI法律顾问')
     expect(manifest.build?.win?.target).toEqual([{
       target: 'nsis',
       arch: ['x64'],
@@ -234,6 +235,14 @@ describe('published package surface', () => {
     ]) {
       expect(readFileSync(new URL(`build/${filename}`, packageRoot)).byteLength).toBeGreaterThan(0)
     }
+  })
+
+  it('covers the upstream hero brand without a whole-document mutation loop', () => {
+    const source = readFileSync(new URL('src/client/legal-brand.ts', packageRoot), 'utf8')
+    expect(source).toContain("['Into the Unknown', PRODUCT_NAME]")
+    expect(source).toContain('[class*="previewBadge"]')
+    expect(source).toContain('document.body ?? document.documentElement')
+    expect(source).toContain('setTimeout(flush, 0)')
   })
 
   it('keeps the AI法律顾问 source icon stable', () => {

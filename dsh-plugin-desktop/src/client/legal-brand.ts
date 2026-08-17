@@ -8,12 +8,13 @@ const LEGAL_AI_BOUNDARY_EN = 'For legal information organization, risk spotting,
 const COPY_REPLACEMENTS: readonly [string, string][] = [
   ['DeepSeek Harness 目前的 0.1 版本仍处在面向 Harness 开发者进行测试的阶段，还有许多地方需要持续改进和打磨，希望听取广大开发者的反馈建议。预计 DeepSeek Harness 的核心插件以及基础 API 都会在接下来的一段时间内快速迭代、持续演化。', `欢迎使用 ${PRODUCT_NAME}。本产品用于法律信息整理、风险提示和工作草稿生成，不替代律师或其他具备相应资质的专业人士。\n\n${LEGAL_AI_BOUNDARY_ZH}`],
   ['DeepSeek Harness 目前的 0.1 版本仍处在面向 Harness 开发者进行测试的阶段，还有许多地方需要持续改进和打磨，希望听取广大开发者的反馈建议。预计 DeepSeek Harness 的核心插件以及基础 API 都会在接下来的一段时间内快速迭代、持续演化。', `欢迎使用 ${PRODUCT_NAME}。本产品用于法律信息整理、风险提示和工作草稿生成，不替代律师或其他具备相应资质的专业人士。\n\n${LEGAL_AI_BOUNDARY_ZH}`],
-  ["DeepSeek Harness 0.1 remains in testing for Harness developers. Many areas need further improvement, and we welcome feedback from the developer community. DeepSeek Harness's core plugins and foundational APIs will continue to evolve rapidly over the coming months.\n\nWe look forward to exploring the limits of intelligence with developers around the world, building on open-source, open, reusable, and composable infrastructure. We welcome Harness developers everywhere to join the DSH plugin ecosystem.", `${PRODUCT_NAME} organizes legal information, highlights risks, and prepares working drafts. It does not replace a lawyer or another qualified professional.\n\n${LEGAL_AI_BOUNDARY_EN}`],
+  ['DeepSeek Harness 0.1 remains in testing for Harness developers. Many areas need further improvement, and we welcome feedback from the developer community. DeepSeek Harness\'s core plugins and foundational APIs will continue to evolve rapidly over the coming months.\n\nWe look forward to exploring the limits of intelligence with developers around the world, building on open-source, open, reusable, and composable infrastructure. We welcome Harness developers everywhere to join the DSH plugin ecosystem.', `${PRODUCT_NAME} organizes legal information, highlights risks, and prepares working drafts. It does not replace a lawyer or another qualified professional.\n\n${LEGAL_AI_BOUNDARY_EN}`],
   ['Configure the official DeepSeek provider to start building.', `Configure ${PRODUCT_NAME} to start using the legal workbench.`],
   ['配置 DeepSeek 官方模型，即可开始使用。', `配置 ${PRODUCT_NAME}，即可开始使用。`],
   ['The DeepSeek search provider.', `${PRODUCT_NAME} search service.`],
   ['DeepSeek 搜索提供方。', `${PRODUCT_NAME} 搜索服务。`],
   ['DeepSeek Harness', PRODUCT_NAME],
+  ['Into the Unknown', PRODUCT_NAME],
 ]
 
 function replaceKnownCopy(value: string): string {
@@ -22,19 +23,25 @@ function replaceKnownCopy(value: string): string {
   return next
 }
 
+function rewriteTextNode(node: Text): void {
+  const parent = node.parentElement
+  if (parent === null || parent.closest('script, style, code, pre, textarea, input') !== null) return
+  const value = node.nodeValue
+  if (value === null) return
+  const next = replaceKnownCopy(value)
+  if (next !== value) node.nodeValue = next
+}
+
 function rewriteTextNodes(root: Node): void {
+  if (root.nodeType === Node.TEXT_NODE) {
+    rewriteTextNode(root as Text)
+    return
+  }
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT)
   const nodes: Text[] = []
   let current: Node | null
   while ((current = walker.nextNode()) !== null) nodes.push(current as Text)
-  for (const node of nodes) {
-    const parent = node.parentElement
-    if (parent === null || parent.closest('script, style, code, pre, textarea, input') !== null) continue
-    const value = node.nodeValue
-    if (value === null || !value.includes('DeepSeek')) continue
-    const next = replaceKnownCopy(value)
-    if (next !== value) node.nodeValue = next
-  }
+  for (const node of nodes) rewriteTextNode(node)
 }
 
 function rewriteAttributes(root: ParentNode): void {
@@ -42,8 +49,16 @@ function rewriteAttributes(root: ParentNode): void {
   for (const element of elements) {
     for (const name of ['aria-label', 'title', 'placeholder'] as const) {
       const value = element.getAttribute(name)
-      if (value?.includes('DeepSeek') === true) element.setAttribute(name, replaceKnownCopy(value))
+      if (value === null) continue
+      const next = replaceKnownCopy(value)
+      if (next !== value) element.setAttribute(name, next)
     }
+  }
+}
+
+function hideUpstreamHeroPreviewBadge(): void {
+  for (const element of document.querySelectorAll<HTMLElement>('[class*="previewBadge"]')) {
+    element.setAttribute('aria-hidden', 'true')
   }
 }
 
@@ -74,6 +89,10 @@ function installBrandStyles(): void {
       white-space: nowrap;
       text-overflow: ellipsis;
     }
+    /* Empty-session HeroShell renders the upstream headline as a plain span,
+       not as BrandWordmark. The exact text replacement handles the title;
+       hiding the badge leaves a clean AI法律顾问 header beside the icon. */
+    [class*="previewBadge"] { display: none !important; }
     #${BOUNDARY_NOTICE_ID} {
       position: fixed;
       right: 16px;
@@ -134,6 +153,7 @@ function applyBranding(): void {
   installBrandStyles()
   rewriteTextNodes(document.body)
   rewriteAttributes(document.body)
+  hideUpstreamHeroPreviewBadge()
   mountBoundaryNotice()
 }
 
@@ -142,19 +162,46 @@ export function applyLegalBrand(): () => void {
   const run = (): void => { applyBranding() }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run, { once: true })
   else run()
+
+  let scheduled = false
+  let pendingTimer: ReturnType<typeof setTimeout> | undefined
+  const pendingNodes = new Set<Node>()
+  const flush = (): void => {
+    scheduled = false
+    pendingTimer = undefined
+    const nodes = [...pendingNodes]
+    pendingNodes.clear()
+    for (const node of nodes) {
+      if (node.isConnected) {
+        rewriteTextNodes(node)
+        if (node instanceof Element) rewriteAttributes(node)
+      }
+    }
+    if (document.title.includes('DeepSeek')) document.title = PRODUCT_NAME
+    hideUpstreamHeroPreviewBadge()
+    mountBoundaryNotice()
+  }
+  const enqueue = (node: Node): void => {
+    pendingNodes.add(node)
+    if (scheduled) return
+    scheduled = true
+    pendingTimer = setTimeout(flush, 0)
+  }
   const observer = new MutationObserver((records) => {
     for (const record of records) {
       if (record.type === 'childList') {
-        for (const node of record.addedNodes) rewriteTextNodes(node)
+        for (const node of record.addedNodes) enqueue(node)
+      } else if (record.type === 'attributes' && record.target instanceof HTMLElement) {
+        enqueue(record.target)
       }
-      if (record.type === 'attributes' && record.target instanceof HTMLElement) rewriteAttributes(record.target.parentElement ?? document)
     }
-    if (document.title.includes('DeepSeek')) document.title = PRODUCT_NAME
-    mountBoundaryNotice()
   })
-  observer.observe(document.documentElement, { subtree: true, childList: true, attributes: true, attributeFilter: ['aria-label', 'title', 'placeholder'] })
+  const observationRoot = document.body ?? document.documentElement
+  observer.observe(observationRoot, { subtree: true, childList: true, attributes: true, attributeFilter: ['aria-label', 'title', 'placeholder'] })
   return () => {
     observer.disconnect()
+    if (pendingTimer !== undefined) clearTimeout(pendingTimer)
+    pendingNodes.clear()
     document.getElementById(BRAND_STYLE_ID)?.remove()
     document.getElementById(BOUNDARY_NOTICE_ID)?.remove()
   }

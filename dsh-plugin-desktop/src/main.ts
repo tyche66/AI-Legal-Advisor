@@ -165,6 +165,12 @@ async function start(): Promise<void> {
   if (process.platform === 'win32') app.setAppUserModelId('cn.legaldesk.desktop')
   if (app.isPackaged && process.cwd() === '/') process.chdir(app.getPath('home'))
   process.env.DSH_BUNDLED_SKILL_DIR ??= fileURLToPath(new URL('../bundled/legal-zh/.dsh/skills/', import.meta.url))
+  const startupIconPath = fileURLToPath(new URL('../build/app-icon.png', import.meta.url))
+  try {
+    await runtime.showStartupStatus(startupIconPath)
+  } catch (cause) {
+    process.stderr.write(`${BIN_NAME}: failed to show startup status: ${cause instanceof Error ? cause.message : String(cause)}\n`)
+  }
   const homeDir = resolveDshHome()
   const windowsVolumeConcerns = diagnoseWindowsVolumes(process.platform, [
     { label: 'application install', path: process.execPath },
@@ -300,6 +306,7 @@ async function start(): Promise<void> {
       )
     }
   } catch (cause) {
+    runtime.hideStartupStatus()
     process.stderr.write(`${BIN_NAME}: ${cause instanceof Error ? cause.stack ?? cause.message : String(cause)}\n`)
     let exitCode = 1
     if (profileStartup !== undefined && profileStatePath !== undefined) {

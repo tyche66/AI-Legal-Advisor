@@ -79,6 +79,7 @@ export class ElectronDesktopRuntime implements DesktopRuntime {
   }
 
   private window: BrowserWindow | undefined
+  private startupWindow: BrowserWindow | undefined
   private tray: Tray | undefined
   private scheduled: DesktopShellSpec | undefined
   private mountTask: Promise<void> | undefined
@@ -134,6 +135,18 @@ export class ElectronDesktopRuntime implements DesktopRuntime {
     }
     this.mountTask ??= this.mount(spec, beforeInteractive).then((release) => { this.release = release })
     return this.mountTask
+  }
+
+  /** Show the product-owned startup status before the Web carrier finishes booting. */
+  async showStartupStatus(iconPath: string): Promise<void> {
+    const icon = nativeImage.createFromPath(iconPath)
+    if (icon.isEmpty()) throw new Error(`dsh-plugin-desktop: failed to load application icon ${iconPath}`)
+    await this.openStartupStatus(icon)
+  }
+
+  /** Hide the product-owned startup status after boot or on failure. */
+  hideStartupStatus(): void {
+    this.closeStartupStatus()
   }
 
   /** @inheritdoc */
@@ -299,6 +312,49 @@ export class ElectronDesktopRuntime implements DesktopRuntime {
         process.stderr.write(`dsh-plugin-desktop: tray command failed: ${cause instanceof Error ? cause.message : String(cause)}\n`)
       })
     }
+  }
+
+  private async openStartupStatus(icon: Electron.NativeImage): Promise<void> {
+    if (this.startupWindow !== undefined && !this.startupWindow.isDestroyed()) return
+    const startupWindow = new BrowserWindow({
+      width: 420,
+      height: 240,
+      resizable: false,
+      minimizable: false,
+      maximizable: false,
+      fullscreenable: false,
+      center: true,
+      show: false,
+      frame: false,
+      alwaysOnTop: true,
+      backgroundColor: '#f7fbff',
+      icon,
+      webPreferences: {
+        contextIsolation: true,
+        nodeIntegration: false,
+        sandbox: true,
+      },
+    })
+    this.startupWindow = startupWindow
+    startupWindow.once('ready-to-show', () => {
+      if (!startupWindow.isDestroyed()) startupWindow.show()
+    })
+    const html = `<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><title>AI法律顾问</title><style>*{box-sizing:border-box}html,body{width:100%;height:100%;margin:0}body{display:flex;align-items:center;justify-content:center;background:#f7fbff;color:#15345f;font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}.card{text-align:center}.spinner{width:42px;height:42px;margin:0 auto 18px;border:4px solid #d9e4f7;border-top-color:#4d6bfe;border-radius:50%;animation:spin .9s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}h1{margin:0 0 8px;font-size:22px}p{margin:0;color:#5a6c87}</style></head><body><main class="card"><div class="spinner" aria-label="正在启动"></div><h1>AI法律顾问</h1><p>正在启动法律 AI 工作台，请稍候…</p></main></body></html>`
+    await startupWindow.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(html)}`)
+  }
+
+  private closeStartupStatus(): void {
+    const startupWindow = this.startupWindow
+    this.startupWindow = undefined
+    if (startupWindow !== undefined && !startupWindow.isDestroyed()) startupWindow.destroy()
+  }
+
+  private async waitForWebSurface(url: string): Promise<void> {
+    const response = await net.fetch(url)
+    if (!response.ok) {
+      throw new Error(`Web 工作台返回 HTTP ${response.status}`)
+    }
+    await response.arrayBuffer()
   }
 
   private showNotification(notification: DesktopNotification): void {
@@ -494,8 +550,58 @@ export class ElectronDesktopRuntime implements DesktopRuntime {
       throw new Error(`dsh-plugin-desktop: failed to load application icon ${spec.iconPath}`)
     }
     if (this.platform === 'darwin') app.dock?.setIcon(icon)
-    const origin = new URL(spec.url).origin
     if (spec.mode === 'advanced') nativeTheme.themeSource = spec.readThemeSource()
+
+    if (spec.openInBrowser === true) {
+      let tray: Tray | undefined
+      const openBrowser = (): void => {
+        void shell.openExternal(spec.url).then(() => {
+          this.closeStartupStatus()
+        }).catch((cause: unknown) => {
+          this.closeStartupStatus()
+          const message = `无法打开系统浏览器：${cause instanceof Error ? cause.message : String(cause)}`
+          process.stderr.write(`dsh-plugin-desktop: ${message}\n`)
+          try { dialog.showErrorBox('AI法律顾问无法打开浏览器', message) } catch { /* best effort */ }
+        })
+      }
+      try {
+        await this.openStartupStatus(icon)
+        await this.waitForWebSurface(spec.url)
+        tray = new Tray(prepareTrayIcon(spec.trayIcons, this.platform))
+        this.tray = tray
+        tray.setToolTip(spec.productName)
+        this.rebuildTrayMenu()
+        app.on('activate', openBrowser)
+        tray.on('click', openBrowser)
+        beforeInteractive?.()
+        openBrowser()
+      } catch (cause) {
+        app.off('activate', openBrowser)
+        tray?.off('click', openBrowser)
+        tray?.destroy()
+        this.tray = undefined
+        this.closeStartupStatus()
+        throw cause
+      }
+
+      if (tray === undefined) {
+        this.closeStartupStatus()
+        throw new Error('dsh-plugin-desktop: native tray did not mount')
+      }
+      const mountedTray = tray
+      let released = false
+      return async () => {
+        if (released) return
+        released = true
+        app.off('activate', openBrowser)
+        mountedTray.off('click', openBrowser)
+        mountedTray.destroy()
+        if (this.tray === mountedTray) this.tray = undefined
+        this.closeStartupStatus()
+      }
+    }
+
+    const origin = new URL(spec.url).origin
     const window = new BrowserWindow(desktopWindowOptions(spec, icon, this.platform))
     window.accessibleTitle = spec.windowTitle
     if (this.platform === 'win32') window.removeMenu()
@@ -523,6 +629,22 @@ export class ElectronDesktopRuntime implements DesktopRuntime {
     window.on('page-title-updated', preserveBlankTitle)
     window.webContents.on('will-frame-navigate', navigate)
     window.webContents.on('will-redirect', navigate)
+    const unresponsive = (): void => {
+      process.stderr.write('dsh-plugin-desktop: desktop renderer became unresponsive\n')
+    }
+    const responsive = (): void => {
+      process.stderr.write('dsh-plugin-desktop: desktop renderer became responsive\n')
+    }
+    const renderProcessGone = (_event: Electron.Event, details: Electron.RenderProcessGoneDetails): void => {
+      process.stderr.write(`dsh-plugin-desktop: desktop renderer exited: ${details.reason}\n`)
+    }
+    const failedLoad = (_event: Electron.Event, errorCode: number, errorDescription: string, validatedURL: string, isMainFrame: boolean): void => {
+      if (isMainFrame) process.stderr.write(`dsh-plugin-desktop: failed to load ${validatedURL}: ${errorCode} ${errorDescription}\n`)
+    }
+    window.webContents.on('unresponsive', unresponsive)
+    window.webContents.on('responsive', responsive)
+    window.webContents.on('render-process-gone', renderProcessGone)
+    window.webContents.on('did-fail-load', failedLoad)
     window.webContents.setWindowOpenHandler(({ url }) => {
       try {
         const target = new URL(url)
@@ -537,15 +659,7 @@ export class ElectronDesktopRuntime implements DesktopRuntime {
       return { action: 'deny' }
     })
 
-    if (spec.openInBrowser === true) {
-      window.once('ready-to-show', () => {
-        void shell.openExternal(spec.url).catch((cause: unknown) => {
-          process.stderr.write(`dsh-plugin-desktop: failed to open browser: ${cause instanceof Error ? cause.message : String(cause)}\n`)
-        })
-      })
-    } else {
-      window.once('ready-to-show', show)
-    }
+    window.once('ready-to-show', show)
     let tray: Tray | undefined
     try {
       await window.loadURL(spec.url)
@@ -555,6 +669,7 @@ export class ElectronDesktopRuntime implements DesktopRuntime {
       this.rebuildTrayMenu()
       tray.on('click', show)
       beforeInteractive?.()
+      this.closeStartupStatus()
     } catch (cause) {
       app.off('activate', show)
       window.off('page-title-updated', preserveBlankTitle)
@@ -580,6 +695,10 @@ export class ElectronDesktopRuntime implements DesktopRuntime {
       window.off('page-title-updated', preserveBlankTitle)
       window.webContents.off('will-frame-navigate', navigate)
       window.webContents.off('will-redirect', navigate)
+      window.webContents.off('unresponsive', unresponsive)
+      window.webContents.off('responsive', responsive)
+      window.webContents.off('render-process-gone', renderProcessGone)
+      window.webContents.off('did-fail-load', failedLoad)
       mountedTray.off('click', show)
       mountedTray.destroy()
       if (!window.isDestroyed()) window.destroy()
