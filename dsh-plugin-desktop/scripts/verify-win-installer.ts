@@ -38,13 +38,13 @@ function packagingNames(desktopRoot: string, version: string): {
   let artifactName = `DSH-Desktop-${version}-x64-Setup.exe`
   try {
     const manifest = JSON.parse(readFileSync(join(desktopRoot, 'package.json'), 'utf8')) as {
-      build?: { productName?: unknown; win?: { artifactName?: unknown } }
+      build?: { productName?: unknown; nsis?: { artifactName?: unknown } }
     }
     if (typeof manifest.build?.productName === 'string' && manifest.build.productName.length > 0) {
       productName = manifest.build.productName
     }
-    if (typeof manifest.build?.win?.artifactName === 'string' && manifest.build.win.artifactName.length > 0) {
-      artifactName = manifest.build.win.artifactName
+    if (typeof manifest.build?.nsis?.artifactName === 'string' && manifest.build.nsis.artifactName.length > 0) {
+      artifactName = manifest.build.nsis.artifactName
         .replaceAll('${version}', version)
         .replaceAll('${arch}', 'x64')
         .replaceAll('${ext}', 'exe')
