@@ -30,6 +30,31 @@ function readVersion(desktopRoot: string): string {
   return manifest.version
 }
 
+function packagingNames(desktopRoot: string, version: string): {
+  installerName: string
+  applicationName: string
+} {
+  let productName = 'DSH Desktop'
+  let artifactName = `DSH-Desktop-${version}-x64-Setup.exe`
+  try {
+    const manifest = JSON.parse(readFileSync(join(desktopRoot, 'package.json'), 'utf8')) as {
+      build?: { productName?: unknown; artifactName?: unknown }
+    }
+    if (typeof manifest.build?.productName === 'string' && manifest.build.productName.length > 0) {
+      productName = manifest.build.productName
+    }
+    if (typeof manifest.build?.artifactName === 'string' && manifest.build.artifactName.length > 0) {
+      artifactName = manifest.build.artifactName
+        .replaceAll('${version}', version)
+        .replaceAll('${arch}', 'x64')
+        .replaceAll('${ext}', 'exe')
+    }
+  } catch {
+    // Test fixtures and older callers may provide only dist artifacts.
+  }
+  return { installerName: artifactName, applicationName: `${productName}.exe` }
+}
+
 function assertPortableExecutable(path: string, label: string): void {
   const stat = statSync(path)
   if (!stat.isFile() || stat.size < 68) {
@@ -73,11 +98,9 @@ export function verifyWindowsInstaller(
   options: WindowsInstallerVerificationOptions = defaultOptions(),
 ): WindowsInstallerArtifacts {
   const distDir = join(options.desktopRoot, 'dist')
-  const installerPath = join(
-    distDir,
-    `DSH-Desktop-${options.version}-x64-Setup.exe`,
-  )
-  const applicationPath = join(distDir, 'win-unpacked', 'DSH Desktop.exe')
+  const names = packagingNames(options.desktopRoot, options.version)
+  const installerPath = join(distDir, names.installerName)
+  const applicationPath = join(distDir, 'win-unpacked', names.applicationName)
 
   assertPortableExecutable(installerPath, 'Windows NSIS installer')
   assertPortableExecutable(applicationPath, 'unpacked Windows application')
