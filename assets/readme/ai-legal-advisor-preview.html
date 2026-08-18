@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI法律顾问 · 产品预览</title>
+  <style>
+    :root { color-scheme: light; --ink:#172233; --muted:#738097; --line:#e6eaf0; --blue:#2f6fed; --blue-soft:#edf3ff; --green:#2b9b72; --amber:#d88b2d; --navy:#11284b; --panel:#ffffff; --bg:#f5f7fb; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-width:1180px; background:var(--bg); color:var(--ink); font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
+    button { font:inherit; }
+    .app { display:grid; grid-template-columns:252px 1fr; height:780px; overflow:hidden; background:var(--bg); }
+    .sidebar { display:flex; flex-direction:column; padding:23px 15px 16px; background:#fff; border-right:1px solid var(--line); }
+    .brand { display:flex; align-items:center; gap:11px; padding:0 10px 24px; }
+    .brand-mark { display:grid; place-items:center; width:31px; height:31px; color:#fff; background:linear-gradient(145deg,#2456bb,#5a8cf5); border-radius:10px; font-weight:800; box-shadow:0 6px 16px #2f6fed35; }
+    .brand-name { font-weight:750; letter-spacing:.02em; }
+    .brand-sub { margin-top:2px; color:var(--muted); font-size:10px; }
+    .section-label { padding:0 10px 8px; color:#a1aabd; font-size:10px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; }
+    .nav { display:grid; gap:3px; }
+    .nav-item { display:flex; align-items:center; gap:10px; width:100%; padding:10px 11px; color:#5d6a7e; background:transparent; border:0; border-radius:9px; text-align:left; }
+    .nav-item.active { color:var(--blue); background:var(--blue-soft); font-weight:650; }
+    .nav-icon { width:17px; text-align:center; font-size:15px; }
+    .workspace { margin-top:24px; }
+    .workspace-row { display:flex; align-items:center; gap:8px; padding:8px 10px; color:#5d6a7e; font-size:12px; }
+    .dot { width:8px; height:8px; border-radius:99px; background:#55bd8c; box-shadow:0 0 0 3px #55bd8c20; }
+    .sessions { display:grid; gap:2px; margin-top:3px; }
+    .session { padding:8px 11px; color:#748096; font-size:11px; border-radius:8px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .session.selected { color:#32435e; background:#f6f8fc; }
+    .balance { margin-top:auto; padding:12px; border:1px solid #e5e9ef; border-radius:12px; background:#fff; box-shadow:0 4px 18px #1f36500a; }
+    .balance-head, .balance-row { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+    .balance-head { color:#697589; font-size:11px; font-weight:650; }
+    .status { width:6px; height:6px; background:#55a36b; border-radius:99px; }
+    .balance-row { margin-top:10px; }
+    .currency { color:#8d98a9; font-size:10px; font-weight:700; letter-spacing:.08em; }
+    .money { color:#263548; font-family:ui-monospace, SFMono-Regular, Menlo, monospace; font-size:13px; font-weight:700; }
+    .track { height:4px; margin-top:6px; overflow:hidden; background:#eef1f5; border-radius:99px; }
+    .fill { height:100%; background:linear-gradient(90deg,#6eb987,#4ca56f); border-radius:99px; }
+    .balance-foot { margin-top:8px; color:#a1a9b5; font-size:9px; }
+    .main { display:flex; flex-direction:column; min-width:0; }
+    .topbar { display:flex; align-items:center; justify-content:space-between; height:66px; padding:0 31px; background:#fff; border-bottom:1px solid var(--line); }
+    .crumb { color:#77849a; font-size:12px; }
+    .crumb strong { color:#263852; font-weight:650; }
+    .top-actions { display:flex; align-items:center; gap:18px; color:#7b8799; font-size:12px; }
+    .avatar { display:grid; place-items:center; width:29px; height:29px; color:#fff; background:#425f91; border-radius:50%; font-size:11px; font-weight:700; }
+    .content { display:grid; grid-template-columns:minmax(590px,1fr) 292px; gap:22px; padding:28px 31px 30px; overflow:hidden; }
+    .eyebrow { color:var(--blue); font-size:11px; font-weight:750; letter-spacing:.13em; }
+    h1 { margin:7px 0 0; color:#19263a; font-size:28px; letter-spacing:-.04em; }
+    .lead { max-width:680px; margin:9px 0 22px; color:#718096; font-size:13px; line-height:1.7; }
+    .cards { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:22px; }
+    .metric { padding:15px; background:#fff; border:1px solid var(--line); border-radius:11px; }
+    .metric-label { color:#8b96a8; font-size:10px; }
+    .metric-value { margin-top:10px; color:#25364f; font-size:21px; font-weight:720; letter-spacing:-.04em; }
+    .metric-note { margin-top:5px; color:#42a779; font-size:10px; }
+    .panel { background:#fff; border:1px solid var(--line); border-radius:12px; box-shadow:0 5px 18px #1f365008; }
+    .panel-head { display:flex; justify-content:space-between; align-items:center; padding:15px 17px 12px; border-bottom:1px solid #eef1f5; }
+    .panel-title { color:#26364d; font-size:13px; font-weight:700; }
+    .panel-action { color:var(--blue); font-size:11px; }
+    .agent-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; padding:14px; }
+    .agent { min-height:111px; padding:13px; border:1px solid #edf0f4; border-radius:10px; background:linear-gradient(180deg,#fff,#fbfcfe); }
+    .agent-top { display:flex; align-items:center; gap:9px; }
+    .agent-icon { display:grid; place-items:center; width:28px; height:28px; color:var(--blue); background:var(--blue-soft); border-radius:8px; font-size:14px; }
+    .agent-name { color:#34445d; font-size:12px; font-weight:700; }
+    .agent-desc { margin-top:11px; color:#7e899a; font-size:10px; line-height:1.6; }
+    .agent-tag { display:inline-block; margin-top:8px; padding:3px 6px; color:#5e7db7; background:#f0f5ff; border-radius:4px; font-size:9px; }
+    .chat { padding:17px; }
+    .chat-meta { display:flex; justify-content:space-between; color:#a0a9b7; font-size:10px; }
+    .message { display:flex; gap:10px; margin-top:17px; }
+    .message-avatar { display:grid; place-items:center; flex:0 0 auto; width:25px; height:25px; color:#fff; background:var(--blue); border-radius:8px; font-size:10px; }
+    .message-body { padding:10px 12px; color:#43536a; background:#f6f8fc; border-radius:4px 10px 10px 10px; font-size:11px; line-height:1.75; }
+    .message-body strong { color:#20344f; }
+    .risk-list { display:grid; gap:8px; padding:14px; }
+    .risk { display:grid; grid-template-columns:35px 1fr auto; gap:11px; align-items:center; padding:11px 12px; border:1px solid #edf0f4; border-radius:9px; }
+    .risk-num { color:#fff; background:#e29a3e; border-radius:7px; padding:6px 0; text-align:center; font-size:10px; font-weight:700; }
+    .risk.high .risk-num { background:#d96562; }
+    .risk-title { color:#3d4d62; font-size:11px; font-weight:700; }
+    .risk-copy { margin-top:4px; color:#8a95a5; font-size:10px; }
+    .risk-level { color:#d98a30; font-size:10px; }
+    .risk.high .risk-level { color:#d45e61; }
+    .side { display:grid; align-content:start; gap:14px; }
+    .side-card { padding:16px; background:#fff; border:1px solid var(--line); border-radius:12px; }
+    .side-title { color:#34445c; font-size:12px; font-weight:700; }
+    .side-copy { margin-top:10px; color:#7b8799; font-size:10px; line-height:1.7; }
+    .side-row { display:flex; justify-content:space-between; padding:9px 0; border-bottom:1px solid #f0f2f5; color:#7d8899; font-size:10px; }
+    .side-row:last-child { border-bottom:0; padding-bottom:0; }
+    .side-row strong { color:#384b65; font-weight:650; }
+    .timeline { display:grid; gap:13px; margin-top:13px; }
+    .event { display:grid; grid-template-columns:8px 1fr; gap:10px; }
+    .event-dot { width:7px; height:7px; margin-top:3px; background:#78a2f4; border-radius:99px; }
+    .event-text { color:#6e7c91; font-size:10px; line-height:1.45; }
+    .event-time { display:block; margin-top:3px; color:#a7afbc; font-size:9px; }
+    .contract-only, .compliance-only { display:none; }
+    body[data-view="contract"] .overview-only, body[data-view="compliance"] .overview-only { display:none; }
+    body[data-view="contract"] .contract-only { display:block; }
+    body[data-view="compliance"] .compliance-only { display:block; }
+    body[data-view="contract"] .contract-layout, body[data-view="compliance"] .compliance-layout { display:grid; }
+    .contract-layout, .compliance-layout { display:none; grid-template-columns:minmax(600px,1fr) 292px; gap:22px; padding:25px 31px 30px; overflow:hidden; }
+    .toolbar { display:flex; align-items:center; justify-content:space-between; padding:11px 15px; background:#fff; border:1px solid var(--line); border-radius:10px; }
+    .toolbar-title { color:#34445c; font-size:12px; font-weight:700; }
+    .pill { padding:5px 8px; color:#4773c8; background:#edf3ff; border-radius:99px; font-size:10px; }
+    .document { padding:20px; background:#fff; border:1px solid var(--line); border-radius:12px; }
+    .document-title { color:#253851; font-size:16px; font-weight:720; }
+    .document-meta { display:flex; gap:15px; margin-top:8px; color:#9ba5b3; font-size:10px; }
+    .clause { margin-top:18px; padding:13px; color:#66758a; background:#fbfcfe; border-left:3px solid #e0e6ef; font-size:11px; line-height:1.8; }
+    .clause.flag { border-left-color:#e3a14c; background:#fffaf2; }
+    .clause strong { color:#3b4d68; }
+    .compliance-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:15px; }
+    .compliance-card { padding:16px; background:#fff; border:1px solid var(--line); border-radius:11px; }
+    .compliance-icon { color:#2a9a74; font-size:18px; }
+    .compliance-card h3 { margin:10px 0 5px; color:#35465e; font-size:12px; }
+    .compliance-card p { margin:0; color:#8290a3; font-size:10px; line-height:1.6; }
+    .score { display:flex; align-items:end; gap:6px; margin-top:16px; }
+    .score strong { color:#2a9a74; font-size:27px; letter-spacing:-.05em; }
+    .score span { color:#a2acb9; font-size:10px; padding-bottom:4px; }
+    .footer-note { position:fixed; right:31px; bottom:12px; color:#aab2bf; font-size:9px; }
+  </style>
+</head>
+<body data-view="overview">
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand"><div class="brand-mark">法</div><div><div class="brand-name">AI法律顾问</div><div class="brand-sub">中国法 AI 工作台 · 2.0.5</div></div></div>
+      <div class="section-label">工作台</div>
+      <nav class="nav">
+        <button class="nav-item active"><span class="nav-icon">⌂</span>法律工作台</button>
+        <button class="nav-item"><span class="nav-icon">◈</span>合同审查</button>
+        <button class="nav-item"><span class="nav-icon">◎</span>合规中心</button>
+        <button class="nav-item"><span class="nav-icon">▤</span>争议材料</button>
+      </nav>
+      <div class="workspace"><div class="section-label">当前工作区</div><div class="workspace-row"><span class="dot"></span><span>华东业务群 · 法务部</span></div><div class="sessions"><div class="session selected">供应商合同风险扫描</div><div class="session">数据跨境合规清单</div><div class="session">税务争议材料整理</div></div></div>
+      <div class="balance">
+        <div class="balance-head"><span>DeepSeek API 余额</span><span class="status"></span></div>
+        <div class="balance-row"><span class="currency">CNY</span><span class="money">¥742.80</span></div><div class="track"><div class="fill" style="width:82%"></div></div>
+        <div class="balance-row"><span class="currency">USD</span><span class="money">$18.44</span></div><div class="track"><div class="fill" style="width:66%"></div></div>
+        <div class="balance-foot">今日基准 · 最近查询 14:28</div>
+      </div>
+    </aside>
+    <main class="main">
+      <header class="topbar"><div class="crumb">企业法务部 <span>/</span> <strong id="crumb-title">法律工作台</strong></div><div class="top-actions"><span>安全边界</span><span>标准模式</span><div class="avatar">Q</div></div></header>
+      <section class="content overview-only">
+        <div><div class="eyebrow">LEGAL OPERATIONS CENTER</div><h1>把复杂法律工作，交给可审阅的 Agent。</h1><p class="lead">面向企业管理者、OPC 创业者和业务负责人的中文法律 AI 工作台。四个专业 Agent 协同工作，保留证据、风险等级与下一步动作。</p>
+          <div class="cards"><div class="metric"><div class="metric-label">本周已审阅事项</div><div class="metric-value">38</div><div class="metric-note">↑ 12% 较上周</div></div><div class="metric"><div class="metric-label">待跟进高风险</div><div class="metric-value">06</div><div class="metric-note" style="color:#d88b2d">需要负责人确认</div></div><div class="metric"><div class="metric-label">Agent 响应状态</div><div class="metric-value">稳定</div><div class="metric-note">本地工作台运行中</div></div></div>
+          <div class="panel"><div class="panel-head"><span class="panel-title">四个法律 Agent</span><span class="panel-action">查看全部能力 →</span></div><div class="agent-grid"><div class="agent"><div class="agent-top"><div class="agent-icon">⌘</div><div class="agent-name">企业总法务</div></div><div class="agent-desc">组织治理、日常法律事务与跨部门风险决策。</div><span class="agent-tag">主协调 Agent</span></div><div class="agent"><div class="agent-top"><div class="agent-icon">▱</div><div class="agent-name">合同审查专家</div></div><div class="agent-desc">逐条标注权利义务、违约责任与谈判优先级。</div><span class="agent-tag">正在审阅 1 份</span></div><div class="agent"><div class="agent-top"><div class="agent-icon">◉</div><div class="agent-name">隐私与 AI 合规专家</div></div><div class="agent-desc">个人信息、数据跨境、AI 使用边界与治理留痕。</div><span class="agent-tag">合规评分 92</span></div><div class="agent"><div class="agent-top"><div class="agent-icon">⌁</div><div class="agent-name">争议材料整理</div></div><div class="agent-desc">按时间线、证据链和争点生成可复核的材料底稿。</div><span class="agent-tag">3 个材料包</span></div></div></div>
+        </div>
+        <aside class="side"><div class="side-card"><div class="side-title">最近活动</div><div class="timeline"><div class="event"><div class="event-dot"></div><div class="event-text">合同审查专家完成风险标注<span class="event-time">今天 14:22</span></div></div><div class="event"><div class="event-dot"></div><div class="event-text">隐私合规清单更新 4 项<span class="event-time">今天 11:06</span></div></div><div class="event"><div class="event-dot"></div><div class="event-text">税务材料包已生成<span class="event-time">昨天 18:41</span></div></div></div></div><div class="side-card"><div class="side-title">工作台原则</div><div class="side-copy">先确认事实，再区分法律问题与商业判断。所有建议都标注依据、假设和需要人工确认的边界。</div></div></aside>
+      </section>
+      <section class="contract-layout contract-only">
+        <div><div class="toolbar"><span class="toolbar-title">供应商合同风险扫描</span><span class="pill">审查中 · 68%</span></div><div class="document" style="margin-top:14px"><div class="document-title">华东供应链服务框架协议</div><div class="document-meta"><span>版本：2026-08-18</span><span>共 18 页</span><span>合同审查专家</span></div><div class="clause"><strong>第 5.2 条 · 服务验收</strong><br>甲方应在收到服务成果后五个工作日内完成验收，逾期未反馈视为验收合格。</div><div class="clause flag"><strong>风险 01 · 验收默示通过</strong><br>建议将“逾期未反馈视为验收合格”改为“逾期未反馈不影响甲方就隐蔽瑕疵提出异议的权利”，并增加缺陷整改期限。</div><div class="clause"><strong>第 9.1 条 · 数据与保密</strong><br>服务方因履行本协议接触的业务数据、客户信息及衍生分析结果均属于甲方保密信息。</div><div class="clause flag"><strong>风险 02 · 数据处理边界不完整</strong><br>需补充数据处理目的、保存期限、分包商限制和安全事件通知时限，避免与隐私合规义务脱节。</div></div></div>
+        <aside class="side"><div class="side-card"><div class="side-title">审查摘要</div><div class="side-row"><span>已识别风险</span><strong>08 项</strong></div><div class="side-row"><span>高风险</span><strong style="color:#d45e61">02 项</strong></div><div class="side-row"><span>建议修改</span><strong>11 处</strong></div><div class="side-row"><span>证据完整度</span><strong style="color:#2a9a74">91%</strong></div></div><div class="side-card"><div class="side-title">Agent 说明</div><div class="side-copy">本次结果按“条款原文—风险判断—建议动作”输出，未替代律师对交易背景、授权链和最终文本的人工确认。</div></div></aside>
+      </section>
+      <section class="compliance-layout compliance-only">
+        <div><div class="eyebrow">COMPLIANCE CONTROL ROOM</div><h1>合规状态，一眼可复核。</h1><p class="lead">从隐私与 AI 使用边界，到税务资料和组织责任，统一收纳证据、责任人与到期动作。</p><div class="compliance-grid"><div class="compliance-card"><div class="compliance-icon">◉</div><h3>个人信息与 AI 使用</h3><p>处理活动记录、授权来源和模型使用边界均已归档。</p><div class="score"><strong>92</strong><span>/ 100 合规评分</span></div></div><div class="compliance-card"><div class="compliance-icon">▣</div><h3>税务资料完整度</h3><p>发票、合同、付款与业务实质材料已建立关联。</p><div class="score"><strong>86</strong><span>/ 100 资料评分</span></div></div><div class="compliance-card"><div class="compliance-icon">⌁</div><h3>跨境数据清单</h3><p>2 个处理活动待补充境外接收方和保存期限。</p><div class="score"><strong style="color:#d88b2d">待办</strong><span>2 项需负责人确认</span></div></div><div class="compliance-card"><div class="compliance-icon">✓</div><h3>组织主体管理</h3><p>主体证照、授权链和年度合规任务按期更新。</p><div class="score"><strong>正常</strong><span>下次检查 09-01</span></div></div></div></div>
+        <aside class="side"><div class="side-card"><div class="side-title">本周合规动作</div><div class="timeline"><div class="event"><div class="event-dot"></div><div class="event-text">补充跨境接收方信息<span class="event-time">截止 08-20</span></div></div><div class="event"><div class="event-dot"></div><div class="event-text">复核 AI 供应商 DPA<span class="event-time">截止 08-22</span></div></div><div class="event"><div class="event-dot"></div><div class="event-text">归档税务争议证据<span class="event-time">截止 08-25</span></div></div></div></div><div class="side-card"><div class="side-title">可追溯输出</div><div class="side-copy">每项结论都可以回到原始材料、法条依据和 Agent 推理假设，便于法务复核与管理层决策。</div></div></aside>
+      </section>
+    </main>
+  </div>
+  <div class="footer-note">模拟运行界面 · 截图素材 · AI法律顾问 2.0.5</div>
+  <script>
+    const allowed = ['overview', 'contract', 'compliance']
+    const updateView = () => {
+      const view = (location.hash || '#overview').slice(1)
+      const active = allowed.includes(view) ? view : 'overview'
+      document.body.dataset.view = active
+      document.getElementById('crumb-title').textContent = active === 'contract' ? '合同审查' : active === 'compliance' ? '合规中心' : '法律工作台'
+    }
+    updateView()
+    window.addEventListener('hashchange', updateView)
+  </script>
+</body>
+</html>

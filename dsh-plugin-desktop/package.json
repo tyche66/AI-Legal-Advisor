@@ -1,6 +1,6 @@
 {
   "name": "dsh-plugin-desktop",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "AI法律顾问：面向企业管理者的中国法 AI 工作台",
   "license": "MIT",
   "publishConfig": {
@@ -46,6 +46,10 @@
     "./profile-service": {
       "types": "./lib/types/profile-service.d.ts",
       "default": "./lib/profile-service.js"
+    },
+    "./deepseek-balance": {
+      "types": "./lib/types/deepseek-balance.d.ts",
+      "default": "./lib/deepseek-balance.js"
     },
     "./profiles": {
       "types": "./lib/types/profiles.d.ts",

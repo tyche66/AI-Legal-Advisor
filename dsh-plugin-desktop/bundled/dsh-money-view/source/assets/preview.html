@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DSH Money View Preview</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #202124;
+      --muted: #777b85;
+      --line: #e7e8eb;
+      --soft: #f7f8fa;
+      --blue: #4f7cff;
+      --blue-soft: #eef3ff;
+      --green: #35b98f;
+      --sidebar: #fbfbfc;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      width: 1440px;
+      height: 900px;
+      overflow: hidden;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      color: var(--ink);
+      background: #fff;
+    }
+    .app { display: grid; grid-template-columns: 302px 1fr; height: 100%; }
+    .sidebar {
+      position: relative;
+      padding: 24px 18px 18px;
+      background: var(--sidebar);
+      border-right: 1px solid var(--line);
+    }
+    .brand { display: flex; align-items: center; gap: 10px; padding: 0 8px 26px; font-weight: 700; letter-spacing: -0.4px; }
+    .brand-mark { width: 25px; height: 25px; border: 2px solid #1f2937; border-radius: 45% 55% 50% 48%; transform: rotate(-18deg); position: relative; }
+    .brand-mark:after { content: ""; position: absolute; width: 8px; height: 8px; border-radius: 50%; background: #1f2937; right: -3px; top: 6px; }
+    .brand-name { font-size: 21px; }
+    .brand-pill { font-size: 10px; color: #fff; background: #24262b; border-radius: 4px; padding: 3px 6px; letter-spacing: .6px; }
+    .new-chat { display: flex; align-items: center; justify-content: center; gap: 9px; height: 48px; border: 1px solid #dfe1e6; background: #fff; border-radius: 15px; font-size: 15px; box-shadow: 0 1px 1px rgba(20,25,35,.03); }
+    .plus { display: grid; place-items: center; width: 18px; height: 18px; border: 1.5px solid #31343b; border-radius: 50%; font-size: 14px; line-height: 16px; }
+    .section-title { display: flex; justify-content: space-between; align-items: center; color: #858992; font-size: 14px; margin: 27px 7px 12px; }
+    .section-tools { display: flex; gap: 13px; font-size: 17px; color: #6f737b; }
+    .workspace { display: flex; align-items: center; gap: 9px; padding: 11px 10px; color: #4e5159; font-size: 14px; }
+    .folder { width: 16px; height: 12px; border-radius: 3px; background: #6b98ff; position: relative; }
+    .folder:before { content:""; position:absolute; left:2px; top:-3px; width:7px; height:4px; border-radius:2px 2px 0 0; background:#6b98ff; }
+    .folder.active { background: #5794ff; }
+    .conversation { display:flex; align-items:center; padding: 11px 12px; border-radius: 10px; margin: 2px 0; font-size:14px; color:#30333a; }
+    .conversation.active { background: #f0f2f6; }
+    .conversation .dot { width: 5px; height: 5px; border-radius: 50%; background: #7b808a; margin-right: 9px; }
+    .time { margin-left:auto; font-size:12px; color:#a1a4aa; }
+    .spacer { height: 330px; }
+    .balance-card { position: absolute; left: 18px; right: 18px; bottom: 67px; padding: 16px 16px 14px; border: 1px solid #e0e3e8; border-radius: 15px; background: #fff; box-shadow: 0 7px 25px rgba(35,43,61,.08); }
+    .balance-heading { display:flex; align-items:center; justify-content:space-between; margin-bottom: 14px; }
+    .balance-title { display:flex; align-items:center; gap: 8px; font-size: 14px; font-weight: 650; }
+    .pulse { width:8px; height:8px; border-radius:50%; background:var(--green); box-shadow: 0 0 0 4px rgba(53,185,143,.12); }
+    .sync { color:#969aa4; font-size:12px; }
+    .money-row { display:flex; align-items:baseline; justify-content:space-between; margin: 10px 0 7px; }
+    .currency { font-size: 13px; color:#6f747e; }
+    .money { font-size: 22px; letter-spacing:-.6px; font-weight: 750; }
+    .progress-track { height: 8px; overflow:hidden; border-radius: 99px; background: #edf0f4; }
+    .progress-value { height:100%; width:66.6%; border-radius:inherit; background: linear-gradient(90deg, #5a86ff, #7a9cff); }
+    .balance-meta { display:flex; justify-content:space-between; margin-top: 7px; color:#8a8f98; font-size: 11px; }
+    .card-footer { border-top: 1px solid #f0f1f3; margin-top: 13px; padding-top: 10px; color:#8b9099; font-size: 11px; }
+    .settings { position:absolute; bottom: 19px; left: 22px; display:flex; align-items:center; gap:9px; color:#444850; font-size:14px; }
+    .gear { font-size: 18px; color:#777c85; }
+    .main { background:#fff; }
+    .topbar { display:flex; align-items:center; justify-content:space-between; height: 73px; padding: 0 32px; border-bottom:1px solid var(--line); }
+    .session { display:flex; align-items:center; gap: 12px; font-size:15px; }
+    .session-status { color:#90949c; font-size:13px; }
+    .session-actions { display:flex; align-items:center; gap:20px; color:#70747d; font-size:13px; }
+    .session-log { border:1px solid #e1e3e7; border-radius: 18px; padding: 8px 13px; background:#fff; }
+    .tabs { display:flex; gap:26px; height:44px; align-items:end; padding: 0 32px; border-bottom:1px solid #f0f1f3; color:#858991; font-size:14px; }
+    .tab.active { color:#426fe5; padding-bottom:12px; border-bottom:2px solid #4e7cff; }
+    .conversation-main { padding: 34px 44px 0; }
+    .message { max-width: 800px; }
+    .message-head { display:flex; align-items:center; gap:9px; color:#858a93; font-size:13px; margin-bottom:13px; }
+    .message-body { font-size:16px; line-height:1.75; color:#34373d; }
+    .message-body strong { color:#1f2329; }
+    .tool-row { display:flex; gap: 9px; margin-top:18px; }
+    .tool-pill { border:1px solid #eceef1; background:#fbfbfc; border-radius:8px; padding:7px 10px; color:#717680; font-size:12px; }
+    .assistant { margin-top: 33px; padding-left: 28px; border-left: 2px solid #f0f1f3; }
+    .assistant-head { display:flex; gap:9px; align-items:center; color:#7c828c; font-size:13px; margin-bottom:11px; }
+    .assistant-body { color:#4e525a; font-size:16px; line-height:1.7; }
+    .code { display:inline-block; background:#f2f4f7; border-radius:5px; padding:2px 6px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size:13px; color:#48505a; }
+    .composer { position:absolute; right: 30px; left: 345px; bottom: 27px; height:74px; border:1px solid #e1e4e9; border-radius: 21px; background:#fff; box-shadow: 0 8px 30px rgba(38,47,67,.07); display:flex; align-items:end; padding: 17px 17px; color:#afb3ba; font-size:14px; }
+    .composer button { margin-left:auto; width:32px; height:32px; border:0; border-radius:50%; background:#4e7df5; color:#fff; font-size:17px; }
+    .statusbar { position:absolute; left:345px; right:30px; bottom:7px; display:flex; justify-content:center; gap:25px; color:#a1a5ad; font-size:11px; }
+    .caption { position:absolute; right:31px; bottom: 109px; color:#8c919a; font-size:12px; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand"><span class="brand-mark"></span><span class="brand-name">deepseek</span><span class="brand-pill">HARNESS</span></div>
+      <div class="new-chat"><span class="plus">+</span><span>新会话</span></div>
+      <div class="section-title"><span>工作区</span><span class="section-tools">⌕　☷　＋</span></div>
+      <div class="workspace"><span class="folder active"></span><strong>DSH-Presentations</strong></div>
+      <div class="conversation active"><span class="dot"></span><span>安装 DSH-Presentations 插件...</span><span class="time">2分钟前</span></div>
+      <div class="conversation"><span class="dot"></span><span>制作 DSH 演示文稿插件</span><span class="time">4小时前</span></div>
+      <div class="workspace"><span class="folder"></span><span>DSH</span></div>
+      <div class="conversation"><span class="dot"></span><span>余额监控与模型调用</span><span class="time">5小时前</span></div>
+      <div class="conversation"><span class="dot"></span><span>安装 models 插件</span><span class="time">19小时前</span></div>
+      <div class="spacer"></div>
+      <div class="balance-card">
+        <div class="balance-heading"><div class="balance-title"><span class="pulse"></span><span>API 余额</span></div><span class="sync">自动同步</span></div>
+        <div class="money-row"><span class="currency">CNY</span><strong class="money">¥6.66</strong></div>
+        <div class="progress-track"><div class="progress-value"></div></div>
+        <div class="balance-meta"><span>今日基准 ¥10.00</span><strong>66.6%</strong></div>
+        <div class="card-footer">最近查询 14:32 · 近 30 分钟有调用时更新</div>
+      </div>
+      <div class="settings"><span class="gear">⚙</span><span>设置</span></div>
+    </aside>
+    <main class="main">
+      <div class="topbar"><div class="session"><strong>安装 DSH-Presentations 插件测试</strong><span class="session-status">◌ 标准模式　·　2 个后台任务⌄</span></div><div class="session-actions"><span class="session-log">Session log　⌄</span></div></div>
+      <div class="tabs"><span class="tab active">对话</span><span class="tab">轨迹</span></div>
+      <div class="conversation-main">
+        <div class="message"><div class="message-head">⌁　Grep · watchUserPatches\function watch</div><div class="message-body"><strong>【资源繁忙通知】</strong> 当前模型 <strong>[deepseek-v4-flash]</strong> 请求量较大，暂无可用资源处理您的请求。请稍后重试，或切换至其他模型。</div><div class="tool-row"><span class="tool-pill">probe-patch.mjs</span><span class="tool-pill">dsh-presentations.cordis.patch.yml</span><span class="tool-pill">+ 3 个文件</span></div></div>
+        <div class="assistant"><div class="assistant-head">◈　Think · 正在检查运行中的 GUI 是否支持补丁</div><div class="assistant-body">继续安装流程。先读取 <span class="code">watchUserPatches</span> 实现，确认运行中的 GUI 是否支持补丁。</div></div>
+        <div class="assistant"><div class="assistant-head">▣　Read · D:\ProgramData\DSH\DSH Desktop\resources\app.asar.unpacked\node_...</div><div class="assistant-body">已发现可扩展的 Sidebar footer action 插槽，余额卡片可以保持在设置入口上方，不打扰主工作流。</div></div>
+      </div>
+      <div class="caption">代码渲染的交互效果预览 · DSH Money View</div>
+      <div class="composer"><span>给智能体发消息</span><button>↑</button></div>
+      <div class="statusbar"><span>3 轮 · 74 步</span><span>LLM 30m30s · 工具调用 9m16s</span><span>首 token 平均 16.7s · 75 tok/s</span><span>缓存命中</span></div>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,5 @@
+# Add this row to the browser roster in a DeepSeek Harness Web composition.
+# The package must also be available under packages/extensions/deepseek-balance.
+
+- id: deepseek-balance
+  name: '@deepseek-ai/dsh-deepseek-balance'

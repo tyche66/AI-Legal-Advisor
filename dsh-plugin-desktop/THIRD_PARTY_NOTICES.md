@@ -16,6 +16,7 @@ AI法律顾问 is an independent community distribution. The user-visible produc
 | Cordis | https://github.com/cordiverse/cordis | Plugin composition and runtime foundation used by the upstream ecosystem. | MIT License and upstream notices |
 | claude-for-legal-ZH | https://github.com/CSlawyer1985/claude-for-legal-ZH | Chinese legal Agent, Skills, adapters, and reference snapshot bundled under `bundled/legal-zh/`. | Apache License 2.0; see `bundled/legal-zh/LICENSE` and upstream notices |
 | claude-for-legal | https://github.com/anthropics/claude-for-legal | Upstream legal-workflow reference for material derived by claude-for-legal-ZH. | Apache License 2.0 and upstream notices |
+| DSH-money-view | https://github.com/tyche66/DSH-money-view | DeepSeek API balance query, activity window, daily baseline, and sidebar footer card; adapted and preinstalled in AI法律顾问 2.0.5 from commit `6ab2306`. | MIT License; see `bundled/dsh-money-view/NOTICE.md` and `bundled/dsh-money-view/LICENSE` |
 
 The complete attribution and redistribution policy is documented in the repository-level [`NOTICE.md`](../NOTICE.md). The root `LICENSE` applies only to project-owned material where no more specific license or notice is present; it does not replace any upstream license.
 | Package | Version | License |

@@ -15,6 +15,7 @@ export default defineConfig([
       profiles: 'src/profiles.ts',
       runtime: 'src/runtime.ts',
       'legal-persona': 'src/legal-persona.ts',
+      'deepseek-balance': 'src/deepseek-balance.ts',
       'electron-runtime': 'src/electron-runtime.ts',
       'desktop-runtime-environment': 'src/desktop-runtime-environment.ts',
       'desktop-terminal': 'src/desktop-terminal.ts',
