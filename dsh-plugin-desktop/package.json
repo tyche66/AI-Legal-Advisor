@@ -297,7 +297,7 @@
       "createStartMenuShortcut": true,
       "differentialPackage": false,
       "shortcutName": "AI法律顾问",
-      "useZip": true,
+      "useZip": false,
       "artifactName": "AI法律顾问-${version}-${arch}-Setup.${ext}"
     },
     "linux": {

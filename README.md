@@ -7,9 +7,9 @@
 **不用装 Node.js，不用配置 Python，不用研究命令行。下载、安装、启动，即可开始整理合同、识别风险、梳理争议材料。**
 
 <p>
-  <a href="https://files.manuscdn.com/user_upload_by_module/session_file/310519663749217922/PTixJaHngoCaRVwG.exe"><strong>下载 Windows x64 安装程序</strong></a>
+  <a href="https://github.com/tyche66/AI-Legal-Advisor/actions/runs/32126094844/artifacts/9320513441"><strong>下载 2.0.5 Windows x64 安装程序</strong></a>
   ·
-  <a href="https://github.com/tyche66/AI-Legal-Advisor/actions/runs/32105680053">查看构建记录</a>
+  <a href="https://github.com/tyche66/AI-Legal-Advisor/actions/runs/32126094844">查看 2.0.5 构建记录</a>
   ·
   <a href="docs/user-guide.md">阅读用户指南</a>
 </p>
@@ -61,22 +61,22 @@ AI法律顾问把复杂的法律工作拆成更容易上手的步骤：先明确
 
 ## Windows 开箱即用
 
-2.0.5 在 2.0.4 的 Windows x64 开箱即用体验基础上，新增预置的 DeepSeek API 余额卡片。双击安装包后按向导完成安装，桌面会生成“AI法律顾问”快捷方式；再次双击快捷方式，应用会显示启动状态并自动打开浏览器工作台。普通用户不需要额外安装 Node.js、Python、Git 或其他开发环境。下方链接保留上一稳定版 2.0.4 安装包，2.0.5 的 Windows 安装产物以本仓库 CI 发布结果为准。
+2.0.5 在 2.0.4 的 Windows x64 开箱即用体验基础上，新增预置的 DeepSeek API 余额卡片。双击安装包后按向导完成安装，桌面会生成“AI法律顾问”快捷方式；再次双击快捷方式，应用会显示启动状态并自动打开浏览器工作台。普通用户不需要额外安装 Node.js、Python、Git 或其他开发环境。请从下方 **2.0.5 CI artifact** 下载当前版本；下载后先解压 artifact，再运行其中的 `AI法律顾问-2.0.5-x64-Setup.exe`。如果电脑上仍运行旧版 AI法律顾问，请先退出旧程序，必要时卸载旧版后再安装，以避免旧进程或文件锁阻止 NSIS 覆盖文件。
 
 ### 下载与校验
 
 | 项目 | 信息 |
 | --- | --- |
-| 上一稳定版 Windows x64 安装包 | [AI法律顾问-2.0.4-x64-Setup.exe](https://files.manuscdn.com/user_upload_by_module/session_file/310519663749217922/PTixJaHngoCaRVwG.exe) |
-| 文件大小 | 226,030,150 bytes |
-| SHA-256 | `3a7baf27a47c9e6baf185add0bb642c46161a3576a4697dbb24c5c5a94553337` |
-| 构建记录 | [GitHub Actions CI #32105680053](https://github.com/tyche66/AI-Legal-Advisor/actions/runs/32105680053) |
-| 对应提交 | [`3fdbd07175`](https://github.com/tyche66/AI-Legal-Advisor/commit/3fdbd071754e6b260f30e66338146274b75b7223) |
+| 当前版本 Windows x64 artifact | [下载 AI法律顾问 2.0.5 Windows installer](https://github.com/tyche66/AI-Legal-Advisor/actions/runs/32126094844/artifacts/9320513441) |
+| 安装器文件名 | `AI法律顾问-2.0.5-x64-Setup.exe` |
+| 构建记录 | [GitHub Actions CI #32126094844](https://github.com/tyche66/AI-Legal-Advisor/actions/runs/32126094844) |
+| 对应提交 | [`486ea245f2`](https://github.com/tyche66/AI-Legal-Advisor/commit/486ea245f2aceb474fb51332994d16791d7381b9) |
+| 上一稳定版安装包 | [AI法律顾问-2.0.4-x64-Setup.exe](https://files.manuscdn.com/user_upload_by_module/session_file/310519663749217922/PTixJaHngoCaRVwG.exe) |
 
-在 Windows PowerShell 中可以使用下面的命令校验下载文件：
+下载并解压 artifact 后，可以在 Windows PowerShell 中使用下面的命令校验 2.0.5 安装文件：
 
 ```powershell
-Get-FileHash .\AI法律顾问-2.0.4-x64-Setup.exe -Algorithm SHA256
+Get-FileHash .\AI法律顾问-2.0.5-x64-Setup.exe -Algorithm SHA256
 ```
 
 首次启动时，应用会启动本机服务并在服务就绪后打开浏览器。若浏览器刚打开时仍在加载，请等待启动状态窗口完成；应用会对本机服务进行重试探测，不需要手动运行命令。
@@ -158,7 +158,7 @@ corepack yarn dev
 
 **让法律工作更有条理，让业务决策更早看到风险。**
 
-[下载 AI法律顾问](https://files.manuscdn.com/user_upload_by_module/session_file/310519663749217922/PTixJaHngoCaRVwG.exe) · [查看源代码](https://github.com/tyche66/AI-Legal-Advisor)
+[下载 AI法律顾问 2.0.5](https://github.com/tyche66/AI-Legal-Advisor/actions/runs/32126094844/artifacts/9320513441) · [查看源代码](https://github.com/tyche66/AI-Legal-Advisor)
 
 </div>
 
@@ -169,4 +169,4 @@ corepack yarn dev
 [3]: https://github.com/cordiverse/cordis "Cordis 官方仓库"
 [4]: https://github.com/CSlawyer1985/claude-for-legal-ZH "claude-for-legal-ZH 上游仓库"
 [5]: https://github.com/anthropics/claude-for-legal "claude-for-legal 上游仓库"
-[6]: https://github.com/tyche66/AI-Legal-Advisor/actions/runs/32105680053 "AI法律顾问 2.0.4 Windows 构建记录"
+[6]: https://github.com/tyche66/AI-Legal-Advisor/actions/runs/32126094844 "AI法律顾问 2.0.5 Windows 构建记录"

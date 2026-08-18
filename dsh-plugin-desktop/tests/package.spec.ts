@@ -185,7 +185,7 @@ describe('published package surface', () => {
       createStartMenuShortcut: true,
       differentialPackage: false,
       shortcutName: 'AI法律顾问',
-      useZip: true,
+      useZip: false,
       artifactName: 'AI法律顾问-${version}-${arch}-Setup.${ext}',
     })
     expect(manifest.build?.linux?.icon).toBe('build/app-icon.png')
