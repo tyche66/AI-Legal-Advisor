@@ -1,6 +1,7 @@
 const PRODUCT_NAME = 'AI法律顾问'
 const BOUNDARY_NOTICE_ID = 'ai-legal-advisor-boundary-notice'
 const BRAND_STYLE_ID = 'ai-legal-advisor-brand-style'
+let boundaryNoticeDismissed = false
 
 const LEGAL_AI_BOUNDARY_ZH = '仅供法律信息整理、风险提示与工作草稿使用，不是律师意见、法律意见、诉讼代理或辩护；输出可能不完整或错误，法律依据、期限、事实和具体案件结论必须由具备相应资质的专业人士复核。请勿直接提交未经脱敏的敏感材料。'
 const LEGAL_AI_BOUNDARY_EN = 'For legal information organization, risk spotting, and working drafts only. It is not legal advice, attorney advice, representation, or a defense service. Outputs may be incomplete or wrong; qualified professionals must review laws, deadlines, facts, and case conclusions. Do not submit sensitive material without appropriate redaction.'
@@ -139,12 +140,15 @@ function installBrandStyles(): void {
 }
 
 function mountBoundaryNotice(): void {
-  if (document.getElementById(BOUNDARY_NOTICE_ID) !== null) return
+  if (boundaryNoticeDismissed || document.getElementById(BOUNDARY_NOTICE_ID) !== null) return
   const notice = document.createElement('aside')
   notice.id = BOUNDARY_NOTICE_ID
   notice.setAttribute('role', 'note')
   notice.innerHTML = `<div><strong>${PRODUCT_NAME} · 法律 AI 使用边界</strong><span>${LEGAL_AI_BOUNDARY_ZH}</span></div><button type="button" aria-label="关闭法律 AI 使用边界提示">×</button>`
-  notice.querySelector('button')?.addEventListener('click', () => { notice.remove() }, { once: true })
+  notice.querySelector('button')?.addEventListener('click', () => {
+    boundaryNoticeDismissed = true
+    notice.remove()
+  }, { once: true })
   document.body.append(notice)
 }
 

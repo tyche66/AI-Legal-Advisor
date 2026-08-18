@@ -243,6 +243,10 @@ describe('published package surface', () => {
     expect(source).toContain('[class*="previewBadge"]')
     expect(source).toContain('document.body ?? document.documentElement')
     expect(source).toContain('setTimeout(flush, 0)')
+    expect(source).toContain('let boundaryNoticeDismissed = false')
+    expect(source).toContain('boundaryNoticeDismissed || document.getElementById(BOUNDARY_NOTICE_ID) !== null')
+    expect(source).toContain('boundaryNoticeDismissed = true')
+    expect(source).toContain('notice.remove()')
   })
 
   it('keeps the AI法律顾问 source icon stable', () => {
