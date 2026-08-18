@@ -247,6 +247,9 @@ describe('published package surface', () => {
     expect(source).toContain('boundaryNoticeDismissed || document.getElementById(BOUNDARY_NOTICE_ID) !== null')
     expect(source).toContain('boundaryNoticeDismissed = true')
     expect(source).toContain('notice.remove()')
+    expect(source).toContain("new Set(['standard', 'code', 'minimal', 'cordis'])")
+    expect(source).toContain('hideBuiltInAgentPresets()')
+    expect(source).toContain('data-ai-legal-hidden-preset')
   })
 
   it('keeps the AI法律顾问 source icon stable', () => {

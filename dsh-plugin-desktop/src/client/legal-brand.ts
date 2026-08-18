@@ -1,6 +1,8 @@
 const PRODUCT_NAME = 'AI法律顾问'
 const BOUNDARY_NOTICE_ID = 'ai-legal-advisor-boundary-notice'
 const BRAND_STYLE_ID = 'ai-legal-advisor-brand-style'
+const HIDDEN_BUILTIN_PRESET_IDS = new Set(['standard', 'code', 'minimal', 'cordis'])
+const HIDDEN_BUILTIN_PRESET_LABELS = ['Standard mode', 'Code mode', 'Minimal mode', 'Creator mode', '标准模式', 'PTC 模式', '极简模式', '创造模式'] as const
 let boundaryNoticeDismissed = false
 
 const LEGAL_AI_BOUNDARY_ZH = '仅供法律信息整理、风险提示与工作草稿使用，不是律师意见、法律意见、诉讼代理或辩护；输出可能不完整或错误，法律依据、期限、事实和具体案件结论必须由具备相应资质的专业人士复核。请勿直接提交未经脱敏的敏感材料。'
@@ -60,6 +62,19 @@ function rewriteAttributes(root: ParentNode): void {
 function hideUpstreamHeroPreviewBadge(): void {
   for (const element of document.querySelectorAll<HTMLElement>('[class*="previewBadge"]')) {
     element.setAttribute('aria-hidden', 'true')
+  }
+}
+
+function hideBuiltInAgentPresets(): void {
+  for (const element of document.querySelectorAll<HTMLElement>('li, [role="menuitem"]')) {
+    const presetId = element.querySelector('code')?.textContent?.trim() ?? ''
+    const text = element.textContent?.trim() ?? ''
+    const isHiddenPreset = HIDDEN_BUILTIN_PRESET_IDS.has(presetId)
+      || HIDDEN_BUILTIN_PRESET_LABELS.some(label => text.includes(label))
+    if (!isHiddenPreset) continue
+    const card = element.matches('li') ? element : element.closest<HTMLElement>('li') ?? element
+    card.dataset.aiLegalHiddenPreset = 'true'
+    card.setAttribute('aria-hidden', 'true')
   }
 }
 
@@ -132,6 +147,7 @@ function installBrandStyles(): void {
       line-height: 20px;
     }
     #${BOUNDARY_NOTICE_ID} button:hover { background: rgb(21 52 95 / 10%); }
+    [data-ai-legal-hidden-preset="true"] { display: none !important; }
     @media (max-width: 700px) {
       #${BOUNDARY_NOTICE_ID} { right: 8px; bottom: 8px; max-width: calc(100vw - 16px); }
     }
@@ -158,6 +174,7 @@ function applyBranding(): void {
   rewriteTextNodes(document.body)
   rewriteAttributes(document.body)
   hideUpstreamHeroPreviewBadge()
+  hideBuiltInAgentPresets()
   mountBoundaryNotice()
 }
 
