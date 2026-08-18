@@ -35,7 +35,7 @@ function options(
   return {
     platform,
     appExecutable: platform === 'win32'
-      ? 'C:\\Program Files\\DSH 100% Desktop\\DSH Desktop.exe'
+      ? 'C:\\Program Files\\DSH 100% Desktop\\AI-Legal-Advisor.exe'
       : "/Applications/DSH O'Brien.app/Contents/MacOS/DSH Desktop",
     pnpmBinPath: platform === 'win32'
       ? 'C:\\Program Files\\DSH Desktop\\resources\\app.asar.unpacked\\node_modules\\pnpm\\bin\\pnpm.mjs'

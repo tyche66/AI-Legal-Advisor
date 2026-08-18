@@ -272,7 +272,7 @@
       "notarize": true
     },
     "win": {
-      "executableName": "AI法律顾问",
+      "executableName": "AI-Legal-Advisor",
       "target": [
         {
           "target": "nsis",

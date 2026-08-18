@@ -28,11 +28,12 @@ function fixture(version = '2.0.0'): {
     version,
     build: {
       productName: 'AI法律顾问',
+      win: { executableName: 'AI-Legal-Advisor' },
       nsis: { artifactName: 'AI法律顾问-${version}-${arch}-Setup.${ext}' },
     },
   }))
   const installer = join(dist, `AI法律顾问-${version}-x64-Setup.exe`)
-  const application = join(unpacked, 'AI法律顾问.exe')
+  const application = join(unpacked, 'AI-Legal-Advisor.exe')
   writeFileSync(installer, portableExecutable())
   writeFileSync(application, portableExecutable())
   return { root, installer, application }

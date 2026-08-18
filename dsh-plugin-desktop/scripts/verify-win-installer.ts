@@ -34,14 +34,14 @@ function packagingNames(desktopRoot: string, version: string): {
   installerName: string
   applicationName: string
 } {
-  let productName = 'AI法律顾问'
+  let executableName = 'AI-Legal-Advisor'
   let artifactName = `AI法律顾问-${version}-x64-Setup.exe`
   try {
     const manifest = JSON.parse(readFileSync(join(desktopRoot, 'package.json'), 'utf8')) as {
-      build?: { productName?: unknown; nsis?: { artifactName?: unknown } }
+      build?: { productName?: unknown; win?: { executableName?: unknown }; nsis?: { artifactName?: unknown } }
     }
-    if (typeof manifest.build?.productName === 'string' && manifest.build.productName.length > 0) {
-      productName = manifest.build.productName
+    if (typeof manifest.build?.win?.executableName === 'string' && manifest.build.win.executableName.length > 0) {
+      executableName = manifest.build.win.executableName
     }
     if (typeof manifest.build?.nsis?.artifactName === 'string' && manifest.build.nsis.artifactName.length > 0) {
       artifactName = manifest.build.nsis.artifactName
@@ -52,7 +52,7 @@ function packagingNames(desktopRoot: string, version: string): {
   } catch {
     // Test fixtures and older callers may provide only dist artifacts.
   }
-  return { installerName: artifactName, applicationName: `${productName}.exe` }
+  return { installerName: artifactName, applicationName: `${executableName}.exe` }
 }
 
 function assertPortableExecutable(path: string, label: string): void {

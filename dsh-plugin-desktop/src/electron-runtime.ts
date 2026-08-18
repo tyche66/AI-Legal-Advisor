@@ -339,7 +339,7 @@ export class ElectronDesktopRuntime implements DesktopRuntime {
     startupWindow.once('ready-to-show', () => {
       if (!startupWindow.isDestroyed()) startupWindow.show()
     })
-    const html = `<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><title>AI法律顾问</title><style>*{box-sizing:border-box}html,body{width:100%;height:100%;margin:0}body{display:flex;align-items:center;justify-content:center;background:#f7fbff;color:#15345f;font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}.card{text-align:center}.spinner{width:42px;height:42px;margin:0 auto 18px;border:4px solid #d9e4f7;border-top-color:#4d6bfe;border-radius:50%;animation:spin .9s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}h1{margin:0 0 8px;font-size:22px}p{margin:0;color:#5a6c87}</style></head><body><main class="card"><div class="spinner" aria-label="正在启动"></div><h1>AI法律顾问</h1><p>正在启动法律 AI 工作台，请稍候…</p></main></body></html>`
+    const html = `<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><title>AI法律顾问</title><style>*{box-sizing:border-box}html,body{width:100%;height:100%;margin:0}body{display:flex;align-items:center;justify-content:center;background:#f7fbff;color:#15345f;font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}.card{text-align:center}.spinner{width:42px;height:42px;margin:0 auto 18px;border:4px solid #d9e4f7;border-top-color:#13227a;border-radius:50%;animation:spin .9s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}h1{margin:0 0 8px;font-size:22px}p{margin:0;color:#5a6c87}</style></head><body><main class="card"><div class="spinner" aria-label="正在启动"></div><h1>AI法律顾问</h1><p>正在启动法律 AI 工作台，请稍候…</p></main></body></html>`
     await startupWindow.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(html)}`)
   }
 
@@ -350,11 +350,23 @@ export class ElectronDesktopRuntime implements DesktopRuntime {
   }
 
   private async waitForWebSurface(url: string): Promise<void> {
-    const response = await net.fetch(url)
-    if (!response.ok) {
-      throw new Error(`Web 工作台返回 HTTP ${response.status}`)
+    const deadline = Date.now() + 20_000
+    let lastFailure: Error | undefined
+    while (Date.now() < deadline) {
+      try {
+        const response = await net.fetch(url)
+        if (!response.ok) {
+          lastFailure = new Error(`Web 工作台返回 HTTP ${response.status}`)
+        } else {
+          await response.arrayBuffer()
+          return
+        }
+      } catch (cause) {
+        lastFailure = cause instanceof Error ? cause : new Error(String(cause))
+      }
+      await new Promise<void>(resolve => { setTimeout(resolve, 200) })
     }
-    await response.arrayBuffer()
+    throw new Error(`Web 工作台在 20 秒内未就绪：${lastFailure?.message ?? '未知连接错误'}`)
   }
 
   private showNotification(notification: DesktopNotification): void {
@@ -554,6 +566,8 @@ export class ElectronDesktopRuntime implements DesktopRuntime {
 
     if (spec.openInBrowser === true) {
       let tray: Tray | undefined
+      // Electron quits automatically on Windows/Linux when no listener handles this event.
+      const keepAliveWithoutWindows = (): void => {}
       const openBrowser = (): void => {
         void shell.openExternal(spec.url).then(() => {
           this.closeStartupStatus()
@@ -567,6 +581,7 @@ export class ElectronDesktopRuntime implements DesktopRuntime {
       try {
         await this.openStartupStatus(icon)
         await this.waitForWebSurface(spec.url)
+        app.on('window-all-closed', keepAliveWithoutWindows)
         tray = new Tray(prepareTrayIcon(spec.trayIcons, this.platform))
         this.tray = tray
         tray.setToolTip(spec.productName)
@@ -577,6 +592,7 @@ export class ElectronDesktopRuntime implements DesktopRuntime {
         openBrowser()
       } catch (cause) {
         app.off('activate', openBrowser)
+        app.off('window-all-closed', keepAliveWithoutWindows)
         tray?.off('click', openBrowser)
         tray?.destroy()
         this.tray = undefined
@@ -594,6 +610,7 @@ export class ElectronDesktopRuntime implements DesktopRuntime {
         if (released) return
         released = true
         app.off('activate', openBrowser)
+        app.off('window-all-closed', keepAliveWithoutWindows)
         mountedTray.off('click', openBrowser)
         mountedTray.destroy()
         if (this.tray === mountedTray) this.tray = undefined

@@ -72,7 +72,7 @@ function macOptions(stateDir: string, spawn: DesktopTerminalSpawn): DesktopTermi
 function windowsOptions(stateDir: string, spawn: DesktopTerminalSpawn): DesktopTerminalOptions {
   return {
     platform: 'win32',
-    appExecutable: 'C:\\Program Files\\DSH 100% Desktop\\AI法律顾问.exe',
+    appExecutable: 'C:\\Program Files\\DSH 100% Desktop\\AI-Legal-Advisor.exe',
     dshBootstrapPath: 'C:\\Program Files\\AI法律顾问\\resources\\app.asar\\lib\\dsh-terminal-bootstrap.js',
     pnpmBinPath: 'C:\\Program Files\\AI法律顾问\\resources\\app.asar\\node_modules\\pnpm\\bin\\pnpm.mjs',
     electronVersion: '43.4.0',
@@ -424,7 +424,7 @@ describe('desktop terminal environment', () => {
     options.profileName = '工作 profile'
     options.profileDir = 'C:\\用户\\工作 profile'
     options.homeDir = 'C:\\用户'
-    options.appExecutable = 'C:\\程序\\AI法律顾问.exe'
+    options.appExecutable = 'C:\\程序\\AI-Legal-Advisor.exe'
     options.dshBootstrapPath = 'C:\\程序\\resources\\app.asar\\lib\\desktop-cli.js'
     options.pnpmBinPath = 'C:\\程序\\resources\\app.asar.unpacked\\node_modules\\pnpm\\bin\\pnpm.mjs'
 
@@ -447,7 +447,7 @@ describe('desktop terminal environment', () => {
     expect(harness.calls[0]?.options.env).toEqual(expect.objectContaining({
       DSH_HOME: 'C:\\用户',
       DSH_DESKTOP_DEFAULT_PROFILE: '工作 profile',
-      DSH_DESKTOP_APP_EXECUTABLE: 'C:\\程序\\AI法律顾问.exe',
+      DSH_DESKTOP_APP_EXECUTABLE: 'C:\\程序\\AI-Legal-Advisor.exe',
       DSH_DESKTOP_DSH_BOOTSTRAP: 'C:\\程序\\resources\\app.asar\\lib\\desktop-cli.js',
       DSH_DESKTOP_ELECTRON_VERSION: '43.4.0',
       DSH_DESKTOP_PNPM_ENTRY: 'C:\\程序\\resources\\app.asar.unpacked\\node_modules\\pnpm\\bin\\pnpm.mjs',

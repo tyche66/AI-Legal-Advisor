@@ -10,7 +10,7 @@ const buildRoot = join(packageRoot, 'build')
 const sourcePath = join(buildRoot, 'tray-icon.svg')
 const source = await readFile(sourcePath, 'utf8')
 
-const BRAND_BLUE = '#4D6BFE'
+const BRAND_BLUE = '#13227A'
 if (!source.includes(`fill="${BRAND_BLUE}"`) || /<style\b/iu.test(source)) {
   throw new Error(`generate-tray-icons: tray-icon.svg must use the fixed brand color ${BRAND_BLUE}`)
 }

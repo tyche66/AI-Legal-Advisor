@@ -364,10 +364,28 @@ describe('Electron compatibility runtime', () => {
     }))
     expect(electron.trays).toHaveLength(1)
     expect(electron.shell.openExternal).toHaveBeenCalledWith(spec.url)
+    const keepAlive = electron.app.on.mock.calls.find(([event]) => event === 'window-all-closed')?.[1]
+    expect(keepAlive).toEqual(expect.any(Function))
 
     await release()
+    expect(electron.app.off).toHaveBeenCalledWith('window-all-closed', keepAlive)
     expect(electron.trays[0]?.destroy).toHaveBeenCalledOnce()
     expect(electron.browserWindows[0]?.destroy).toHaveBeenCalledOnce()
+  })
+
+  it('retries a transient loopback refusal before opening the external browser', async () => {
+    electron.net.fetch
+      .mockRejectedValueOnce(new Error('connect ECONNREFUSED'))
+      .mockResolvedValue({ ok: true, status: 200, arrayBuffer: async () => new ArrayBuffer(0) })
+    const { ElectronDesktopRuntime } = await import('../src/electron-runtime.ts')
+    const runtime = new ElectronDesktopRuntime(async () => {})
+    const release = runtime.schedule({ ...spec, openInBrowser: true })
+
+    await runtime.mountScheduled()
+
+    expect(electron.net.fetch).toHaveBeenCalledTimes(2)
+    expect(electron.shell.openExternal).toHaveBeenCalledWith(spec.url)
+    await release()
   })
 
   it('persists the opposite mode when its tray command is clicked', async () => {

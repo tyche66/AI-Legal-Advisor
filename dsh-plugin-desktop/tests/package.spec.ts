@@ -170,7 +170,7 @@ describe('published package surface', () => {
     ])
     expect(manifest.build?.mac?.icon).toBe('build/app-icon-mac.png')
     expect(manifest.build?.win?.icon).toBe('build/app-icon.png')
-    expect(manifest.build?.win?.executableName).toBe('AI法律顾问')
+    expect(manifest.build?.win?.executableName).toBe('AI-Legal-Advisor')
     expect(manifest.build?.win?.target).toEqual([{
       target: 'nsis',
       arch: ['x64'],
@@ -223,7 +223,7 @@ describe('published package surface', () => {
   it('keeps one fixed brand-blue tray source for generated native assets', () => {
     const source = readFileSync(new URL('build/tray-icon.svg', packageRoot), 'utf8')
 
-    expect(source.match(/#4D6BFE/gu)).toHaveLength(1)
+    expect(source.match(/#13227A/gu)).toHaveLength(1)
     expect(source).not.toMatch(/<style\b|prefers-color-scheme/iu)
     for (const filename of [
       'tray-iconTemplate.png',
@@ -250,7 +250,7 @@ describe('published package surface', () => {
       .update(readFileSync(new URL('build/app-icon.png', packageRoot)))
       .digest('hex')
 
-    expect(digest).toBe('cf41c6beffe2bcad82c897f3dab6b6ae5806033d3263ef893654b963fb134627')
+    expect(digest).toBe('0445101e92d7362167fe8424984e4171c1a46ae7e56bd9bdd52a354b6a0337b0')
   })
 
   it('generates a centered macOS icon with a 100-pixel visual inset', async () => {

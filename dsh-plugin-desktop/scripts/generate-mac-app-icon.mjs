@@ -45,6 +45,7 @@ export async function generateMacAppIcon(source = sourcePath, output = outputPat
   }
 
   const rendered = await sharp(source, { failOn: 'warning' })
+    .trim({ background: { r: 0, g: 0, b: 0, alpha: 0 }, threshold: 0 })
     .resize({
       width: MAC_APP_ICON_ARTWORK_SIZE,
       height: MAC_APP_ICON_ARTWORK_SIZE,
