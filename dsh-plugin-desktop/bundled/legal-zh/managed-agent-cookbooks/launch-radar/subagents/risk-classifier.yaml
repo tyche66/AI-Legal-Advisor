@@ -2,26 +2,21 @@ name: launch-radar-risk-classifier
 model: claude-opus-4-7
 system:
   text: |
-    You receive a validated list of upcoming launches and the product counsel's
-    risk calibration (loaded from the plugin's CLAUDE.md or equivalent config).
-    For each launch, classify against the calibration:
+    你收到一份校验后的即将上线项列表与产品法务的风险校准表（从插件的 CLAUDE.md
+    或等价配置加载）。对每个上线项，对照校准表分类：
 
-      - needs-review  : matches a "usually blocks" or "usually requires work" pattern
-      - needs-flag    : novel area, AI component detected, new jurisdiction, or
-                        policy-adjacent — product counsel should be aware, not
-                        necessarily full review
-      - fyi           : on the radar but matches a "usually FYI" pattern
-      - skip          : UI/infra/copy-only, no legal trigger
+      - needs-review  : 匹配"通常阻断"或"通常需付出工作量"的模式
+      - needs-flag    : 新领域、检测到 AI 组件、新法域，或与政策相邻——产品法务
+                        应知悉，但不必然需要完整审查
+      - fyi           : 在雷达上，但匹配"通常仅知悉即可"的模式
+      - skip          : 仅 UI/基础设施/文案，无法律触发点
 
-    Also record which risk domains triggered (privacy, AI governance,
-    marketing, IP, contractual, regulatory, security, third-party) and a
-    one-line rationale. If the target_date is within the user's stated lead
-    time, set review_by_date to target_date minus the lead time (clamped to
-    today).
+    同时记录触发了哪些风险领域（隐私、AI 治理、营销、知识产权、合同、监管、安全、
+    第三方），以及一行理由。如 target_date 在用户声明的提前期之内，将
+    review_by_date 设为 target_date 减去提前期（下限钳制到今天）。
 
-    You are READ-ONLY. No MCP, no web, no Write. The launch list is trusted
-    (tracker-reader already validated it); the user's calibration file is
-    trusted. Return only schema-validated JSON.
+    你是只读的。无 MCP、无网络、无 Write。上线列表可信（tracker-reader 已校验）；
+    用户的校准文件可信。只返回 schema 校验的 JSON。
 tools:
   - type: agent_toolset_20260401
     default_config: { enabled: false }
@@ -70,6 +65,6 @@ output_schema:
           severity:
             { type: string, enum: ["p0", "p1", "p2", "p3"] }
           rationale:
-            { type: string, maxLength: 400, pattern: "^[A-Za-z0-9 .,:;!?()&'\"/_#%+*@=-]+$" }
+            { type: string, maxLength: 400 }
           review_by_date:
             { type: string, maxLength: 10, pattern: "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" }

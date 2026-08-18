@@ -24,7 +24,7 @@ Rules for every skill, command, and agent in this plugin:
 
 ---
 
-## Who's using this
+## 谁在使用（Who's using this）
 
 **身份（Role）：** [PLACEHOLDER — 法学学生（法考备考） | 法学学生（在有指导的法律诊所实践中） | 其他]
 **如为法学学生（任一类型）：** 学术诚信规范（honor code）和授课教师 AI 政策适用 — 见 cold-start 中的学术语境提醒。请勿将插件输出作为计分作业提交。
@@ -35,9 +35,9 @@ Rules for every skill, command, and agent in this plugin:
 
 ---
 
-## Available integrations
+## 可用集成（Available integrations）
 
-| Integration | Status | Fallback if unavailable |
+| 集成 | 状态 | 不可用时的回退 |
 |---|---|---|
 | Document storage (Google Drive / SharePoint / Box / Dropbox) | [✓ / ✗] | Outputs save to local files in plugin directory |
 
@@ -45,7 +45,7 @@ Rules for every skill, command, and agent in this plugin:
 
 ---
 
-## Outputs
+## 输出（Outputs）
 
 This plugin produces study material, not legal work product. A privilege
 header would misstate the nature of the output, so every study output —
@@ -104,13 +104,13 @@ labeled with the same study-notes header regardless of Role:
 
 ---
 
-## Decision posture on subjective legal calls
+## 主观法律判断的决策姿态（Decision posture on subjective legal calls）
 
 当本插件中的技能面临主观法律判断 — 问题识别是否完整、IRAC 结构是否合理、规则陈述是否准确 — 且答案不确定时，技能**倾向于可恢复的错误**：用行内 `[需审查]` 标记具体行并在该处注明不确定性。不要静默地判断主观阈值未达到；不要发出独立的注意事项段落来讲解原则。`[需审查]` 标记就是机制 — 律师（或教师）缩小清单，AI 不缩小。标记不足是单向门；标记过多是审查者 30 秒内可以关闭的双向门。默认选择双向门。
 
 ---
 
-## Shared guardrails
+## 共享护栏（Shared guardrails）
 
 这些规则适用于本插件中的每个技能。技能可以在其自身指令中重复这些规则，但这是权威陈述 — 当技能文本与此冲突时，以本节为准。
 
@@ -158,7 +158,7 @@ labeled with the same study-notes header regardless of Role:
 
 ---
 
-## Student profile
+## 学生画像（Student profile）
 
 *"关于你"模块。与下方的课程特定内容分开捕获，以便在一个地方轻松更新。*
 
@@ -171,7 +171,7 @@ labeled with the same study-notes header regardless of Role:
 
 ---
 
-## Current classes
+## 本学期课程（Current classes）
 
 | 课程（Class） | 考试形式（Exam format） | 当前进度（Where you are） |
 |---|---|---|
@@ -181,7 +181,7 @@ labeled with the same study-notes header regardless of Role:
 
 ---
 
-## Learning style
+## 学习风格（Learning style）
 
 **追问训练型（drill-me）还是讲解引导型（explain-to-me）：** [PLACEHOLDER]
 
@@ -195,7 +195,7 @@ labeled with the same study-notes header regardless of Role:
 
 ---
 
-## Outline preferences
+## 提纲偏好（Outline preferences）
 
 **格式（Format）：** [PLACEHOLDER — 传统大纲 / 流程图 / 记忆卡式 / 混合式（hybrid）]
 **深度（Depth）：** [PLACEHOLDER — 每个案例 / 仅规则 / 规则+一个示例 / 规则+考试重点案例]
@@ -212,7 +212,7 @@ labeled with the same study-notes header regardless of Role:
 
 ---
 
-## Seed materials（由 cold-start 填充）
+## 种子材料（Seed materials，由 cold-start 填充）
 
 *你在设置时分享的内容。越多越好；下游技能从这里读取。*
 
@@ -232,9 +232,9 @@ labeled with the same study-notes header regardless of Role:
 
 
 
-## Citations unverified
+## 引注未核实（Citations unverified）
 
-**任何引用案例、法条或规则的技能前的预检查。**测试研究连接器是否有响应，而不仅仅是已配置。如果无，记录在审查备注的 **来源（Sources）：** 行中（见 `## Outputs`）— 例如，`未连接 — 引注来自训练知识，将关键引注对照你的案例教材或法考培训服务进行交叉检查`。不要发出独立横幅。每条引注的 `[模型知识 — 需验证]` 标签保留在行内。
+**任何引用案例、法条或规则的技能前的预检查。**测试研究连接器是否有响应，而不仅仅是已配置。如果无，记录在审查备注的 **来源（Sources）：** 行中（见 `## 输出`）— 例如，`未连接 — 引注来自训练知识，将关键引注对照你的案例教材或法考培训服务进行交叉检查`。不要发出独立横幅。每条引注的 `[模型知识 — 需验证]` 标签保留在行内。
 
 ## 搭建支架，而非遮蔽视野（Scaffolding, not blinders）
 
@@ -273,11 +273,11 @@ labeled with the same study-notes header regardless of Role:
 
 ## 法域识别（Jurisdiction recognition）
 
-技能的默认框架、检验标准、法条和程序通常以美国法为中心。当用户、事项或事实涉及非美国法域时，识别它并据此行动 — 不要将美国法学说静默地应用于非美国事实。
+技能的默认框架、检验标准、法条和程序通常以中国大陆法为中心。当用户、事项或事实涉及非中国大陆法域（港澳台或境外）时，识别它并据此行动 — 不要将中国大陆法学说静默地应用于非中国大陆事实。
 
 1. **检测。**检查实践画像的法域覆盖。检查事项事实（适用法律、当事人所在地、产品销售地、受影响人员所在地）。如果其中任何为非美国，美国框架可能不适用。
 2. **评估。**技能是否有适用于该法域的框架？（部分技能有 — ai-governance-legal 有多法域政策来源，commercial-legal 有法域差异步骤。）如果有，使用它。
-3. **如果没有框架：**清楚地说："本分析使用美国框架（[检验标准/法条]）。你在 [法域]，那里的法律不同。在此应用美国法学说会给你一个看起来正确但实际上是错误的答案。"
+3. **如果没有框架：**清楚地说："本分析使用中国大陆法框架（[检验标准/法条]）。你在 [法域]，那里的法律不同。在此应用中国大陆法学说会给你一个看起来正确但实际上是错误的答案。"
 4. **在决策树上提供下一步：**
    - **搜索适用标准。**如果有研究连接器可用，搜索"[法域] [主题] 标准"并报告发现的内容，标记 `[对手来源核实]`。
    - **转介专业人士。**"[法域] 的执业者应做出此判断。这里是要问他们的：[具体问题]。"

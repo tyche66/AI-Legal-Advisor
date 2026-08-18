@@ -1,57 +1,57 @@
-# client-comms/ — per-case communication logs
+# client-comms/ — 逐案沟通记录
 
-One folder per case. Inside, a running `log.md` tracking every client contact — incoming and outgoing, across phone, email, text, letter, and in-person meetings. Produced and appended by `/legal-clinic:client-comms-log`.
+每个案件一个文件夹。文件夹内有一份持续更新的 `log.md`，记录每一次当事人联系——来往双向，涵盖电话、邮件、短信/即时通讯、信函和当面会谈。由 `/legal-clinic:client-comms-log` 生成并追加。
 
 ## Layout
 
 ```
 client-comms/
-├── _README.md                     # this file
+├── _README.md                     # 本文件
 └── [case-id]/
-    └── log.md                     # append-only running log
+    └── log.md                     # 仅追加的持续日志
 ```
 
 ## Slug
 
-Match the case's ID used elsewhere (intake record, `deadlines.yaml` `case_id`). One case = one folder.
+与他处使用的案件 ID 一致（接待记录、`deadlines.yaml` 的 `case_id`）。一个案件 = 一个文件夹。
 
 ## Why this exists
 
-- **Malpractice defense** — "we communicated X on date Y" needs a record.
-- **Continuity at handoff** — the incoming student can read the log and know the client's story without re-interviewing.
-- **Pattern visibility** — five voicemails unreturned over six weeks is a supervision flag.
-- **Client file-retention** — law school clinics have retention obligations; this is part of the complete file.
+- **执业责任抗辩** — "我们于某日就某事进行了沟通"需要有记录。
+- **交接时的连续性** — 接手学生可读取日志，无需重新访谈即可了解当事人情况。
+- **模式可见性** — 六周内五通语音留言无人回复，是一个督导预警信号。
+- **当事人卷宗留存** — 法学院法律诊所负有卷宗留存义务；本记录是完整卷宗的一部分。
 
 ## What the log entries look like
 
 ```markdown
-## [YYYY-MM-DD HH:MM] — [in / out] — [medium]
+## [YYYY-MM-DD HH:MM] — [来/往] — [媒介]
 
-**Who (student):** [name]
-**Who (client side):** [client name, or third-party if call from opposing counsel/etc]
-**Duration / length:** [10 min call | 3-paragraph email | 2-page letter]
+**谁（学生）：** [姓名]
+**谁（当事人一方）：** [当事人姓名，或第三方——如对方律师来电等]
+**时长/篇幅：** [10 分钟通话 | 3 段邮件 | 2 页信函]
 
-**Summary:**
-[What happened, 2-4 sentences. Substance plus tone where it matters.]
+**摘要：**
+[发生了什么，2-4 句。要点，以及在重要处的语气。]
 
-**Action items:**
-- [Item the student owes the client, with deadline]
-- [Item the client owes the student, with expected timing]
+**待办事项：**
+- [学生欠当事人的事项，附期限]
+- [当事人欠学生的事项，附预期时间]
 
-**Follow-up due:** [date if applicable]
+**跟进期限：** [如适用，填日期]
 
-**Notes:**
-[Anything that matters but doesn't fit above — language used, family dynamic observed, client anxiety level]
+**备注：**
+[重要但不属于以上各项的内容——使用的语言、观察到的家庭动态、当事人焦虑程度]
 ```
 
 ## What this folder does NOT contain
 
-- Substantive case analysis (that's in the intake / memo / status files)
-- Drafts of documents (those are in separate case folders)
-- Privileged attorney-only notes (those stay in whatever the clinic uses for internal case notes)
+- 实质性案件分析（那在接待/备忘录/状态文件中）
+- 文书草稿（那在各自的案件文件夹中）
+- 仅限律师的保密笔记（那留在诊所用于内部案件笔记的任何位置）
 
-The comms log is factual record of contact, not legal work product. Keep substance in the log; keep strategy and analysis elsewhere.
+沟通日志是联系的事实记录，而非法律工作成果。要点留在日志中；策略与分析留在他处。
 
 ## Retention
 
-Append-only. Never edit past entries — if something was wrong or needs clarification, add a new entry referencing the old one. The record of what was said and when is part of the client file; rewriting history defeats the purpose.
+仅追加。绝不编辑既往记录——如有错误或需澄清，新增一条引用旧条的记录。所说内容及其时间的记录是当事人卷宗的一部分；改写历史将使本记录失去意义。

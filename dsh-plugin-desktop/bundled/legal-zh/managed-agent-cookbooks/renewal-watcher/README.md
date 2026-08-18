@@ -1,57 +1,57 @@
-# Renewal Watcher — managed-agent template
+# 续约监控（Renewal Watcher）— 托管 Agent 模板
 
-## Overview
+## 概述
 
-Scans the contract repository for upcoming renewal and cancel-by deadlines, cross-references against the team's playbook, flags contracts with upcoming deadlines, playbook deviations, and escalation triggers, and writes an alert report. Same source as the [`renewal-watcher`](../../commercial-legal/agents/renewal-watcher.md) Claude Code agent and the [`renewal-tracker`](../../commercial-legal/skills/renewal-tracker) skill — this directory is the Managed Agent cookbook for `POST /v1/agents`.
+扫描合同库中即将到来的续约与解约（cancel-by）期限，对照团队手册交叉核对，标记临近期限、手册偏离与上报触发的合同，并写出预警报告。与 [`renewal-watcher`](../../commercial-legal/agents/renewal-watcher.md) Claude Code agent 及 [`renewal-tracker`](../../commercial-legal/skills/renewal-tracker) 技能同源——本目录是用于 `POST /v1/agents` 的托管 Agent 部署清单。
 
-This is a **cookbook, not a product.** It is CLM-agnostic — defaults to a contract repository MCP (e签宝/法大大/飞书文档 for PRC practitioners); teams on other CLMs or a shared drive of signed PDFs should swap the MCP endpoint accordingly.
+这是一份**蓝图，而非成品。** 它与合同管理系统（CLM）无关——默认接入合同库 MCP（面向中国大陆从业者的 e签宝/法大大/飞书文档）；使用其他 CLM 或以签署 PDF 存于共享盘的团队应相应替换 MCP 端点。
 
-## ⚠️ Before you deploy
+## ⚠️ 部署前须知
 
-- **Cancel-by dates and renewal terms pulled from contract metadata can be wrong.** CLM metadata drifts from executed documents — amendments get signed and not re-ingested, effective dates vary from signature dates, auto-renewal mechanics are sometimes mis-tagged. Before relying on a computed deadline for a termination or renewal decision, a licensed attorney verifies it against the signed agreement and any amendments.
-- **Escalation routing follows the configured matrix; it does not make the escalation judgment.** A flagged playbook deviation may still be acceptable in context; an unflagged term may still need attention. The matrix is a router, not a reviewer.
-- **Quiet weeks are not clean weeks.** A contract that isn't surfaced may be missing from the CLM, mis-tagged, or past its notice window without the metadata reflecting that. The all-clear footer means the agent ran, not that nothing needs doing.
+- **从合同元数据拉取的解约日期与续约条款可能有误。** CLM 元数据会与已签署文档产生漂移——补充协议签了却未重新摄取、生效日期与签署日期不一、自动续约机制有时被误标。在依赖某个计算出的期限作出解约或续约决定前，持证律师须对照已签署协议及任何补充协议核验。
+- **上报路由遵循配置的矩阵；它不作上报判断。** 被标记的手册偏离在具体情境下仍可能可接受；未被标记的条款仍可能需要关注。矩阵是路由器，而非审查者。
+- **安静的周不等于干净的周。** 未被浮现的合同，可能是从 CLM 缺失、被误标，或已过通知窗口而元数据未反映。全清页脚意味着 agent 已运行，而非无事可做。
 
-## Deploy
+## 部署
 
 ```bash
 export ANTHROPIC_API_KEY=sk-ant-...
-export CLM_MCP_URL=...                # e签宝/法大大/飞书文档 CLM endpoint
+export CLM_MCP_URL=...                # e签宝/法大大/飞书文档 CLM 端点
 export FEISHU_MCP_URL=...
-# Optional — enable in the manifest if your signed agreements live here
+# 可选——如你的签署协议存于此处，请在清单中启用
 export GDRIVE_MCP_URL=...
 ../../scripts/deploy-managed-agent.sh renewal-watcher
 ```
 
-## Steering events
+## Steering 事件
 
-See [`steering-examples.json`](./steering-examples.json). The default Monday-morning sweep uses the first example. The other two cover ad-hoc counterparty-scoped runs and post-signature deviation checks.
+见 [`steering-examples.json`](./steering-examples.json)。默认周一上午扫描使用第一个示例。另两个覆盖临时的对方范围运行与签署后偏离检查。
 
-## Security & handoffs
+## 安全与交接
 
-Contract text, counterparty messages, and CLM comments are **untrusted input.** Three-tier isolation:
+合同文本、对方消息与 CLM 评论是**不可信输入。** 三层隔离：
 
-| Tier | Touches untrusted docs? | Tools | Connectors |
+| 层级 | 接触不可信文档？ | 工具 | 连接器 |
 |---|---|---|---|
-| **`repo-reader`** | **Yes** | `Read`, `Grep` only | CLM (e签宝/法大大/飞书文档, read-only) |
-| `deadline-calculator` / Orchestrator | No | `Read`, `Grep`, `Glob`, `Agent` | None |
-| **`alert-writer`** (Write-holder) | No | `Read`, `Write`, `Edit` | None |
+| **`repo-reader`** | **是** | 仅 `Read`、`Grep` | CLM（e签宝/法大大/飞书文档，只读） |
+| `deadline-calculator` / 编排器 | 否 | `Read`、`Grep`、`Glob`、`Agent` | 无 |
+| **`alert-writer`**（Write 持有者） | 否 | `Read`、`Write`、`Edit` | 无 |
 
-`repo-reader` returns length-capped, schema-validated JSON. `deadline-calculator` is pure computation over that JSON plus the playbook configuration on disk — no MCP, no web. `alert-writer` produces `./out/renewal-alerts-<YYYY-MM-DD>.md` and emits a `handoff_request` for Slack delivery.
+`repo-reader` 返回长度上限、schema 校验的 JSON。`deadline-calculator` 是对该 JSON 加磁盘上手册配置的纯计算——无 MCP、无网络。`alert-writer` 产出 `./out/renewal-alerts-<YYYY-MM-DD>.md` 并为飞书推送发出 `handoff_request`。
 
-**Handoffs:** the orchestrator routes the `handoff_request` from `alert-writer` to a Slack send worker using the channel from the deploying team's House style configuration. The agent never sends Slack messages itself.
+**交接：** 编排器使用部署团队文书风格配置中的频道，将 `alert-writer` 的 `handoff_request` 路由至飞书发送 worker。agent 从不自行发送飞书消息。
 
-**Related agents:** a `handoff_request` can also route into [`deal-debrief`](../../commercial-legal/agents/deal-debrief.md) when a post-signature deviation check is needed, or into [`playbook-monitor`](../../commercial-legal/agents/playbook-monitor.md) when renewal-time deviations accumulate into a pattern. Named agents never call each other directly — routing is the orchestrator's job.
+**关联 agent：** 当需要签署后偏离检查时，`handoff_request` 也可路由至 [`deal-debrief`](../../commercial-legal/agents/deal-debrief.md)；当续约期偏离累积成模式时，可路由至 [`playbook-monitor`](../../commercial-legal/agents/playbook-monitor.md)。具名 agent 从不彼此直接调用——路由是编排器的职责。
 
-**Not guaranteed:** this agent recommends an action; a lawyer decides whether to cancel, renegotiate, or let a renewal run.
+**不予保证：** 本 agent 建议一项行动；由律师决定是解约、重新谈判，还是让续约自然生效。
 
-## Adaptation notes
+## 适配说明
 
-Before you trust the output on your workflow:
+在你信赖其对你工作流的输出之前：
 
-- **Point at your CLM.** Set `CLM_MCP_URL` to your contract management system (e签宝、法大大、飞书文档 or equivalent). If signed agreements live in a shared drive folder, rely on `gdrive` and the repo-reader's fallback search path. If they live in a CLM without a public MCP, wire a custom connector and update the MCP server block.
-- **Set the Slack channel.** The alert-writer emits a `handoff_request` that names a Slack channel. The orchestrator reads that channel from your playbook configuration's **House style → Renewal alerts** field. Set it before the first scheduled run or the handoff will dead-letter.
-- **Tune the lookahead windows.** The deadline-calculator's default tiers are overdue / 30 / 60 / 90 / 180 days. If your renewal cycle is shorter (SaaS order forms under one year) or longer (multi-year enterprise MSAs with 12-month notice windows), adjust the tier thresholds in the deadline-calculator prompt and the corresponding sections in `alert-writer.yaml`.
-- **Adjust the escalation matrix.** The deadline-calculator reads your playbook's escalation matrix to decide whether to set `escalation_needed: true` and who to route to. Confirm the matrix reflects your current approval authority (who signs off on letting an auto-renewal lapse, who signs off on a renegotiation above a dollar threshold) before enabling scheduled runs. The [`escalation-flagger`](../../commercial-legal/skills/escalation-flagger) skill is loaded in `alert-writer` for formatting.
-- **Confirm the work-product header.** The headless append in `agent.yaml` instructs the agent to prepend your playbook's work-product header. Verify the header language with your GC before turning this on.
-- **Cadence.** Weekly is the default. High-volume teams should run daily; small teams can run monthly. The cadence lives in your own workflow engine — the cookbook does not schedule itself.
+- **指向你的 CLM。** 将 `CLM_MCP_URL` 设为你的合同管理系统（e签宝、法大大、飞书文档或等价物）。如签署协议存于共享盘文件夹，则依赖 `gdrive` 与 repo-reader 的回退搜索路径。如它们存于无公开 MCP 的 CLM，请接一个自定义连接器并更新 MCP server 块。
+- **设置飞书频道。** alert-writer 发出的 `handoff_request` 会命名一个飞书频道。编排器从你手册配置的 **House style → Renewal alerts** 字段读取该频道。请在首次排程运行前设置，否则交接会进入死信。
+- **调优前瞻窗口。** deadline-calculator 的默认档为逾期 / 30 / 60 / 90 / 180 天。如你的续约周期更短（一年以内的 SaaS 订购单）或更长（带 12 个月通知窗口的多年期企业主协议 MSA），请在 deadline-calculator 提示词及 `alert-writer.yaml` 的对应段中调整各档阈值。
+- **调整上报矩阵。** deadline-calculator 读取你手册的上报矩阵，据以决定是否设 `escalation_needed: true` 及路由给谁。启用排程运行前，确认矩阵反映你当前的审批权限（谁批准让自动续约失效、谁批准超过金额门槛的重新谈判）。[`escalation-flagger`](../../commercial-legal/skills/escalation-flagger) 技能已加载于 `alert-writer` 用于格式化。
+- **确认工作成果页眉。** `agent.yaml` 中的无界面追加指令让 agent 前置你手册的工作成果页眉。开启前请与你的法务负责人核对页眉措辞。
+- **节奏。** 默认每周。高吞吐团队应每日运行；小团队可每月运行。节奏存于你自己的工作流引擎——cookbook 不自行排程。

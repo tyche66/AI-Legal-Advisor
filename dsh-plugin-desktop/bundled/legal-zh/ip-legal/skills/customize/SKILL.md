@@ -1,103 +1,52 @@
 ---
 name: customize
 description: >
-  Guided customization of your IP practice profile — change one thing without
-  re-running the whole cold-start interview. Adjust risk posture, escalation
-  contacts, portfolio scope, brand protection strategy, enforcement posture,
-  clearance thresholds, OSS review rules, or matter workspace paths. Use when
-  the user says "change my [thing]", "update my profile", "edit my config",
-  or "customize".
-argument-hint: "[section name, or describe what you want to change]"
+  对知识产权实务画像进行引导式定制——修改单项设置，无需重跑完整冷启动访谈。
+  可调整风险偏好、升级联系人、组合范围、品牌保护策略、维权姿态、可注册性/FTO
+  检索门槛、开源审查规则或事项工作区路径。当用户说"修改我的[某项设置]"
+  "更新我的知产画像""编辑配置"或"定制"时使用。
+argument-hint: "[节名称，或描述需要修改的内容]"
 ---
 
 # /customize
 
-## When this runs
+## 何时运行
+用户输入 `/ip-legal:customize`，希望修改知识产权实务画像中的某项——风险偏好、升级联系人、组合范围、维权策略——无需重跑冷启动访谈，也无需手工编辑 YAML。
 
-The user typed `/ip-legal:customize`. They want to change something in their
-practice profile — a risk posture, an escalation contact, a portfolio
-position, an enforcement tactic — without re-running the whole cold-start
-interview and without hand-editing YAML.
+## 需要做什么
 
-## What to do
+1. **读取配置。** 读 `~/.claude/plugins/config/claude-for-legal-zh/ip-legal/CLAUDE.md` 与上级 `company-profile.md`。若不存在或仍含 `[PLACEHOLDER]`：
+   > 您尚未运行设置。请先运行 `/ip-legal:cold-start-interview`——customize 用于调整已有画像。
 
-1. **Read the config.** Read
-   `~/.claude/plugins/config/claude-for-legal-zh/ip-legal/CLAUDE.md`
-   (and `~/.claude/plugins/config/claude-for-legal-zh/company-profile.md` one
-   level up). If the plugin config does not exist or still contains
-   `[PLACEHOLDER]` values, say:
+2. **展示可定制内容概览**（按组，附当前值一句话摘要）：
+   - **公司/主体基本信息**——名称、行业、管辖域、阶段、执业场景 *(跨插件共享，通过 `company-profile.md` 修改)*
+   - **知产实务画像**——在办知产类型（专利/商标/著作权/商业秘密/外观设计）、执业取向（申请代理/交易/维权/企业内部组合管理）
+   - **风险偏好**——保守/中性/激进，及其对可注册性门槛、FTO 意见、侵权警告函升级的含义
+   - **人员**——知产负责人、按类型的外部律所、维权升级链、发明评审
+   - **知产组合**——专利族、商标类别、核心标识、注册国别、监测服务
+   - **品牌保护**——对平台通知删除、域名抢注、戏仿/合理使用的处理姿态
+   - **维权姿态**——何时发警告函 vs 温和沟通 vs 起诉；按侵权类型的升级触发
+   - **可注册性与 FTO**——检索渠道、置信门槛、意见格式
+   - **开源审查**——许可证分级政策、禁用许可证、新依赖审查节奏
+   - **事项工作区**——事项/专利族 ID、案件动态源、发明申报表
+   - **集成**——专利/商标动态系统、飞书/Slack、文档存储状态与回退
 
-   > You haven't run setup yet. Run `/ip-legal:cold-start-interview` first —
-   > customize is for adjusting a profile you already have.
+3. **询问需要修改什么。**
+   > 您想调整什么？选择一节，或用自己的话描述修改内容。
 
-2. **Show the customizable map.** List what's in the profile, grouped, with a
-   one-line summary of the current value:
+4. **执行修改。** 展示当前值→询问新值→说明下游影响→确认后写入配置。举例：
+   - *新增商标监测类别：* "`/portfolio` 的监测报告将纳入第 XX 类，`/infringement-triage` 将相应路由该类发现。"
+   - *维权姿态激进→中性：* "`/cease-desist` 对模糊案件将优先给出温和沟通稿，而非直接发警告函。"
+   - *新增禁用开源许可证：* "`/oss-review` 将对含该许可证的审查判定为阻断，而非仅警告。"
 
-   - **Company / who you are** — name, industry, jurisdictions, stage, practice
-     setting *(shared across all 12 plugins — changes flow through
-     `company-profile.md`)*
-   - **IP practice profile** — which IP types are in scope (patent,
-     trademark, copyright, trade secret, design), practice orientation
-     (prosecution / transactions / enforcement / in-house portfolio)
-   - **Risk posture** — conservative / middle / aggressive, what each means
-     for clearance thresholds, FTO opinions, and cease-and-desist escalation
-   - **People** — IP counsel, outside firms by IP type, enforcement
-     escalation chain, invention committee
-   - **Portfolio** — patent families, trademark classes, key marks, countries
-     of registration, watch services
-   - **Brand protection** — enforcement posture on marketplace takedowns,
-     domain squatters, parody / fair use calls
-   - **Enforcement posture** — when to send C&D vs. cure letter vs. suit;
-     escalation triggers by infringement type
-   - **Clearance and FTO** — search vendors, clearance confidence thresholds,
-     FTO opinion format
-   - **OSS review** — license tier policies, ship-blocker licenses, review
-     cadence for new dependencies
-   - **Workflow** — matter workspaces (matter IDs, family IDs), docket feed,
-     invention intake form
-   - **Integrations** — patent docket system / trademark office connectors /
-     Slack / document storage status, fallbacks
+5. **共享画像修改**（公司名、行业、管辖域、执业场景、阶段）写入 `company-profile.md` 并提示：
+   > 此修改影响所有插件——任何读取管辖域画像的插件现在都会看到 [新值]。
 
-3. **Ask what they want to change.**
+6. **收尾。**
+   > 已完成。下次输出将反映此修改。还需要别的吗？可随时运行 `/ip-legal:customize`。
 
-   > What would you like to adjust? Pick a section, or describe the change in
-   > your own words.
-
-4. **Make the change.** Show the current value, ask for the new value, explain
-   what changes downstream, confirm, write it to the config.
-
-   Examples:
-   - *Adding a new trademark watch class:* "`/portfolio` will include class
-     XX in watch reports and `/infringement-triage` will route class-XX
-     findings accordingly."
-   - *Enforcement posture aggressive → middle:* "`/cease-desist` will offer
-     cure-letter drafts as a first option for ambiguous cases instead of
-     going straight to C&D."
-   - *New ship-blocker OSS license:* "`/oss-review` will fail reviews that
-     include this license rather than warning."
-
-5. **For shared-profile changes** (company name, industry, jurisdictions,
-   practice setting, stage): write to
-   `~/.claude/plugins/config/claude-for-legal-zh/company-profile.md` and note:
-
-   > This change affects all 12 plugins — any plugin that reads your
-   > jurisdiction footprint now sees [new value].
-
-6. **Close.**
-
-   > Done. Your next output will reflect the change. Anything else? You can
-   > run `/ip-legal:customize` anytime.
-
-## Guardrails
-
-- **Never delete a section.** If the user wants to "remove" an IP type from
-  scope, set it to `[Not currently in scope]` and explain what drops out.
-- **Flag internal inconsistency.** If the change would make the profile
-  inconsistent (e.g., trademark out of scope + trademark watch service
-  configured; or aggressive enforcement posture + "all C&Ds go to outside
-  counsel"), flag the tension.
-- **Flag guardrail degradation.** The `[需审查]` flag, source attribution
-  tags, and `[verify]` tags on cited authorities are load-bearing — do not
-  remove. Clearance confidence is load-bearing on `/clearance` output — do
-  not suppress.
-- **One change at a time.** Don't re-ask the whole interview.
+## 备注
+- **绝不删除某节。** 用户想"移除"某知产类型时，设为 `[当前不在范围]` 并说明哪些能力随之失效，而非删除。
+- **提示内部不一致。** 如修改导致画像矛盾（如商标移出范围却仍配置商标监测；或激进维权姿态却"所有警告函均交外部律所"），指出该张力。
+- **提示安全机制退化。** `[需审查]` 标记、来源标签、引用权威上的 `[需核实]` 标签是承重项，不得移除；`/clearance` 输出的置信度是承重项，不得抑制。
+- **一次改一项。** 大范围重建用 `/ip-legal:cold-start-interview --redo`，不要重跑整个访谈。

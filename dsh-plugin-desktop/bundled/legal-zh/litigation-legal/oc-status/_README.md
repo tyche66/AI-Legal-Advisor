@@ -1,27 +1,27 @@
-# oc-status/ — weekly OC status-request drafts
+# oc-status/ — 每周对方律师状态问询草稿
 
-Output from `/litigation-legal:oc-status`. Per-run folders dated by day; each contains one markdown file per matter drafted, plus a `_summary.md`.
+`/litigation-legal:oc-status` 的输出。按天分文件夹；每个文件夹含每个起草事项一份 markdown 文件，外加一份 `_summary.md`。
 
 ## Layout
 
 ```
 oc-status/
-├── _README.md                       # this file
+├── _README.md                       # 本文件
 └── [YYYY-MM-DD]/
-    ├── _summary.md                  # what ran, what was skipped and why
-    ├── [slug-1].md                  # one email draft per matter
+    ├── _summary.md                  # 运行了什么、跳过了什么及原因
+    ├── [slug-1].md                  # 每个事项一份邮件草稿
     ├── [slug-2].md
     └── ...
 ```
 
-When the Gmail MCP is authenticated, Gmail drafts are also created in the user's inbox. The markdown files are the persistent record; Gmail drafts are the action layer.
+当邮件 MCP 已认证时，也会在用户收件箱中创建邮件草稿。markdown 文件是持久记录；邮件草稿是行动层。
 
 ## Cadence
 
-Weekly (Monday AM) when scheduled. Register the schedule with `/litigation-legal:oc-status --setup-schedule`.
+按排程时为每周（周一上午）。用 `/litigation-legal:oc-status --setup-schedule` 注册排程。
 
-Ad-hoc any time with `/litigation-legal:oc-status` (default filter) or `/litigation-legal:oc-status --slug=[slug]` (one matter).
+随时可临时运行 `/litigation-legal:oc-status`（默认过滤器）或 `/litigation-legal:oc-status --slug=[slug]`（单个事项）。
 
 ## Housekeeping
 
-Old dated folders accumulate. Nothing needs them after OC has responded and matter history is updated. Feel free to delete older than 30 days.
+旧的按日文件夹会累积。在对方律师回复且事项历史更新后，便无需保留。超过 30 天的可放心删除。

@@ -1,101 +1,50 @@
 ---
 name: customize
 description: >
-  Guided customization of your privacy practice profile — change one thing
-  without re-running the whole cold-start interview. Adjust risk posture,
-  escalation contacts, DPA playbook, privacy policy commitments, PIA house
-  style, DSAR process, or matter workspace paths. Use when the user says
-  "change my [thing]", "update my profile", "edit my playbook", or
-  "customize".
-argument-hint: "[section name, or describe what you want to change]"
+  对个人信息保护实务画像进行引导式定制——修改单项设置，无需重跑完整冷启动访谈。
+  可调整风险偏好、升级联系人、个人信息处理协议操作手册、隐私政策承诺、影响评估
+  内部风格、主体权利响应流程或事项工作区路径。当用户说"修改我的[某项设置]"
+  "更新我的隐私画像""编辑操作手册"或"定制"时使用。
+argument-hint: "[节名称，或描述需要修改的内容]"
 ---
 
 # /customize
 
-## When this runs
+## 何时运行
+用户输入 `/privacy-legal:customize`，希望修改个人信息保护实务画像中的某项——风险偏好、升级联系人、协议立场、影响评估某节、主体权利响应时限——无需重跑冷启动访谈，也无需手工编辑 YAML。
 
-The user typed `/privacy-legal:customize`. They want to change something in
-their privacy profile — a risk posture, an escalation contact, a DPA
-position, a PIA section, a DSAR timeline — without re-running the whole
-cold-start interview and without hand-editing YAML.
+## 需要做什么
 
-## What to do
+1. **读取配置。** 读 `~/.claude/plugins/config/claude-for-legal-zh/privacy-legal/CLAUDE.md` 与上级 `company-profile.md`。若不存在或仍含 `[PLACEHOLDER]`：
+   > 您尚未运行设置。请先运行 `/privacy-legal:cold-start-interview`——customize 用于调整已有画像。
 
-1. **Read the config.** Read
-   `~/.claude/plugins/config/claude-for-legal-zh/privacy-legal/CLAUDE.md`
-   (and `~/.claude/plugins/config/claude-for-legal-zh/company-profile.md` one
-   level up). If the plugin config does not exist or still contains
-   `[PLACEHOLDER]` values, say:
+2. **展示可定制内容概览**（按组，附当前值一句话摘要）：
+   - **公司/主体基本信息**——名称、行业、管辖域、阶段、执业场景、处理者 vs 受托处理者定位 *(跨插件共享，通过 `company-profile.md` 修改)*
+   - **风险偏好**——保守/中性/激进，及其对受托处理者义务、数据出境、保存期限的含义
+   - **人员**——个人信息保护负责人、隐私团队、技术对接、外部律师、升级链
+   - **个人信息处理协议操作手册**——关于转委托通知、删除、审计、责任、数据出境、标准合同的立场（作为处理者与作为受托处理者两种角色）
+   - **隐私政策承诺**——隐私政策已作出、由 `/policy-monitor` 对照实践监测的承诺
+   - **影响评估内部风格**——章节顺序、风险评分、利益相关方表述、影响评估触发条件（参照个保法第55条）
+   - **主体权利响应流程**——身份验证、法定响应时限、例外适用、模板回应结构（参照个保法第45条）
+   - **事项工作区**——接案路径、事项工作区、政策监测扫描节奏
+   - **集成**——文档存储、隐私工具、飞书/Slack 状态与回退
 
-   > You haven't run setup yet. Run `/privacy-legal:cold-start-interview`
-   > first — customize is for adjusting a profile you already have.
+3. **询问需要修改什么。**
+   > 您想调整什么？选择一节，或用自己的话描述修改内容。
 
-2. **Show the customizable map.** List what's in the profile, grouped, with a
-   one-line summary of the current value:
+4. **执行修改。** 展示当前值→询问新值→说明下游影响→确认后写入配置。举例：
+   - *转委托通知期 30 日→14 日：* "`/review-dpa` 现在会把短于 14 日的标为偏离。既有协议按记录保留不变。"
+   - *操作手册新增一项主体权利例外：* "`/draft-dsar` 会在事实匹配的评估步骤浮出该例外。"
+   - *风险偏好中性→保守：* "我会将更多活动标为需影响评估升级，建议更严格的数据出境条款，并对保存期限更保守。"
 
-   - **Company / who you are** — name, industry, jurisdictions, stage, practice
-     setting, controller vs. processor orientation *(shared across all 12
-     plugins — changes flow through `company-profile.md`)*
-   - **Risk posture** — conservative / middle / aggressive, what each means
-     for processor obligations, cross-border transfers, and retention
-   - **People** — DPO, privacy team, engineering liaison, outside counsel,
-     escalation chain
-   - **DPA playbook** — positions on sub-processor notice, deletion, audit,
-     liability, international transfers, SCCs — as processor and as
-     controller
-   - **Privacy policy commitments** — the commitments your privacy notice
-     has made that `/policy-monitor` watches practice against
-   - **PIA house style** — section order, risk scoring, stakeholder framing,
-     when DPIA triggers apply
-   - **DSAR process** — verification, statutory timelines per regime,
-     exemption application, template response structure
-   - **Workflow** — intake path, matter workspaces, policy-monitor sweep
-     cadence
-   - **Integrations** — document storage / privacy tool / Slack status,
-     fallbacks
+5. **共享画像修改**（公司名、行业、管辖域、执业场景、阶段）写入 `company-profile.md` 并提示：
+   > 此修改影响所有插件——任何读取管辖域画像的插件现在都会看到 [新值]。
 
-3. **Ask what they want to change.**
+6. **收尾。**
+   > 已完成。下次输出将反映此修改。还需要别的吗？可随时运行 `/privacy-legal:customize`。
 
-   > What would you like to adjust? Pick a section, or describe the change in
-   > your own words.
-
-4. **Make the change.** Show the current value, ask for the new value, explain
-   what changes downstream, confirm, write it to the config.
-
-   Examples:
-   - *Sub-processor notice 30 days → 14 days:* "`/review-dpa` will now flag
-     anything shorter than 14 days as a deviation. Existing DPAs stay as
-     logged."
-   - *New DSAR exemption in the playbook:* "`/draft-dsar` will surface this
-     exemption in the assessment step where the facts match."
-   - *Risk posture middle → conservative:* "I'll flag more activities for
-     PIA escalation, recommend stricter SCC clauses, and be more
-     conservative on retention."
-
-5. **For shared-profile changes** (company name, industry, jurisdictions,
-   practice setting, stage): write to
-   `~/.claude/plugins/config/claude-for-legal-zh/company-profile.md` and note:
-
-   > This change affects all 12 plugins — any plugin that reads your
-   > jurisdiction footprint now sees [new value].
-
-6. **Close.**
-
-   > Done. Your next output will reflect the change. Anything else? You can
-   > run `/privacy-legal:customize` anytime.
-
-## Guardrails
-
-- **Never delete a section.** If the user wants to "remove" a regime from
-  scope, offer to mark it `[Not currently in scope]` and explain what
-  flagging drops.
-- **Flag internal inconsistency.** If the change would make the profile
-  inconsistent (e.g., "processor only" + controller playbook positions
-  active; or "no EU nexus" + SCCs in the default template), flag the
-  tension.
-- **Flag guardrail degradation.** The `[需审查]` flag, source attribution
-  tags, `[verify]` tags on cited regulations, and the DPIA-trigger
-  mandatory-check on `/triage` are load-bearing — do not remove. If
-  statutory DSAR timelines are adjusted below the regulatory minimum,
-  refuse and explain why.
-- **One change at a time.** Don't re-ask the whole interview.
+## 备注
+- **绝不删除某节。** 用户想"移除"某监管制度时，设为 `[当前不在范围]` 并说明哪些标记随之失效，而非删除。
+- **提示内部不一致。** 如修改导致画像矛盾（如"仅受托处理者"却激活了处理者立场；或"无跨境要素"却在默认模板中保留数据出境条款），指出该张力。
+- **提示安全机制退化。** `[需审查]` 标记、来源标签、引用法规上的 `[需核实]` 标签、`/triage` 上影响评估触发的强制检查是承重项，不得移除。若把主体权利响应的法定时限调至法定最低限以下，拒绝并说明理由（参照个保法第45条）。
+- **一次改一项。** 大范围重建用 `/privacy-legal:cold-start-interview --redo`，不要重跑整个访谈。

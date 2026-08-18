@@ -43,6 +43,11 @@ DOMAINS = {
         "display": "劳动用工",
         "triggers": "劳动合同解除、劳动关系认定、假期管理、员工调查、规章制度、工资工时、跨省用工、劳动法",
     },
+    "tax-legal": {
+        "codex_name": "chinese-legal-tax",
+        "display": "税务合规与筹划",
+        "triggers": "主体税负分流、增值税法、发票合规、金税四期、三流一致、虚开逃税红线、合法节税、税收优惠、小微与研发加计、核定征收、社保入税、税务筹划红线、税务法",
+    },
     "regulatory-legal": {
         "codex_name": "chinese-legal-regulatory",
         "display": "监管合规",

@@ -1,39 +1,37 @@
-# Privacy Currency Watch
+# 隐私与数据合规最新动态监测（中国法）— Privacy Currency Watch
 
-**Last verified: 2026-05-10.**
+**最后核实：2026-08-18。** 编制：AI 审查草稿，供隐私/数据专家复核。
 
-> **⚠️ Staleness check.** If the last-verified date above is more than 90 days old, treat this file as stale and verify each entry before relying on it. A stale watch list is worse than no watch list — it looks current while being wrong. When a skill reads this file, check the last-verified date first. If stale, say: "The currency watch was last verified [date] — [N] months ago. I'm using it as a checklist of areas to search, not as a source of current status." When you update any entry, also update the last-verified date at the top.
+> **⚠️ 时效声明。** 若上方"最后核实"日期距今超过 90 天，视本文件为**过期**，逐条重新核验后再依赖。过期的监测清单比没有更危险——看起来最新，实则可能已错。技能读取时先看核实日期；若过期，声明："本监测清单最后核实于 [日期]，我把它当作**需检索的领域清单**，而非现行状态来源。"
+>
+> **本领域变化最快，90 天即可能过期。** 任何生效日期、门槛、义务在依赖前必须检索官方来源（网信办、市场监管总局、工信部、全国信息安全标准化技术委员会）确认，并把标签从 `[模型知识 — 需验证]` / `[联网检索 — 需复核]` 升级为 `[法条原文]` 或 `[已验证 — YYYY-MM-DD]`。跨领域动态另见 `../../references/currency-watch-2026.md`。
 
-Privacy law moves. Before relying on an effective date, threshold, or obligation, verify it. These are the areas most likely to have moved since model training:
+个人信息与数据保护规则持续演进。以下是自模型训练以来最可能变动、且直接影响产品与业务合规的领域。
 
-## COPPA (16 CFR Part 312)
+## 一、个保法配套规章与国标 `[模型知识 — 需验证]`
+- 《个人信息保护法》施行后，配套行政法规与推荐性国标（GB/T 系列）持续出台/修订。须核实：个人信息保护合规审计、个人信息处理者义务细则、去标识化/匿名化标准、敏感个人信息处理规范、个人信息安全规范（GB/T 35273）最新版本。
+- **个人信息保护合规审计**：核实强制审计的触发门槛（处理个人信息数量、时间要求）与自查/委托审计的适用。
 
-- **2025 Amendments — compliance deadline April 22, 2026.** Major changes: biometric identifiers and government IDs are now "personal information"; separate verifiable parental consent required for third-party disclosure tied to targeted advertising; written information security program mandatory; indefinite retention prohibited.
-- A plugin that knows pre-2025 COPPA looks competent while being stale. Verify at [FTC COPPA page](https://www.ftc.gov/legal-library/browse/rules/childrens-online-privacy-protection-rule-coppa).
+## 二、数据出境（跨境传输）`[联网检索 — 需复核]`
+- 三条路径：**安全评估、标准合同（个人信息出境标准合同）、保护认证**。须核实各自适用门槛与最新豁免情形。
+- **自贸区负面清单**：部分自贸试验区可制定数据出境负面清单，清单外数据可豁免——具体地区与清单须检索。
+- 门槛数字（触发安全评估的处理人数/出境人数等）**频繁调整，必须以最新规定为准**。
 
-## State privacy laws (comprehensive)
+## 三、重要数据与数据分类分级 `[模型知识 — 需验证]`
+- 《数据安全法》下的数据分类分级、重要数据识别与目录、重要数据出境的额外义务。行业主管部门（如汽车、金融、工业）另有专门目录，须按行业核实。
 
-The map grows every year. As of May 2026, comprehensive privacy laws in force or imminent: CA (CCPA/CPRA), VA, CO, CT, UT, IA, IN, TN, MT, OR, TX, FL, DE, NH, NJ, KY, MD, MN, NE, RI. Check the IAPP state law tracker for current effective dates and the most recent additions.
+## 四、生成式 AI 与深度合成 `[联网检索 — 需复核]`
+- 《生成式人工智能服务管理暂行办法》、《互联网信息服务深度合成管理规定》、**AI 生成合成内容标识**要求（显式/隐式标识）。
+- **算法备案**与具有舆论属性/社会动员能力服务的**安全评估**。
+- 面向公众提供生成式 AI 服务的准入与内容安全义务——须核实最新备案与标识细则。
 
-## Cross-border transfers
+## 五、未成年人保护 `[模型知识 — 需验证]`
+- 《未成年人保护法》网络保护专章、《未成年人网络保护条例》、防沉迷、儿童个人信息网络保护规定（14 周岁以下须监护人单独同意）。
 
-- **EU-US DPF** in force since July 2023. Subject to Schrems III litigation — verify it's still valid before relying.
-- **UK-US Data Bridge** in force since October 2023.
-- **Swiss-US DPF** in force since September 2024.
-- For any transfer that relies on an adequacy decision, check the EU Commission's current adequacy list.
+## 六、特定场景规则 `[模型知识 — 需验证]`
+- 人脸识别（人脸识别技术应用安全管理相关规定）、汽车数据、位置信息、App 违法违规收集使用个人信息认定、SDK 与第三方共享、自动化决策与"大数据杀熟"。
 
-## FTC enforcement trends
+## 使用方式
+技能引用任何个保/数据规则、生效日期、出境门槛时，应注明："本领域变化快——可能已变，请核实 [来源]，见 `references/currency-watch.md`。"检索后更新条目标签与顶部日期。
 
-- **FTC v. Humor Rainbow/OkCupid (March 2026):** Undisclosed sharing of user data with a third party for AI training as a §5 violation. Flag for any DPA or privacy policy review involving AI training pathways.
-- Health data: FTC's expansive reading of the Health Breach Notification Rule (GoodRx, BetterHelp, Premom settlements). Verify current scope.
-- Dark patterns: FTC's pattern of treating confusing consent flows as deceptive. Verify current enforcement posture.
-
-## DSAR response timelines
-
-CCPA: 45 days + 45-day extension with notice. GDPR: 1 month + 2-month extension. Other states vary — verify the specific state's window. The plugin defaults may be out of date for the newest states.
-
-## How to use this file
-
-When a skill cites a privacy rule, effective date, or threshold, it should note: "Privacy law is moving — this may have changed since my training. Verify at [source]. See `references/currency-watch.md`."
-
-**This file goes stale.** Current as of May 2026. Update when you notice drift.
+**本文件会过期。** 现状截至 2026-08-18，注意到漂移即更新。

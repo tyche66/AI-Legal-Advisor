@@ -1,157 +1,122 @@
-# Regulatory Source Catalog
+# 监管信息源目录
 
-A starting catalog for the reg-feed-watcher. The cold-start interview configures
-which sources to watch; this catalog provides the options. URLs verified as of
-**May 2026** — feed URLs change; verify if a source stops returning results.
+reg-feed-watcher 的起始信息源目录。冷启动访谈据此配置要监控的信息源；本目录提供备选项。
 
-**How to read this catalog:**
-- **Format** — what the feed returns: JSON API (structured, best), RSS/Atom (semi-structured, good), HTML page (needs scraping or change detection), Email only (requires Gmail/Outlook MCP).
-- **Tier** — *Primary* means the regulator itself; *Secondary* means a commentator, aggregator, or law firm summarizing primary sources. Always trace a secondary source back to the primary before treating it as authoritative.
-- **Auth** — None means open; Key means a free-but-registered API key; Paid means a subscription.
-- **Notes** — any gotchas (rate limits, feed retirement, discovery steps).
+**重要：中国官方网站改版频繁，多数不提供稳定的 RSS/Atom 或开放 API，需以网页变更检测或邮件订阅方式监控。** 下列链接为起点，配置前请逐一核实有效性 `[需核实]`。法律法规检索优先走已配置的检索连接器（元典 MCP、北大法宝等），官网信息源用于监控"新发布"这一事件。
 
-Sources flagged ⚠️ have been reported by users or regulators as unreliable or
-discontinued — verify before configuring.
+**如何阅读本目录：**
+- **格式** —— 信息源返回什么：JSON/开放接口（结构化，最佳）、RSS/Atom（半结构化，较好）、HTML 页面（需抓取或变更检测）、仅邮件/订阅（需邮箱 MCP 或人工）。中国官方源以 HTML 为主。
+- **层级** —— *原始来源* 指立法/监管机关本身；*二手来源* 指律所、聚合平台或评论者对原始来源的转述。二手来源在被当作依据前，务必回溯至原始来源核实。
+- **认证** —— 无=公开；需订阅=需注册/账号。
+- **备注** —— 注意事项（改版风险、是否需变更检测、检索路径）。
+
+标注 ⚠️ 的信息源无稳定推送渠道，须以变更检测或邮件订阅监控。
 
 ---
 
-## US Federal — Primary
+## 中央立法与法规数据库 — 原始来源
 
-| Source | Feed URL | Format | Covers | Auth | Notes |
+| 信息源 | 链接 | 格式 | 覆盖 | 认证 | 备注 |
 |---|---|---|---|---|---|
-| Federal Register | `https://www.federalregister.gov/api/v1/documents.json` | JSON API | All federal rules, proposed rules, notices, presidential documents | None | Filter by `conditions[agencies][]=<slug>`, `conditions[publication_date][gte]=<YYYY-MM-DD>`, `conditions[type][]=RULE\|PRORULE\|NOTICE\|PRESDOCU`. Well-documented: federalregister.gov/developers/documentation/api/v1. Returns abstract, effective date, comment deadline, citation. **Use this first** — most federal agency documents flow through here. |
-| Regulations.gov | `https://api.regulations.gov/v4/documents` | JSON API | Rulemaking dockets, public comments, supporting documents | Key (free) | Key at open.gsa.gov/api/regulationsgov/. Use for docket-level tracking and pulling comments. |
-| Congress.gov | `https://api.congress.gov/v3/bill` | JSON API | Federal bills, laws, committee reports | Key (free) | Key at api.congress.gov/sign-up. Pre-built RSS also at congress.gov/rss (narrower: bills presented to President, most-viewed, floor). |
-| SEC Press Releases | `https://www.sec.gov/news/pressreleases.rss` | RSS | Rules, enforcement, speeches (press release only) | None | SEC RSS hub: sec.gov/about/rss-feeds. Also has EDGAR structured-filing feeds at sec.gov/structureddata/rss-feeds (updated every 10 min, business hours). Rules-adopted news typically also posts to Federal Register — deduplicate. |
-| FTC Press Releases | `https://www.ftc.gov/feeds/press-release.xml` | RSS | Enforcement, rules, blog posts, settlements | None | Sub-feeds by topic: `ftc.gov/feeds/press-release-consumer-protection.xml`, `press-release-competition.xml`, blog feed `ftc.gov/feeds/business-blog.xml`. Feed hub: ftc.gov/news-events/stay-connected/ftc-rss-feeds. |
-| CFPB Newsroom | `https://www.consumerfinance.gov/about-us/newsroom/` | HTML + RSS option on page | Rules, enforcement, circulars, blog | None | Page offers RSS subscription; the activity log at `consumerfinance.gov/activity-log/` is the broadest single URL. Major rules also in Federal Register. |
-| DOJ Antitrust Division | `https://www.justice.gov/atr/news-feeds` | RSS (multiple feeds) | Press releases, speeches, statements of interest | None | Page lists several Atom/RSS URLs by content type. DOJ main press-release feed is a sibling at justice.gov (navigate from `justice.gov/news`). |
-| DOJ Main | `https://www.justice.gov/news/rss` | RSS | All DOJ press releases across divisions | None | Filter client-side by topic. Civil Division, ATR, Civil Rights Division all feed in. |
-| FCC Daily Digest | Subscribe via `fcc.gov/news-events/rss-feeds-and-email-updates-fcc` | RSS + email | Orders, notices, public notices | None | Also has ECFS docket-specific feeds — pick docket from "Hot Dockets," right-click RSS icon. |
-| HHS OCR | `https://www.hhs.gov/ocr/newsroom/index.html` | HTML | HIPAA enforcement, settlements, guidance | None | No direct RSS located; HHS-wide press-release feed at `hhs.gov/rss` covers OCR. Follow `@HHSOCR` on X for push alerts. |
-| OFAC Recent Actions | `https://ofac.treasury.gov/recent-actions` | HTML + email | Sanctions designations, general licenses, FAQs | None | ⚠️ RSS retired January 31, 2025. Email is the supported push channel — subscribe at service.govdelivery.com/service/multi_subscribe.html?code=USTREAS. Page has a browsable list. |
-| BIS (Commerce) | `https://www.bis.gov/news-updates` | HTML | Export control updates, Entity List, final rules | None | Federal Register notices index at `bis.gov/regulations/federal-register-notices` is the cleanest list. No public RSS located. |
-| DOL News Releases | `https://www.dol.gov/rss/releases.xml` | RSS | Wage/hour, OSHA, OFCCP, EBSA press releases | None | Other feeds indexed at `dol.gov/rss`. |
-| NIST Cybersecurity | `https://www.nist.gov/news-events/cybersecurity/rss.xml` | RSS | Cybersecurity news by topic | None | AI/blog feed: `nist.gov/blogs/cybersecurity-insights/rss.xml`. |
-| CISA Alerts/Advisories | `https://www.cisa.gov/news-events/cybersecurity-advisories` | HTML + RSS option | ICS advisories, alerts | None | Verify feed URL on page; multiple sub-feeds by content type. |
+| 国家法律法规数据库（全国人大） | `https://flk.npc.gov.cn` | HTML + 站内检索 | 宪法、法律、行政法规、地方性法规、司法解释 | 无 | **优先使用。** 法律法规现行有效文本的权威来源。改版后无公开 RSS，配置为变更检测或经检索连接器调取。 |
+| 中国政府网 · 政策 | `https://www.gov.cn/zhengce/` | HTML | 国务院法规、决定、规范性文件、部委政策 | 无 | "最新政策"栏目可做变更检测。行政法规、国务院文件首发地。 |
+| 司法部 · 立法动态 | `https://www.moj.gov.cn` | HTML | 行政法规/规章草案、立法征求意见 | 无 | 征求意见稿的集中发布渠道之一，关注过渡期与生效日。 |
+| 全国人大 · 立法动态/征求意见 | `http://www.npc.gov.cn` | HTML | 法律草案、审议进程、公开征求意见 | 无 | 追踪"已颁布 vs 待定"状态的原始节点。 |
 
 ---
 
-## US State — Primary
+## 主要部委与监管机关 — 原始来源
 
-Coverage is uneven. States with active privacy/consumer protection enforcement
-prioritized here. Many state regulators publish HTML-only pages — if no RSS,
-configure as "manual" or set up web-page change detection.
-
-| Source | Feed URL | Format | Covers | Auth | Notes |
+| 信息源 | 链接 | 格式 | 覆盖 | 认证 | 备注 |
 |---|---|---|---|---|---|
-| California AG | `https://oag.ca.gov/news/feed/729/oag.ca.gov` | RSS | Press releases, CCPA enforcement, multistate actions | None | Main press page: `oag.ca.gov/media/news`. |
-| California Privacy Protection Agency (CPPA) | `https://cppa.ca.gov/announcements/` | HTML | CCPA regulations, enforcement, advisories | None | ⚠️ No direct RSS URL located — primary channel is email list (sign-up on page). Monitor page for changes or use manual entry. |
-| New York AG | `https://ag.ny.gov/press-releases` | HTML | Press releases, multistate AG actions | None | ⚠️ No public RSS located. Monthly archive at `ag.ny.gov/press-releases-for-month` is structured enough to scrape. |
-| Texas AG — News Releases | `https://www2.texasattorneygeneral.gov/feeds/feeds.php?feed=pr` | RSS | Press releases | None | Additional feeds on `www2.texasattorneygeneral.gov/agency/feeds`. |
-| Illinois AG | `https://illinoisattorneygeneral.gov/news-room/` | HTML | Press releases | None | ⚠️ No public RSS located. |
-| Washington AG | `https://www.atg.wa.gov/news` | RSS option on page | Latest news, AGO opinions, consumer alerts | None | Separate feeds for news, opinions, consumer alerts — subscribe from the page. |
-| Colorado AG | `https://coag.gov/press-releases/` | HTML | Press releases, CPA rulemaking | None | ⚠️ No public RSS located. Colorado Privacy Act rulemaking also published via SOS. |
-| Connecticut AG | `https://portal.ct.gov/ag/press-releases/press-releases` | HTML | Press releases | None | ⚠️ No public RSS located. |
-| Virginia AG | `https://www.oag.state.va.us/media-center/news-releases` | HTML | Press releases, VCDPA oversight | None | ⚠️ No public RSS located. |
-| Massachusetts AG | `https://www.mass.gov/orgs/office-of-attorney-general-maura-healey/news` | HTML | Press releases | None | ⚠️ No public RSS located. Mass.gov has per-org newsroom pages. |
-| NYDFS | `https://www.dfs.ny.gov/reports_and_publications/press_releases` | HTML | Enforcement, regulations, cybersecurity (Part 500) | None | ⚠️ No public RSS located. |
+| 国家市场监督管理总局（SAMR） | `https://www.samr.gov.cn` | HTML | 反垄断、反不正当竞争、消费者权益、广告、价格、产品质量 | 无 | 反垄断执法与经营者集中审查公告。行政处罚决定另有公示栏目。 |
+| 国家互联网信息办公室（CAC/网信办） | `https://www.cac.gov.cn` | HTML | 数据安全、个人信息保护、网络安全、算法与生成式AI、数据出境 | 无 | 《个人信息保护法》《数据安全法》配套规定、算法备案、数据出境安全评估的主管发布源。 |
+| 工业和信息化部（MIIT） | `https://www.miit.gov.cn` | HTML | 电信、App 合规、工业数据、无线电、行业准入 | 无 | App 违规通报、电信业务许可、行业规范性文件。 |
+| 国家税务总局 | `https://www.chinatax.gov.cn` | HTML | 税收政策、征管公告、税收优惠 | 无 | 税收政策与优惠变动频繁——引用具体税率/优惠前必须核实现行有效版本。 |
+| 人力资源和社会保障部 | `https://www.mohrss.gov.cn` | HTML | 劳动、社保、最低工资、工伤、劳动仲裁口径 | 无 | 最低工资标准、社保基数由各省另行公布，需并行监控地方源。 |
+| 中国证券监督管理委员会（CSRC） | `http://www.csrc.gov.cn` | HTML | 证券期货、上市公司监管、信息披露、行政处罚 | 无 | 交易所（上交所/深交所/北交所）规则另需单独监控。 |
+| 中国人民银行（PBOC） | `http://www.pbc.gov.cn` | HTML | 货币金融、支付结算、反洗钱、征信 | 无 | 规范性文件与公告。 |
+| 国家金融监督管理总局（NFRA） | `https://www.nfra.gov.cn` | HTML | 银行、保险、消费金融监管、行政处罚 | 无 | 由原银保监会职能整合而来。 |
+| 国家药品监督管理局（NMPA） | `https://www.nmpa.gov.cn` | HTML | 药品、医疗器械、化妆品注册与监管 | 无 | 医疗/生命科学行业必配。 |
+| 商务部（MOFCOM） | `http://www.mofcom.gov.cn` | HTML | 外商投资、对外贸易、经营者集中申报（与SAMR衔接） | 无 | 外资准入负面清单、贸易管制。 |
+| 生态环境部 | `https://www.mee.gov.cn` | HTML | 环保标准、排污许可、环境处罚 | 无 | 制造/能源类企业必配。 |
+| 国家发展和改革委员会（NDRC） | `https://www.ndrc.gov.cn` | HTML | 产业政策、价格、市场准入、信用监管 | 无 | 市场准入负面清单。 |
+| 国家知识产权局（CNIPA） | `https://www.cnipa.gov.cn` | HTML | 专利、商标、地理标志 | 无 | 与 ip-legal 插件配合。 |
+| 海关总署 | `http://www.customs.gov.cn` | HTML | 进出口、关税、原产地、跨境合规 | 无 | 跨境业务必配。 |
 
 ---
 
-## EU / UK — Primary
+## 司法与案例 — 原始来源
 
-| Source | Feed URL | Format | Covers | Auth | Notes |
+| 信息源 | 链接 | 格式 | 覆盖 | 认证 | 备注 |
 |---|---|---|---|---|---|
-| EDPB News | `https://www.edpb.europa.eu/news/news_en` | RSS (2 feeds offered) | Guidelines, opinions, enforcement summaries, binding decisions | None | Feeds advertised at `edpb.europa.eu/sme-data-protection-guide/faq-frequently-asked-questions/answer/how-can-i-keep-edpbs-work_en`. |
-| European Commission Press Corner | `https://ec.europa.eu/commission/presscorner/` | RSS + email | Press releases, speeches, Q&As — DSA, DMA, AI Act implementing acts | None | Subscribe at `ec.europa.eu/commission/presscorner/login/en`. Narrower sub-feeds by topic. |
-| EUR-Lex (OJ) | `https://eur-lex.europa.eu/` | Webservice + RSS by search | Official Journal publications | Key (free, webservice) | Use for tracking final-form regulations and directives. |
-| ICO (UK) | `https://ico.org.uk/global/rss-feeds/` | RSS (multiple feeds) | Enforcement, guidance, news, consultations | None | Separate feeds for news, enforcement actions, and blog. Enforcement list also at `ico.org.uk/action-weve-taken/enforcement/`. |
-| CNIL (France) | `https://www.cnil.fr/en/rss.xml` (verify — feeder.co indexes this) | RSS | French DPA decisions, guidance, sanctions | None | English-language news at `cnil.fr/en/news`. Third-party indexes suggest feed exists; verify before relying. |
-| DPC (Ireland) | `https://www.dataprotection.ie/en/news-media/latest-news` | HTML | Inquiries, decisions, guidance — lead DPA for most US tech firms | None | ⚠️ No public RSS located. Critical source for GDPR enforcement against US companies; worth a change-detection or email subscription. |
-| BfDI (Germany) | `https://www.bfdi.bund.de/EN/Home/home_node.html` | HTML | Federal German DPA | None | ⚠️ No public RSS located. |
-| ENISA | — | Email | Cybersecurity, NIS2 guidance | None | ⚠️ **RSS feeds discontinued** with new website. Email alerts only until new subscription mechanism launches (`enisa.europa.eu/rss-feeds-discontinued-new-subscription-mechanism-coming-soon`). |
-| FCA (UK) | `https://www.fca.org.uk/news/rss.xml` (verify) | RSS + email | UK financial services rules, enforcement, warnings | None | Email alerts at `fca.org.uk/newsletters-emails-sign-up` are the supported channel; RSS historically offered. |
-| EDPS | `https://www.edps.europa.eu/press-publications/press-news_en` | HTML + RSS option | EU-institutional DPA | None | |
+| 最高人民法院 | `https://www.court.gov.cn` | HTML | 司法解释、指导性案例、审判政策 | 无 | 司法解释是裁判规则的关键来源，与法律并列监控。 |
+| 人民法院案例库 | `https://rmfyalk.court.gov.cn` | HTML + 检索 | 入库参考案例（裁判要旨） | 需注册 | 引用裁判倾向时优先于普通裁判文书。 |
+| 中国裁判文书网 | `https://wenshu.court.gov.cn` | HTML + 检索 | 各级法院裁判文书 | 无/部分受限 | 近年公开范围有调整，检索可用性以实际为准 `[需核实]`。 |
+| 最高人民检察院 | `https://www.spp.gov.cn` | HTML | 检察政策、指导性案例、刑事合规 | 无 | 涉刑事合规、企业合规不起诉事项关注。 |
 
 ---
 
-## International
+## 国家标准与行业规范 — 原始来源
 
-| Source | Feed URL | Format | Covers | Auth | Notes |
+| 信息源 | 链接 | 格式 | 覆盖 | 认证 | 备注 |
 |---|---|---|---|---|---|
-| OECD AI Policy Observatory | `https://oecd.ai/en/` | HTML + newsletter | National AI policies, OECD guidance | None | Best for tracking non-EU, non-US AI rulemaking. |
-| Council of Europe | `https://www.coe.int/en/web/portal/news` | RSS + HTML | CoE treaties including AI Framework Convention | None | |
-| UK Parliament Bills | `https://bills.parliament.uk/rss/publicbills.rss` (verify) | RSS | UK bills | None | |
+| 全国标准信息公共服务平台 | `https://std.samr.gov.cn` | HTML + 检索 | 强制性/推荐性国家标准 | 无 | 强制性国标（GB）具有法律约束力，须与法规同等对待。 |
+| 国家标准全文公开系统 | `https://openstd.samr.gov.cn` | HTML | 国标全文 | 无 | 强制性国标全文免费公开。 |
+| 全国网络安全标准化技术委员会（TC260） | `https://www.tc260.org.cn` | HTML | 网络安全/数据/个人信息国家标准与实践指南 | 无 | 数据合规实务的重要参照（如个人信息安全规范、数据出境认证等）。 |
 
 ---
 
-## Secondary / Aggregators
+## 地方与行业自律 — 原始来源
 
-**Treat content from these sources as leads, not authority.** A secondary
-source saying "the FTC issued X" means: find X on ftc.gov, then rely on it.
-Tag items pulled from these feeds as `[secondary source]` in the digest.
-
-| Source | Feed URL | Format | Covers | Auth | Notes |
+| 信息源 | 链接 | 格式 | 覆盖 | 认证 | 备注 |
 |---|---|---|---|---|---|
-| IAPP Daily Dashboard | `https://iapp.org/rss/daily-dashboard/` | RSS | Global privacy + AI governance news, curated | None (some items paywalled) | Highest signal-to-noise for privacy teams. |
-| Future of Privacy Forum | `https://fpf.org/feed/` | RSS (WordPress) | Privacy commentary, state law trackers, reports | None | |
-| Hogan Lovells | `https://www.hoganlovells.com/en/rss` | RSS (multiple by practice) | Client alerts, engagements | None | Offers per-practice sub-feeds. |
-| Covington & Burling | `https://www.cov.com/` (verify per blog) | RSS by blog | InsidePrivacy, Global Policy Watch, Inside Global Tech, Inside Tech Media | None | Each topic blog is a WordPress-style site with a standard `/feed` endpoint. |
-| WilmerHale | `https://www.wilmerhale.com/` | Email / HTML | Client alerts | None | ⚠️ No consolidated public RSS located; email subscription is primary. |
-| Wilson Sonsini | `https://www.wsgr.com/` | Email / HTML | Client alerts | None | ⚠️ No consolidated public RSS located. |
-| Lexology | `https://www.lexology.com/account/rss` | RSS (customizable by topic/jurisdiction) | Aggregated firm alerts | Account (free) | Powerful: build topic+jurisdiction feeds. Owned by LBR. |
-| JD Supra | `https://www.jdsupra.com/legal-news/rss-law-feeds.aspx` | RSS (multiple by topic) | Aggregated firm alerts | None | Broader and noisier than Lexology. |
-| Artificial Lawyer | `https://www.artificiallawyer.com/feed/` | RSS | Legal tech / AI regulation news | None | |
-| LawSites (Bob Ambrogi) | `https://www.lawsitesblog.com/feed` | RSS | Legal tech, also covers regulation of legal AI | None | |
+| 地方人大/政府法规规章 | 各省市人大、政府官网及"地方政府规章库" | HTML | 地方性法规、地方政府规章、规范性文件 | 无 | 劳动、环保、价格、行业准入地域差异大——按经营地配置。 |
+| 地方高院审判指引 | 各省高级人民法院官网 | HTML | 地方裁判口径、审判纪要 | 无 | 地方司法口径差异显著，重点管辖地必配。 |
+| 行业协会/自律组织 | 如中国互联网协会、中国支付清算协会、中国证券业协会等 | HTML | 行业自律规则、公约、通报 | 无 | 按所处行业选配。 |
 
 ---
 
-## Sources without feeds (need web monitoring or email)
+## 二手 / 聚合来源
 
-Some important sources don't publish feeds, or their RSS has been retired.
-Monitoring them requires either:
-- Web-page change detection (not currently built in)
-- Email newsletter forwarding (requires Gmail/Outlook MCP integration)
-- Manual checking via the reg-feed-watcher "manual entry" path
+**将这些来源的内容视为线索，而非依据。** 二手来源称"某部委发布了X"意味着：先在原始官网找到X，再据以行事。摘要中从这些源提取的条目标记 `[二手——对照原始来源核实]`。
 
-| Source | URL | Notes |
-|---|---|---|
-| OFAC Recent Actions | `https://ofac.treasury.gov/recent-actions` | RSS retired Jan 2025; email is supported channel |
-| ENISA | `https://www.enisa.europa.eu/news` | RSS discontinued; new subscription mechanism pending |
-| DPC Ireland | `https://www.dataprotection.ie/en/news-media/latest-news` | No RSS; critical for GDPR enforcement |
-| CPPA | `https://cppa.ca.gov/announcements/` | Email list only; no RSS located |
-| Most state AGs (NY, IL, CO, CT, VA, MA) | See state table above | Press-release HTML pages; no RSS |
-| NYDFS | `https://www.dfs.ny.gov/reports_and_publications/press_releases` | HTML only |
-| BIS (Commerce) | `https://www.bis.gov/news-updates` | HTML only; use Federal Register API for rule-level events |
-| HHS OCR standalone | `https://www.hhs.gov/ocr/newsroom/` | Included in HHS-wide RSS but no OCR-specific feed |
-| BfDI (Germany) | `https://www.bfdi.bund.de/EN/` | HTML only |
-| WilmerHale, Wilson Sonsini | Firm sites | Email subscription is the primary channel |
+| 信息源 | 说明 | 格式 | 认证 |
+|---|---|---|---|
+| 元典 / 北大法宝 / 威科先行 | 法律法规、司法解释、案例的结构化数据库 | 检索连接器 / 网页 | 需订阅 |
+| 主流律所快讯（中伦、金杜、君合、方达、通商等） | 客户快讯、监管动态解读 | 网页 / 邮件订阅 | 无（部分需订阅） |
+| 无讼、法信、Alpha 等实务平台 | 案例检索、实务文章 | 网页 | 部分需订阅 |
 
 ---
 
-## Suggested starter packs
+## 无推送渠道的来源（需网页监控或邮件）
 
-**Privacy-focused in-house team (US + EU):**
-Federal Register (FTC, HHS/OCR agency filters), FTC RSS, CFPB, CA AG, CPPA (email),
-NY AG (page watch), EDPB, ICO, CNIL, DPC Ireland (page watch), IAPP, FPF.
+中国多数官方源无稳定 RSS。监控方式：
+- 网页变更检测（当前未内置，可借助第三方变更监测工具）
+- 邮件/公众号订阅转发（需邮箱 MCP 集成）
+- reg-feed-watcher 的"人工录入"路径
 
-**Commercial / regulatory in-house team (broad):**
-Federal Register (all agencies of interest), SEC RSS, CFPB, DOJ Antitrust, DOJ
-Main, FCC, DOL, BIS page watch, OFAC email, European Commission Press Corner,
-FCA. Add IAPP + Lexology for aggregator coverage.
-
-**AI governance team:**
-Federal Register (filter: FTC, HHS, NIST, Commerce), NIST Cybersecurity RSS, EU
-Commission Press Corner, EDPB, OECD AI Observatory, Council of Europe, IAPP, FPF,
-Artificial Lawyer, CA AG (ADMT), CPPA.
+绝大多数部委官网、地方源、司法源均属此类——默认以变更检测或人工录入方式配置。
 
 ---
 
-## Adding a source
+## 建议起步组合
 
-To add a source that isn't in this catalog:
-1. Find a feed URL (try `/rss`, `/feed`, `/news.rss`, or view page source for `<link rel="alternate" type="application/rss+xml">`).
-2. Validate it returns XML/JSON in a browser or with `curl`.
-3. Add to the user's regulatory-legal CLAUDE.md under **Feed configuration → Direct regulator feeds**, with: source name, URL, format, what it covers.
-4. If no feed exists, add it under **Sources without feeds** and decide: manual, email, or change detection.
+**综合企业法务团队（广覆盖）：**
+国家法律法规数据库、中国政府网政策、SAMR、税务总局、人社部（+经营地地方源）、最高法（司法解释）、行业主管部委按业务选配。
+
+**数据/AI 合规团队：**
+网信办（CAC）、工信部、TC260、全国标准平台、最高法，辅以元典/北大法宝与律所快讯聚合。
+
+**上市公司/金融团队：**
+证监会、交易所规则、人民银行、金融监管总局、SAMR（反垄断/经营者集中），辅以律所快讯。
+
+---
+
+## 新增信息源
+
+要新增本目录未收录的信息源：
+1. 找到可监控的入口（官网"最新/通知公告/政策法规"栏目页，或站内检索结果页）。
+2. 确认页面可稳定访问、内容可识别更新（有无 RSS、能否做变更检测）。
+3. 添加至用户的 regulatory-legal CLAUDE.md 的 **信息源配置 → 部委网站直接信息源**，注明：来源名称、链接、格式、覆盖范围。
+4. 如无推送渠道，归入 **无推送渠道的来源**，并决定：人工、邮件或变更检测。

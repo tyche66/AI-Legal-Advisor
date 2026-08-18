@@ -24,7 +24,7 @@ Rules for every skill, command, and agent in this plugin:
 
 ---
 
-## Who's using this
+## 谁在使用（Who's using this）
 
 **身份（Role）：** [PLACEHOLDER — 律师/法律专业人士 | 有律师协助的非律师 | 无律师协助的非律师]
 **律师联系人（Attorney contact）：** [PLACEHOLDER — 姓名 / 团队 / 外部律所 / 不适用]
@@ -33,9 +33,9 @@ Rules for every skill, command, and agent in this plugin:
 
 ---
 
-## Available integrations
+## 可用集成（Available integrations）
 
-| Integration | Status | Fallback if unavailable |
+| 集成 | 状态 | 不可用时的回退 |
 |---|---|---|
 | Slack | [✓ / ✗] | 新技能和更新通知在下次 `/legal-builder-hub:registry-browser` 或 `/legal-builder-hub:auto-updater` 时呈现，而非主动推送 |
 
@@ -43,17 +43,17 @@ Rules for every skill, command, and agent in this plugin:
 
 ---
 
-## Outputs
+## 输出（Outputs）
 
 本插件不产出法律工作成果 — 它发现、安装和
 质量评估技能。已安装的技能按各自
-`## Outputs` 节前置自己的头。中心不覆盖它们。
+`## 输出` 节前置自己的头。中心不覆盖它们。
 
 **已安装技能的质量评估相关法域检查。**社区技能通常主张美国工作成果头（`PRIVILEGED & CONFIDENTIAL — ATTORNEY WORK PRODUCT — PREPARED AT THE DIRECTION OF COUNSEL`）。"Attorney work product" 是美国法学说（FRCP 26(b)(3)），在大多数其他法律体系中不存在 — 在文件上主张它并不能创造它。进行质量评估时，标记任何主张美国 work-product 保护但无法域条件说明的头 — 虚假的保护确信比不标注更糟糕。建议技能添加法域分支，保留 `PRIVILEGED & CONFIDENTIAL`（在各处有意义），并在实践画像为非美国法域时代替使用 `CONFIDENTIAL — INTERNAL LEGAL ANALYSIS — NOT A SUBSTITUTE FOR EXTERNAL COUNSEL ADVICE`。
 
 **对于使用中国法的实践者：** 中国法律体系下，《律师法》第 38 条和《律师执业管理办法》规定了律师保密义务。社区技能不应简单套用美国 work-product 概念，而应依据中国法的保密框架进行标记。
 
-**非律师输出模式。**当实践画像表示用户不是律师时，中心面向用户的输出 — `related-skills-surfacer` 报告、`registry-browser` 结果、`skills-qa` 结论、安装/更新确认 — 为不能解读法律缩写的读者构建：(1) 律师简报（指导律师需要了解的建议安装、更新或技能）放在顶部而非被埋没；(2) 每项法律标记附一行通俗易懂的解释（括号内）；(3) 每条法条引用附通俗易懂的主题行。中心还将身份（Role）信号传递给已安装的技能 — 如果某技能的 `## Outputs` 节有非律师模式，中心确保身份在技能期望的位置可读。
+**非律师输出模式。**当实践画像表示用户不是律师时，中心面向用户的输出 — `related-skills-surfacer` 报告、`registry-browser` 结果、`skills-qa` 结论、安装/更新确认 — 为不能解读法律缩写的读者构建：(1) 律师简报（指导律师需要了解的建议安装、更新或技能）放在顶部而非被埋没；(2) 每项法律标记附一行通俗易懂的解释（括号内）；(3) 每条法条引用附通俗易懂的主题行。中心还将身份（Role）信号传递给已安装的技能 — 如果某技能的 `## 输出` 节有非律师模式，中心确保身份在技能期望的位置可读。
 
 ---
 
@@ -74,13 +74,13 @@ Rules for every skill, command, and agent in this plugin:
 
 ---
 
-## Decision posture on subjective legal calls
+## 主观法律判断的决策姿态（Decision posture on subjective legal calls）
 
 中心本身不做主观法律判断，但它安装的技能做。本插件对社区技能运行的质量检查（`/legal-builder-hub:skills-qa`）对技能是否遵循本家姿态评分：**在主观法律判断上倾向于可恢复的错误** — 用行内 `[需审查]` 标记具体行，不发独立的注意事项段落，不静默判断主观阈值未达到。基于自身对主观检验（主导目的、重要性、合理预期、豁免适用）的评估而决定不标记、不标明、不升级的技能在信任表面检查中质量评估不通过。`[需审查]` 标记就是机制 — 律师缩小清单，AI 不缩小。如果已安装技能偏离此姿态，自动更新器在应用前呈现差异。
 
 ---
 
-## Shared guardrails
+## 共享护栏（Shared guardrails）
 
 这些规则适用于本插件中的每个技能。技能可以在其自身指令中重复这些规则，但这是权威陈述 — 当技能文本与此冲突时，以本节为准。
 
@@ -105,7 +105,7 @@ Rules for every skill, command, and agent in this plugin:
 
 ---
 
-## Your practice profile
+## 你的实践画像（Your practice profile）
 
 **实践类型（Practice type）：** [PLACEHOLDER — 法务/商业（in-house commercial）、产品律师（product counsel）、律所诉讼（law firm lit）等]
 **行业（Industry）：** [PLACEHOLDER] *(来自 company-profile.md — 在彼处编辑以跨所有插件更改)*
@@ -114,7 +114,7 @@ Rules for every skill, command, and agent in this plugin:
 
 ---
 
-## Installed starter pack
+## 已安装的起步包（Installed starter pack）
 
 *在 cold-start 时基于实践画像安装的技能。*
 
@@ -124,7 +124,7 @@ Rules for every skill, command, and agent in this plugin:
 
 ---
 
-## Watched registries
+## 监控的登记源（Watched registries）
 
 | Registry | URL | Last synced | Update preference |
 |---|---|---|---|
@@ -133,7 +133,7 @@ Rules for every skill, command, and agent in this plugin:
 
 ---
 
-## Update preferences
+## 更新偏好（Update preferences）
 
 **更新偏好（Update preference）：** [PLACEHOLDER — notify（默认，每次更新需批准）/ manual]
 **新技能通知（New skill notifications）：** [PLACEHOLDER — all / matching practice profile / none]
@@ -159,7 +159,7 @@ Rules for every skill, command, and agent in this plugin:
 
 ## 法域识别（Jurisdiction recognition）
 
-技能的默认框架、检验标准、法条和程序通常以美国法为中心。当用户、事项或事实涉及非美国法域时，识别它并据此行动。
+技能的默认框架、检验标准、法条和程序通常以中国大陆法为中心。当用户、事项或事实涉及非中国大陆法域（港澳台或境外）时，识别它并据此行动。
 
 ## 检索内容信任（Retrieved-content trust）
 

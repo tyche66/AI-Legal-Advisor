@@ -1,37 +1,35 @@
-# Product Legal Currency Watch
+# 产品法务最新动态监测（中国法）— Product Legal Currency Watch
 
-**Last verified: 2026-05-10.**
+**最后核实：2026-08-18。** 编制：AI 审查草稿，供产品/合规专家复核。
 
-> **⚠️ Staleness check.** If the last-verified date above is more than 90 days old, treat this file as stale and verify each entry before relying on it. A stale watch list is worse than no watch list — it looks current while being wrong. When a skill reads this file, check the last-verified date first. If stale, say: "The currency watch was last verified [date] — [N] months ago. I'm using it as a checklist of areas to search, not as a source of current status." When you update any entry, also update the last-verified date at the top.
+> **⚠️ 时效声明。** 若上方"最后核实"日期距今超过 90 天，视本文件为**过期**，逐条重新核验后再依赖。过期的监测清单比没有更危险——看起来最新，实则可能已错。技能读取时先看核实日期；若过期，声明："本监测清单最后核实于 [日期]，我把它当作**需检索的领域清单**，而非现行状态来源。"
+>
+> **产品法务领域执法变化快。** 依赖任何生效日期、处罚幅度、执法口径前，必须检索官方来源（市场监管总局、网信办、工信部、广电总局等）确认，并把标签从 `[模型知识 — 需验证]` / `[联网检索 — 需复核]` 升级为 `[法条原文]` 或 `[已验证 — YYYY-MM-DD]`。跨领域动态另见 `../../references/currency-watch-2026.md`。
 
-Product/consumer protection law moves. These are the areas most likely to have changed since model training:
+产品上线、消费者保护与广告合规规则持续演进。以下是最可能变动、且直接影响产品能否上线/文案能否发布的领域。
 
-## Children's online safety
+## 一、广告与营销宣传 `[模型知识 — 需验证]`
+- 《广告法》**绝对化用语**（"国家级/最高级/最佳"等）禁令与例外、虚假广告、违法广告罚则（罚款按广告费用倍数计，须核实）。
+- 医疗、药品、保健食品、金融、教育培训、房地产等**特殊行业广告**的专门限制与审查。
+- 《反不正当竞争法》**虚假宣传、刷单炒信、商业诋毁**——注意反法近期修订动态 `[联网检索 — 需复核]`。
+- **明码标价与价格欺诈**（价格法、明码标价规定）、"划线价/原价"合规。
 
-- **COPPA 2025 amendments — compliance deadline April 22, 2026.** Biometric identifiers and government IDs now "personal information"; separate consent for third-party disclosure tied to targeted advertising; information security program mandatory; indefinite retention prohibited.
-- **State AADCs:** UK AADC in force. California AADC (AB 2273) enjoined — verify current status of *NetChoice v. Bonta*. Multiple other state AADC-style laws pending or in force.
-- **KOSA / federal children's online safety bills:** check status — changes frequently.
+## 二、消费者权益保护 `[联网检索 — 需复核]`
+- 《消费者权益保护法》及 **2024《消费者权益保护法实施条例》**（须核实生效后新增规则：自动续费显著提示、预付式消费、七日无理由退货例外、"三包"等）。
+- 直播电商、平台经营者责任、刷好评/删差评、格式条款（霸王条款）规制。
 
-## Platform and intermediary liability
+## 三、生成式 AI 与内容 `[联网检索 — 需复核]`
+- 生成式 AI 服务管理办法、深度合成规定、**AI 生成合成内容标识**、算法备案与安全评估（详见隐私域 `privacy-legal/references/currency-watch.md`）。
+- 产品若含 AI 功能：上线前核实是否需算法备案、内容安全评估、生成内容标识。
 
-- **DSA enforcement ramping:** €120M X fine (Dec 2025); TikTok and adult-platform preliminary findings (April 2026); formal Snapchat investigation (March 2026). If the product serves EU users, DSA obligations are actively enforced.
-- **Section 230 status:** SCOTUS has taken cases; check the latest. Any reliance on §230 for AI-generated content is contested.
+## 四、平台与新业态 `[模型知识 — 需验证]`
+- 《电子商务法》平台义务、《网络交易监督管理办法》、平台"二选一"与反垄断、算法推荐管理规定（"一键关闭"个性化推荐）。
+- 未成年人：防沉迷、青少年模式、儿童个人信息单独同意（见隐私域监测）。
 
-## FTC §5 and dark patterns
+## 五、行业准入与资质 `[模型知识 — 需验证]`
+- 产品/服务上线前的**行业许可与备案**：ICP 备案/许可、网络文化经营、网络出版、食品经营、医疗器械、金融业务牌照等，按业务类型核实。
 
-- **FTC v. Humor Rainbow/OkCupid (March 2026):** undisclosed training-data sharing as a §5 violation.
-- Dark patterns / negative option: FTC "click to cancel" rule — verify current status.
-- Endorsement guides updated 2023. Influencer disclosure, fake reviews, testimonials.
-- **AMG Capital (2021):** §13(b) does NOT authorize monetary relief — FTC must use §19 or administrative process. Changes the settlement calculus.
+## 使用方式
+上线审查引用任何规则、生效日期、执法口径时，注明："本领域执法变化快——请核实 [来源]，见 `references/currency-watch.md`。"检索后更新条目标签与顶部日期。
 
-## AI transparency and synthetic content
-
-- EU AI Act transparency obligations: now on a shortened timeline (grace period → 3 months per Digital Omnibus, deadline Dec 2, 2026).
-- US state AI disclosure laws: NE LB 525 (chatbot disclosure to minors), CA AB 2013 (training data disclosure), and others.
-- FTC guidance on AI-generated content and deceptive claims. Verify current.
-
-## How to use this file
-
-When a launch review cites a rule, effective date, or enforcement posture, it should note: "This area moves — verify at [source]. See `references/currency-watch.md`."
-
-**This file goes stale.** Current as of May 2026. Update when you notice drift.
+**本文件会过期。** 现状截至 2026-08-18，注意到漂移即更新。

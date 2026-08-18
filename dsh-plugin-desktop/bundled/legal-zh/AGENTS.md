@@ -11,6 +11,7 @@ Codex skills 位于 `.agents/skills/chinese-legal-*`。当用户提出中国法�
 - `chinese-legal-product`：产品上线、营销文案、广告法、业务法务
 - `chinese-legal-corporate`：公司法、并购尽调、交割、决议、会议纪要
 - `chinese-legal-employment`：劳动用工、解除、假期、调查、规章制度
+- `chinese-legal-tax`：税务合规与筹划、主体税负分流、增值税法、发票金税四期、虚开逃税红线、合法节税、税收优惠
 - `chinese-legal-regulatory`：监管动态、政策差异、合规差距、征求意见稿
 - `chinese-legal-ai-governance`：AI 应用、算法安全、科技伦理、AI 供应商
 - `chinese-legal-litigation`：诉讼仲裁、案件管理、证据、大事记、文书

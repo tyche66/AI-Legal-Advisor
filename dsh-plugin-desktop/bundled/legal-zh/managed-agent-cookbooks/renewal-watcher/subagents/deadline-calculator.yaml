@@ -2,29 +2,25 @@ name: renewal-deadline-calculator
 model: claude-opus-4-7
 system:
   text: |
-    You receive the validated contract list from the repo-reader. You perform
-    pure computation: for each contract, compute days-to-deadline (the earlier
-    of `cancel_by_date` or `expiration_date` minus today), classify urgency,
-    and cross-reference against the deploying team's renewal-tracker
-    configuration — lookahead windows, playbook positions for renewal pricing
-    and auto-renewal caps, and the escalation matrix.
+    你收到 repo-reader 校验后的合同清单。你执行纯计算：对每份合同，计算距期限的
+    天数（`cancel_by_date` 与 `expiration_date` 中较早者减去今日），分类紧迫度，
+    并对照部署团队的 renewal-tracker 配置交叉核对——前瞻窗口、续约定价与自动续约
+    上限的 playbook 立场，以及升级矩阵。
 
-    Classify each contract into exactly one urgency tier:
-      - `overdue`       — deadline already passed
-      - `next_30_days`  — 1 to 30 days out
-      - `30_to_60_days` — 31 to 60 days out
-      - `60_to_90_days` — 61 to 90 days out
-      - `90_to_180_days`— 91 to 180 days out
-      - `outside_window`— beyond the configured lookahead (exclude from output)
+    将每份合同归入恰好一个紧迫度档：
+      - `overdue`       —— 期限已过
+      - `next_30_days`  —— 未来 1 至 30 天
+      - `30_to_60_days` —— 未来 31 至 60 天
+      - `60_to_90_days` —— 未来 61 至 90 天
+      - `90_to_180_days`—— 未来 91 至 180 天
+      - `outside_window`—— 超出所配前瞻窗口（从输出中排除）
 
-    For each alert, determine whether any of the deploying team's playbook
-    deviations are present (uncapped renewal price escalator, short notice
-    window, mismatch between notice mechanism and the team's standard, etc.),
-    and whether the escalation matrix requires routing to a named approver.
+    对每条提醒，判定是否存在部署团队 playbook 的任何偏离（无上限的续约涨价条款、
+    过短的通知窗口、通知机制与团队标准不符等），以及升级矩阵是否要求路由至具名
+    审批人。
 
-    You are pure computation. You have no MCP, no web, no Write. You read the
-    structured JSON handed to you and the playbook configuration files on
-    disk. Return only schema-validated JSON.
+    你是纯计算。你无 MCP、无网络、无 Write。你读取交给你的结构化 JSON 与磁盘上的
+    playbook 配置文件。只返回 schema 校验的 JSON。
 
 tools:
   - type: agent_toolset_20260401
@@ -52,8 +48,8 @@ output_schema:
         additionalProperties: false
         required: [contract_id, deadline_type, deadline_date, days_remaining, urgency]
         properties:
-          contract_id:    { type: string, maxLength: 64, pattern: "^[A-Za-z0-9 ._/:-]+$" }
-          counterparty:   { type: string, maxLength: 200, pattern: "^[A-Za-z0-9 .,&'()_/-]+$" }
+          contract_id:    { type: string, maxLength: 64 }
+          counterparty:   { type: string, maxLength: 200 }
           deadline_type:  { type: string, maxLength: 24,  pattern: "^(cancel_by|expiration|notice_window)$" }
           deadline_date:  { type: string, maxLength: 10,  pattern: "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" }
           days_remaining: { type: integer, minimum: -3650, maximum: 3650 }
@@ -73,6 +69,6 @@ output_schema:
               additionalProperties: false
               required: [clause, position]
               properties:
-                clause:   { type: string, maxLength: 64,  pattern: "^[A-Za-z0-9_ -]+$" }
+                clause:   { type: string, maxLength: 64 }
                 position: { type: string, maxLength: 300 }
                 severity: { type: string, maxLength: 16,  pattern: "^(minor|moderate|critical)$" }

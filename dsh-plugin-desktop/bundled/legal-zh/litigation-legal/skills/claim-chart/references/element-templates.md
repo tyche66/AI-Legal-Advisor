@@ -360,66 +360,76 @@
 
 ### 权利失效（司法实践原则）
 
-### Unclean hands (equitable defense)
+**构成要件（基准——诚信原则《民法典》第7条的延伸，司法实践中认可）：**
+1. 权利人在相当期间内怠于行使权利
+2. 义务人基于权利人的行为产生了权利人不再行使权利的正当信赖
+3. 权利人再行使权利有悖诚信、将损害义务人的信赖利益
 
-**Elements (baseline):**
-1. Inequitable or wrongful conduct by the plaintiff
-2. Conduct directly related to the subject of the claim
-3. Prejudice to the defendant
+*管辖地提示：权利失效并非法定制度，是否适用及适用条件因法院而异，需结合个案审慎主张。`[需核实]`*
 
-### Release
+### 债务消灭抗辩（清偿/抵销/提存/免除/混同）
 
-**Elements (baseline):**
-1. A valid release agreement
-2. Covering the claims at issue
-3. Supported by consideration (generally)
-4. Executed by a party with authority
+**构成要件（基准——《民法典》第557条）：**
+1. 存在有效的债权债务关系
+2. 债务因清偿、抵销、提存、债权人免除债务或债权债务混同等法定事由而消灭（第557条）
+3. 举证证明消灭事由已成就（如付款凭证、抵销通知、以物抵债协议、免除债务的意思表示）
 
-### Accord and satisfaction
+### 和解协议抗辩
 
-**Elements (baseline — UCC § 3-311 for negotiable instruments; common law otherwise):**
-1. A bona fide dispute over an unliquidated or disputed claim
-2. Agreement to settle the dispute
-3. Tender of performance in full satisfaction
-4. Acceptance of the tender
+**构成要件（基准——《民法典》合同编，和解合同）：**
+1. 双方就争议达成了和解协议
+2. 和解协议合法有效（意思表示真实、不违反强制性规定和公序良俗）
+3. 和解协议覆盖了本案争议的请求
+4. 主张方已按和解协议履行（或依约提存/提供对待给付）
 
-### Failure to mitigate damages
+### 减损规则抗辩（《民法典》第591条）
 
-**Elements (baseline):**
-1. The plaintiff could have reduced damages by reasonable effort
-2. The plaintiff failed to make that effort
-3. The amount by which damages could have been reduced
+**构成要件（基准——《民法典》第591条）：**
+1. 违约发生后，守约方（原告）本可采取适当措施防止损失扩大
+2. 原告未采取适当措施，导致损失扩大
+3. 原告不得就扩大部分的损失请求赔偿；原告为防止损失扩大而支出的合理费用由违约方负担
 
-### Comparative fault / contributory negligence
+### 与有过失 / 过失相抵（《民法典》第1173条、第592条第2款）
 
-**Elements (baseline — jurisdiction-dependent):**
-1. Plaintiff's own negligent conduct
-2. Proximate cause of plaintiff's own injury
-3. (Comparative regimes) apportionment of fault
+**构成要件（基准——《民法典》第1173条〔侵权〕、第592条第2款〔违约〕）：**
+1. 损害的发生或扩大，受害人（原告）自身也有过错
+2. 原告的过错与损害的发生或扩大之间存在因果关系
+3. 据此相应减轻侵权人 / 违约方的责任
 
-*Jurisdiction caveat: Pure comparative vs. modified comparative (50% or 51% bar) vs. pure contributory (Alabama, Maryland, North Carolina, Virginia, D.C. — complete bar) — the jurisdiction's regime determines the effect.*
+*管辖地提示：中国法采过失相抵（按过错程度与原因力比例减责），与英美法的 comparative / contributory negligence 制度结构不同——中国法下不存在"完全阻却赔偿"的 contributory negligence 规则，不要将其套用于中国事实。*
 
-### Assumption of risk
+### 自甘风险（《民法典》第1176条）
 
-**Elements (baseline):**
-1. Plaintiff's actual knowledge of the risk
-2. Plaintiff's voluntary acceptance of the risk
-3. The injury resulted from that risk
+**构成要件（基准——《民法典》第1176条）：**
+1. 原告自愿参加具有一定风险的文体活动
+2. 损害系该活动的固有风险所致
+3. 其他参加者对损害的发生没有故意或者重大过失
+4. 满足上述条件的，其他参加者不承担侵权责任（活动组织者的安全保障义务依第1198-1201条另行判断）
 
-### Failure to exhaust administrative remedies
+### 不可抗力（《民法典》第180条、第590条）
 
-**Elements (baseline):**
-1. Statute or regulation requires administrative exhaustion
-2. Plaintiff did not complete the required administrative process
-3. No recognized exception (futility, irreparable harm, etc.) applies
+**构成要件（基准——《民法典》第180条、第590条）：**
+1. 发生了不能预见、不能避免且不能克服的客观情况
+2. 该情况导致合同不能履行或造成损害
+3. 主张方及时通知对方以减轻可能造成的损失，并在合理期限内提供证明
+4. 根据不可抗力的影响，部分或者全部免除责任（当事人迟延履行后发生不可抗力的，不免除责任）
+
+### 行政复议前置 / 未穷尽行政救济抗辩
+
+**构成要件（基准——《行政复议法》《行政诉讼法》相关规定）：**
+1. 法律 / 法规规定该争议须先经行政复议方可提起行政诉讼（复议前置）
+2. 原告未经复议直接起诉，或未完成法定的前置程序
+3. 不存在法定的例外情形
+
+*管辖地提示：复议前置的范围以具体法律 / 法规规定为准（如部分自然资源权属争议、纳税争议等），须逐案核实。`[需核实]`*
 
 ---
 
-## Adding a template
+## 新增模板
 
-This library is not exhaustive. When a new cause of action or defense comes up:
-1. Map the elements from the controlling statute, judicial interpretation, or complaint allegations.
-2. If the template is likely to recur across matters, add it here with a citation.
-3. Note the jurisdiction caveat — where the elements vary, say so and give one representative alternative formulation.
+本库非穷尽列举。当遇到新的请求权或抗辩事由时：
+1. 从有效的法条、司法解释或起诉状主张中提取构成要件。
+2. 若该类型在多个案件中反复出现，附上法条依据后补充至本库。
+3. 注明管辖地提示——构成要件存在地方差异或司法把握差异时，予以说明并给出一个代表性的替代表述。
 
-Templates are a baseline, not an authority. The controlling pattern instruction or statute always controls.
+模板是基准，非法律权威。控制性的裁判规则或法条始终优先。

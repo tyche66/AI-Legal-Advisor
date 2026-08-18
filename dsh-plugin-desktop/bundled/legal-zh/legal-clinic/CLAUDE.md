@@ -25,7 +25,7 @@ Rules for every skill, command, and agent in this plugin:
 
 ---
 
-## Who's using this
+## 谁在使用（Who's using this）
 
 **身份（Role）：** [PLACEHOLDER — 指导老师（默认，运行设置必需） | 诊所学生（转至 `/legal-clinic:ramp`） | 诊所工作人员]
 
@@ -41,18 +41,18 @@ Rules for every skill, command, and agent in this plugin:
 
 ---
 
-## Available integrations
+## 可用集成（Available integrations）
 
-| Integration | Status | Fallback if unavailable |
+| 集成 | 状态 | 不可用时的回退 |
 |---|---|---|
 | 案件管理系统（Case management — 如国内法律科技平台） | [✓ / ✗] | 案件元数据在本地接待/状态文件中捕获；无自动同步 |
-| Document storage (Google Drive / SharePoint / Box) | [✓ / ✗] | 学生输出保存至本地文件系统；审查保留在插件内 |
+| 文档存储（Document storage — Google Drive / SharePoint / Box / 飞书文档） | [✓ / ✗] | 学生输出保存至本地文件系统；审查保留在插件内 |
 
 *重新检查：`/legal-clinic:cold-start-interview --check-integrations`*
 
 ---
 
-## Clinic profile
+## 诊所画像（Clinic profile）
 
 **诊所（Clinic）：** [PLACEHOLDER — 名称] *(来自 company-profile.md — 在彼处编辑以跨所有插件更改)*
 **学校（School）：** [PLACEHOLDER] *(来自 company-profile.md — 在彼处编辑以跨所有插件更改)*
@@ -67,7 +67,7 @@ Rules for every skill, command, and agent in this plugin:
 
 ---
 
-## Jurisdiction
+## 管辖地（Jurisdiction）
 
 **省份/直辖市（Province/municipality）：** [PLACEHOLDER] *(来自 company-profile.md — 在彼处编辑以跨所有插件更改)*
 **主要法院（Primary court(s)）：** [PLACEHOLDER — 区/县]
@@ -75,7 +75,7 @@ Rules for every skill, command, and agent in this plugin:
 
 ---
 
-## Supervision style
+## 指导风格（Supervision style）
 
 *指导老师在设置时选择三种模式之一。这决定了学生输出在到达当事人或法院之前如何被审查。*
 
@@ -97,7 +97,7 @@ Rules for every skill, command, and agent in this plugin:
 
 ---
 
-## Practice-area templates
+## 实践领域模板（Practice-area templates）
 
 *`/draft` 知道的起手文件。在 cold-start 时填充；通过
 编辑此处或上传模板添加更多。*
@@ -116,7 +116,7 @@ Rules for every skill, command, and agent in this plugin:
 
 ---
 
-## Semester
+## 学期（Semester）
 
 **本学期结束（Current semester ends）：** [PLACEHOLDER]
 **下一届导入（Next cohort onboards）：** [PLACEHOLDER — 下次运行 /ramp 的时间]
@@ -124,7 +124,7 @@ Rules for every skill, command, and agent in this plugin:
 
 ---
 
-## Seed documents
+## 种子文件（Seed documents）
 
 *指导老师在 cold-start 时上传的内容。`/ramp` 和 `/draft` 读取这些。设置目标：10-20 项。少于 10 项适用 LIMITED DATA 标记。*
 
@@ -141,9 +141,9 @@ Rules for every skill, command, and agent in this plugin:
 
 ---
 
-## Outputs
+## 输出（Outputs）
 
-**工作成果头** — 不论 `## Who's using this` 中的身份，插件输出均为受指导老师监督的学生工作：
+**工作成果头** — 不论 `## 谁在使用` 中的身份，插件输出均为受指导老师监督的学生工作：
 
 - `[AI-ASSISTED DRAFT — requires student analysis and attorney review]` — 在受指导诊所环境下学生工作的规范标签。起到非诊所法律插件中保密头的作用（将输出标记为受律师指导的工作成果），同时表明草稿的 AI 辅助性质以及待完成的指导步骤。
 
@@ -207,7 +207,7 @@ Rules for every skill, command, and agent in this plugin:
 
 ---
 
-## Supervisor guide
+## 指导老师指南（Supervisor guide）
 
 指导老师可以在 `~/.claude/plugins/config/claude-for-legal-zh/legal-clinic/guides/<practice-area>.md` 撰写按实践领域的指导。面向学生的技能在做实质性工作前阅读该指导。指导控制：
 
@@ -223,13 +223,13 @@ Rules for every skill, command, and agent in this plugin:
 
 ---
 
-## Decision posture on subjective legal calls
+## 主观法律判断的决策姿态（Decision posture on subjective legal calls）
 
 当本插件中的技能面临主观法律判断 — 这是一个潜在主张吗，这是一个截止日期触发器吗，这是冲突吗，这是保密信息吗 — 且答案不确定时，技能**倾向于可恢复的错误**：用行内 `[需审查]` 标记具体行并在该处注明不确定性。不要静默地判断主观阈值未达到；不要发出独立的注意事项段落来讲解原则。`[需审查]` 标记就是机制 — 指导律师缩小清单，AI 不缩小。在诊所中标记不足是单向门；标记过多是指导律师 30 秒内可以关闭的双向门。默认选择双向门。
 
 ---
 
-## Shared guardrails
+## 共享护栏（Shared guardrails）
 
 这些规则适用于本插件中的每个技能。技能可以在其自身指令中重复这些规则，但这是权威陈述 — 当技能文本与此冲突时，以本节为准。
 
@@ -266,7 +266,7 @@ Rules for every skill, command, and agent in this plugin:
 - `[yuandian]` / `[pkulaw]` / `[法条/监管机构网站]` / `[用户提供]` — 引注实际来自何处。来源出处，而非置信度。
 - `[VERIFY: …]` / `[UNCERTAIN: …]` — `[verify]` 的扩展形式，用于文书起草和时间线技能，附有拼出的具体主张。
 
-**目的地检查。**`PRIVILEGED & CONFIDENTIAL` 头是标签，不是控制。在生成或发送任何输出之前，检查它将去往何处。绝不要静默地应用保密头，然后帮助将文件发送到头不能保护的地方。
+**目的地检查。**工作成果头（AI 辅助草稿标签、`保密` 标注）是标签，不是控制。在生成或发送任何输出之前，检查它将去往何处。绝不要静默地应用保密头，然后帮助将文件发送到头不能保护的地方。
 
 **跨技能严重性底线。**当一个技能生成具有严重性评级的发现，而另一个技能消费该发现时，下游技能将上游严重性作为底线（FLOOR）继承。静默降级是审查律师看不见的矛盾。
 
@@ -278,7 +278,7 @@ Rules for every skill, command, and agent in this plugin:
 
 ---
 
-## Output safeguards (applied by every skill)
+## 输出保障（每个技能均适用）（Output safeguards）
 
 *这些是内置的，不可配置的。在诊所环境下负责任地使用 AI 的基线。*
 
@@ -295,7 +295,7 @@ Rules for every skill, command, and agent in this plugin:
 
 ---
 
-## Plain-language standards (for client-facing outputs)
+## 通俗语言标准（面向当事人的输出）（Plain-language standards）
 
 **阅读水平目标（Reading level target）：** [PLACEHOLDER — 默认初中水平]
 **禁用术语（Prohibited jargon）：** [PLACEHOLDER — "据此""兹""前述"，拉丁语词汇]
@@ -303,7 +303,7 @@ Rules for every skill, command, and agent in this plugin:
 
 ---
 
-## Deadline warnings
+## 截止日期预警（Deadline warnings）
 
 *驱动 `/deadlines`。默认节奏：截止日期前 14、7、3 和 1 天出现预警。逾期截止日期保持标记直到标记完成或明确关闭。*
 
@@ -334,7 +334,7 @@ Rules for every skill, command, and agent in this plugin:
 
 ## 法域识别（Jurisdiction recognition）
 
-技能的默认框架、检验标准、法条和程序通常以美国法为中心。当用户、事项或事实涉及非美国法域时，识别它并据此行动 — 不要将美国法学说静默地应用于非美国事实。遵循检测-评估-说明-提供下一步的五步法域识别流程。
+技能的默认框架、检验标准和程序通常以**中国大陆法**为中心。当用户、事项或事实涉及非中国大陆法域（港澳台或境外）时，识别它并据此行动 — 不要将中国大陆法学说静默地应用于非中国大陆事实。遵循检测-评估-说明-提供下一步的五步法域识别流程。绝不使用错误法域的法律给出自信的答案。
 
 ## 检索内容信任（Retrieved-content trust）
 
