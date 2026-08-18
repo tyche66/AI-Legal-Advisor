@@ -3,6 +3,21 @@ AI法律顾问 distributes the following third-party packages inside its install
 
 Each package ships with its own license text in the application files; this list records
 the package names, versions, and licenses for transparency.
+
+## Upstream project attribution
+
+AI法律顾问 is an independent community distribution. The user-visible product brand is AI法律顾问; the upstream names below are retained only for copyright, license, source-traceability, compatibility, and redistribution compliance. This product is not an official DeepSeek, DSH, DSH Desktop, Anthropic, Claude, Cordis, or claude-for-legal-ZH product, and no endorsement or trademark license is implied.
+
+| Upstream project | Source repository | Contribution to this distribution | Applicable license / notice |
+| --- | --- | --- | --- |
+| DeepSeek Harness | https://github.com/deepseek-ai/deepseek-harness | Upstream DSH runtime, Agent, tools, Web workbench, and plugin mechanism. | Upstream MIT License and notices |
+| DSH | https://github.com/deepseek-ai/deepseek-harness | Project abbreviation and the `@deepseek-ai/dsh-*` package namespace used by the fixed runtime snapshot. | Each package license; see the package files and the dependency table below |
+| DSH Desktop | https://github.com/anywhere-labs/deepseek-harness-desktop | Desktop packaging, Electron lifecycle, tray integration, browser workbench, and desktop plugin foundation. | Upstream MIT License and notices |
+| Cordis | https://github.com/cordiverse/cordis | Plugin composition and runtime foundation used by the upstream ecosystem. | MIT License and upstream notices |
+| claude-for-legal-ZH | https://github.com/CSlawyer1985/claude-for-legal-ZH | Chinese legal Agent, Skills, adapters, and reference snapshot bundled under `bundled/legal-zh/`. | Apache License 2.0; see `bundled/legal-zh/LICENSE` and upstream notices |
+| claude-for-legal | https://github.com/anthropics/claude-for-legal | Upstream legal-workflow reference for material derived by claude-for-legal-ZH. | Apache License 2.0 and upstream notices |
+
+The complete attribution and redistribution policy is documented in the repository-level [`NOTICE.md`](../NOTICE.md). The root `LICENSE` applies only to project-owned material where no more specific license or notice is present; it does not replace any upstream license.
 | Package | Version | License |
 | --- | --- | --- |
 | @anthropic-ai/sdk | 0.91.1 | MIT |

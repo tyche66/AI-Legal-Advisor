@@ -96,9 +96,22 @@ AI法律顾问的输出应当被视为**工作草稿、风险提示和材料整�
 
 ## 关于本项目与上游开源项目
 
-AI法律顾问是面向中文企业法律场景的社区桌面产品，桌面启动、安装、浏览器工作台、预置法律 Agent 和法律 Skills 是本项目的主要包装与集成内容。底层运行时使用了上游开源项目提供的插件机制、工作台能力和相关依赖。
+AI法律顾问是面向中文企业法律场景的独立社区桌面产品。桌面启动、安装流程、浏览器工作台体验、四个预置法律 Agent 的产品化组合和品牌界面是本项目的主要集成内容；底层运行时、插件组合能力和法律 Skills 则来自不同上游项目或其衍生版本。
 
-为遵守开源许可证和再分发要求，本仓库保留必要的上游版权声明、许可证文件和第三方通知。上游项目的名称仅用于技术归属、许可证说明和源代码区域的准确引用，不代表任何官方背书、合作或商标授权。请在再分发前阅读仓库中的 [`LICENSE`](LICENSE)、[`THIRD_PARTY_NOTICES.md`](dsh-plugin-desktop/THIRD_PARTY_NOTICES.md) 以及各依赖项目的许可证。
+为避免来源混淆并降低再分发风险，本项目明确保留以下上游项目的名称、链接、许可证和版权归属：
+
+| 上游项目 | 本项目使用关系 | 主要许可证 / 说明 |
+| --- | --- | --- |
+| [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) | 提供核心 DSH 运行时、Agent、工具、Web 工作台和插件机制。 | MIT License，以对应上游文件为准。 |
+| **DSH** | DeepSeek Harness 及其 `@deepseek-ai/dsh-*` 包生态的项目简称与命名空间。 | 各包的许可证以随附文件和第三方通知为准。 |
+| [DSH Desktop](https://github.com/anywhere-labs/deepseek-harness-desktop) | 提供 Electron 桌面封装、启动流程、系统托盘、桌面插件和打包基础；本仓库是在其基础上的法律场景集成版本。 | MIT License，以对应上游文件为准。 |
+| [Cordis](https://github.com/cordiverse/cordis) | 提供插件化、组合式运行时基础及相关生态能力。 | MIT License，以对应上游文件为准。 |
+| [claude-for-legal-ZH](https://github.com/CSlawyer1985/claude-for-legal-ZH) | 提供中国法法律 Agent、Skills、适配器和参考资料快照，集成于 `dsh-plugin-desktop/bundled/legal-zh/`。 | Apache License 2.0，见 `bundled/legal-zh/LICENSE` 和上游声明。 |
+| [claude-for-legal](https://github.com/anthropics/claude-for-legal) | `claude-for-legal-ZH` 所参考或衍生的上游法律工作流项目。 | Apache License 2.0，见上游仓库及其 NOTICE。 |
+
+这些项目仅表示技术来源、兼容性和归属关系，不代表 AI法律顾问获得 DeepSeek、DSH、DSH Desktop、Anthropic、Claude、Cordis 或 `claude-for-legal-ZH` 的官方背书、合作或商标授权。用户可见品牌统一为 **AI法律顾问**；上游名称只在合规、许可证、源代码和归属说明中按必要范围保留。
+
+详细归属表和再分发要求见 [`NOTICE.md`](NOTICE.md) 与 [`dsh-plugin-desktop/THIRD_PARTY_NOTICES.md`](dsh-plugin-desktop/THIRD_PARTY_NOTICES.md)。再分发前还应阅读根目录 [`LICENSE`](LICENSE)、[`dsh-plugin-desktop/bundled/legal-zh/LICENSE`](dsh-plugin-desktop/bundled/legal-zh/LICENSE) 以及各依赖包随附的许可证文本。
 
 ## 从源码运行
 
@@ -123,9 +136,9 @@ corepack yarn dev
 
 ## 许可证与非商业声明
 
-桌面集成代码遵循仓库中的许可证；法律 Skills、预置 Agent 配置、参考资料和第三方依赖应分别按照对应目录中的许可证、版权声明和再分发条件使用。若某个文件带有额外授权或保留权利声明，以该文件及其上游许可证为准。
+桌面集成代码遵循仓库中的许可证；法律 Skills、预置 Agent 配置、参考资料和第三方依赖应分别按照对应目录中的许可证、版权声明和第三方通知使用。若某个文件带有额外授权或保留权利声明，以该文件及其上游许可证为准。根目录 MIT License 不会自动替代第三方项目的许可证，也不自动覆盖 `claude-for-legal-ZH`、`claude-for-legal` 或其他上游内容。
 
-本项目当前定位为**非商业社区项目**，不构成法律服务、律师代理或法律意见。任何人不得移除必要的版权、许可证、第三方通知和免责声明，也不得将本项目包装成获得官方背书的产品。再分发时请保留产品边界说明和上游归属信息。
+本项目当前定位为**非商业社区项目**，不构成法律服务、律师代理或法律意见。再分发时不得删除或弱化版权、许可证、第三方通知、上游归属和免责声明，不得把 AI法律顾问包装成 DeepSeek、DSH、DSH Desktop、Anthropic、Claude、Cordis 或 `claude-for-legal-ZH` 的官方产品，也不得暗示获得其背书或商标授权。完整的名称、商标和再分发风险说明见 [`NOTICE.md`](NOTICE.md)。
 
 ## 反馈与贡献
 
@@ -141,6 +154,9 @@ corepack yarn dev
 
 ## References
 
-[1]: https://github.com/deepseek-ai/deepseek-harness "上游开源运行时项目"
-[2]: https://github.com/cordiverse/cordis "插件化运行时项目"
-[3]: https://github.com/tyche66/AI-Legal-Advisor/actions/runs/32105680053 "AI法律顾问 2.0.4 Windows 构建记录"
+[1]: https://github.com/deepseek-ai/deepseek-harness "DeepSeek Harness 官方仓库"
+[2]: https://github.com/anywhere-labs/deepseek-harness-desktop "DSH Desktop 上游仓库"
+[3]: https://github.com/cordiverse/cordis "Cordis 官方仓库"
+[4]: https://github.com/CSlawyer1985/claude-for-legal-ZH "claude-for-legal-ZH 上游仓库"
+[5]: https://github.com/anthropics/claude-for-legal "claude-for-legal 上游仓库"
+[6]: https://github.com/tyche66/AI-Legal-Advisor/actions/runs/32105680053 "AI法律顾问 2.0.4 Windows 构建记录"
