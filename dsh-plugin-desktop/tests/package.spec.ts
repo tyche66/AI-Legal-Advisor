@@ -239,7 +239,7 @@ describe('published package surface', () => {
 
   it('covers the upstream hero brand without a whole-document mutation loop', () => {
     const source = readFileSync(new URL('src/client/legal-brand.ts', packageRoot), 'utf8')
-    expect(source).toContain("['Into the Unknown', PRODUCT_NAME]")
+    expect(source).toContain("['Into the Unknown', LEGAL_EXPERT_LABEL]")
     expect(source).toContain('[class*="previewBadge"]')
     expect(source).toContain('document.body ?? document.documentElement')
     expect(source).toContain('setTimeout(flush, 0)')
@@ -248,8 +248,11 @@ describe('published package surface', () => {
     expect(source).toContain('boundaryNoticeDismissed = true')
     expect(source).toContain('notice.remove()')
     expect(source).toContain("new Set(['standard', 'code', 'minimal', 'cordis'])")
+    expect(source).toContain("'PTC mode'")
     expect(source).toContain('hideBuiltInAgentPresets()')
+    expect(source).toContain('markRunningTurnStatus()')
     expect(source).toContain('data-ai-legal-hidden-preset')
+    expect(source).toContain('data-ai-legal-turn-status')
   })
 
   it('keeps the AI法律顾问 source icon stable', () => {
@@ -305,6 +308,18 @@ describe('published package surface', () => {
     expect(lockfile).toContain('@koromix/koffi-win32-x64@npm:3.1.5')
     expect(lockfile).not.toContain('"koffi@npm:3.1.4":')
     expect(lockfile).not.toContain('@koromix/koffi-win32-x64@npm:3.1.4')
+  })
+
+  it('keeps the pi-ai JSON truncation recovery patch repository-owned', () => {
+    const rootManifest = JSON.parse(readFileSync(new URL('package.json', workspaceRoot), 'utf8')) as {
+      resolutions?: Record<string, unknown>
+    }
+    const resolution = rootManifest.resolutions?.['@deepseek-ai/dsh-llm-pi-ai@npm:^0.1.0-rc.6']
+    expect(resolution).toBe('patch:@deepseek-ai/dsh-llm-pi-ai@npm%3A0.1.0-rc.6#./patches/dsh-llm-pi-ai@0.1.0-rc.6.patch')
+    const patch = readFileSync(new URL('patches/dsh-llm-pi-ai@0.1.0-rc.6.patch', workspaceRoot), 'utf8')
+    expect(patch).toContain('unexpected end of json input')
+    const installed = readFileSync(new URL('node_modules/@deepseek-ai/dsh-llm-pi-ai/lib/index.js', packageRoot), 'utf8')
+    expect(installed).toContain('unexpected end of json input')
   })
 
   it('resolves electron-builder through the pinned app-builder-lib keychain patch', () => {

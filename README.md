@@ -7,15 +7,15 @@
 **不用装 Node.js，不用配置 Python，不用研究命令行。下载、安装、启动，即可开始整理合同、识别风险、梳理争议材料。**
 
 <p>
-  <a href="https://github.com/tyche66/AI-Legal-Advisor/actions/runs/32145084226/artifacts/9327634084"><strong>下载 2.0.5 Windows x64 安装程序</strong></a>
+  <a href="https://github.com/tyche66/AI-Legal-Advisor/actions/runs/32145084226/artifacts/9327634084"><strong>下载 2.0.6 Windows x64 安装程序</strong></a>
   ·
-  <a href="https://github.com/tyche66/AI-Legal-Advisor/actions/runs/32145084226">查看 2.0.5 构建记录</a>
+  <a href="https://github.com/tyche66/AI-Legal-Advisor/actions/runs/32145084226">查看 2.0.6 构建记录</a>
   ·
   <a href="docs/user-guide.md">阅读用户指南</a>
 </p>
 
 <p>
-  <img src="https://img.shields.io/badge/version-2.0.5-13227A?style=flat-square" alt="Version 2.0.5">
+  <img src="https://img.shields.io/badge/version-2.0.6-13227A?style=flat-square" alt="Version 2.0.6">
   <img src="https://img.shields.io/badge/platform-Windows%20x64-13227A?style=flat-square" alt="Windows x64">
   <img src="https://img.shields.io/badge/agents-4%20legal%20experts-2E7D32?style=flat-square" alt="Four legal expert agents">
   <img src="https://img.shields.io/badge/skills-220-6A1B9A?style=flat-square" alt="220 skills">
@@ -24,7 +24,7 @@
 
 ## 界面预览
 
-下面的产品图来自仓库中的 [`assets/readme/ai-legal-advisor-preview.html`](assets/readme/ai-legal-advisor-preview.html)。它使用 HTML/CSS 模拟应用运行时，再由浏览器渲染截取，展示 AI法律顾问 2.0.5 的法律工作台、合同审查和合规中心。左侧底部的 **DeepSeek API 余额** 卡片即为本版本预置的 DSH-money-view 能力入口。
+下面的产品图来自仓库中的 [`assets/readme/ai-legal-advisor-preview.html`](assets/readme/ai-legal-advisor-preview.html)。它使用 HTML/CSS 模拟应用运行时，再由浏览器渲染截取，展示 AI法律顾问 2.0.6 的法律工作台、合同审查和合规中心。左侧底部的 **DeepSeek API 余额** 卡片即为本版本预置的 DSH-money-view 能力入口。
 
 <p align="center">
   <img src="assets/readme/ai-legal-advisor-overview.webp" alt="AI法律顾问法律工作台总览" width="32%">
@@ -61,40 +61,41 @@ AI法律顾问把复杂的法律工作拆成更容易上手的步骤：先明确
 
 ## Windows 开箱即用
 
-2.0.5 在 2.0.4 的 Windows x64 开箱即用体验基础上，新增预置的 DeepSeek API 余额卡片。双击安装包后按向导完成安装，桌面会生成“AI法律顾问”快捷方式；再次双击快捷方式，应用会显示启动状态并自动打开浏览器工作台。普通用户不需要额外安装 Node.js、Python、Git 或其他开发环境。请从下方 **2.0.5 CI artifact** 下载当前版本；下载后先解压 artifact，再运行其中的 `AI法律顾问-2.0.5-x64-Setup.exe`。如果电脑上仍运行旧版 AI法律顾问，请先退出旧程序，必要时卸载旧版后再安装，以避免旧进程或文件锁阻止 NSIS 覆盖文件。
+2.0.6 在 2.0.5 的 Windows x64 开箱即用体验基础上，继续保留预置的 DeepSeek API 余额卡片，并修复了内置模式隐藏、品牌文案、会话流式错误恢复和运行中动画问题。双击安装包后按向导完成安装，桌面会生成“AI法律顾问”快捷方式；再次双击快捷方式，应用会显示启动状态并自动打开浏览器工作台。普通用户不需要额外安装 Node.js、Python、Git 或其他开发环境。请从下方 **2.0.6 CI artifact** 下载当前版本；下载后先解压 artifact，再运行其中的 `AI法律顾问-2.0.6-x64-Setup.exe`。如果电脑上仍运行旧版 AI法律顾问，请先退出旧程序，必要时卸载旧版后再安装，以避免旧进程或文件锁阻止 NSIS 覆盖文件。
 
 ### 下载与校验
 
 | 项目 | 信息 |
 | --- | --- |
 | 当前版本 Windows x64 artifact | [下载 AI法律顾问 2.0.5 Windows installer](https://github.com/tyche66/AI-Legal-Advisor/actions/runs/32145084226/artifacts/9327634084) |
-| 安装器文件名 | `AI法律顾问-2.0.5-x64-Setup.exe` |
+| 安装器文件名 | `AI法律顾问-2.0.6-x64-Setup.exe` |
 | 构建记录 | [GitHub Actions CI #32145084226](https://github.com/tyche66/AI-Legal-Advisor/actions/runs/32145084226) |
 | 对应提交 | [`3cd63ee70f`](https://github.com/tyche66/AI-Legal-Advisor/commit/3cd63ee70f1b7d7e33f6f30755ce52e88851acb2) |
 | 上一稳定版安装包 | [AI法律顾问-2.0.4-x64-Setup.exe](https://files.manuscdn.com/user_upload_by_module/session_file/310519663749217922/PTixJaHngoCaRVwG.exe) |
 
-下载并解压 artifact 后，可以在 Windows PowerShell 中使用下面的命令校验 2.0.5 安装文件：
+下载并解压 artifact 后，可以在 Windows PowerShell 中使用下面的命令校验 2.0.6 安装文件：
 
 ```powershell
-Get-FileHash .\AI法律顾问-2.0.5-x64-Setup.exe -Algorithm SHA256
+Get-FileHash .\AI法律顾问-2.0.6-x64-Setup.exe -Algorithm SHA256
 ```
 
 首次启动时，应用会启动本机服务并在服务就绪后打开浏览器。若浏览器刚打开时仍在加载，请等待启动状态窗口完成；应用会对本机服务进行重试探测，不需要手动运行命令。
 
-## 2.0.5 更新内容
+## 2.0.6 更新内容
 
-2.0.5 延续 2.0.4 面向实际企业法律工作的强化基础，并把 [DSH-money-view](https://github.com/tyche66/DSH-money-view) 预置为 AI法律顾问的内置余额能力。用户不需要额外安装插件；当 Harness 中最近发生过 DeepSeek 调用时，工作台会在侧栏底部展示 CNY/USD 余额、当日基准、剩余进度和最近查询时间。
+2.0.6 延续 2.0.5 面向实际企业法律工作的强化基础，并把 [DSH-money-view](https://github.com/tyche66/DSH-money-view) 预置为 AI法律顾问的内置余额能力。用户不需要额外安装插件；当 Harness 中最近发生过 DeepSeek 调用时，工作台会在侧栏底部展示 CNY/USD 余额、当日基准、剩余进度和最近查询时间。
 
 余额查询由 Host 侧完成，API Key 只通过 Harness credentials 服务解析，不进入浏览器端；查询遵循 DeepSeek API 的缓存提示，没有缓存提示时使用默认间隔，并在每日首次查询时建立基准。未配置 API Key 或近期没有 DeepSeek 调用时，卡片会显示相应的低打扰状态，不会持续轮询余额接口。
 
-| 能力 | 2.0.5 状态 |
+| 能力 | 2.0.6 状态 |
 | --- | --- |
 | 企业法律场景 Skills | 已集成，覆盖合同、争议、合规、公司治理、劳动、知识产权、隐私与 AI、税务法律等领域 |
 | 专家 Agent | 4 个，企业总法务为默认入口 |
-| 通用内置 Agent | 底层兼容性保留，但 Standard、Code、Minimal、Creator 不在用户界面展示 |
+| 通用内置 Agent | 底层兼容性保留，但 Standard、Code、Minimal、Creator 在动态挂载后仍持续隐藏 |
 | 启动体验 | 启动状态窗口、服务重试探测、浏览器工作台自动打开 |
-| 品牌体验 | 用户可见界面统一使用“AI法律顾问” |
+| 品牌体验 | 应用品牌使用“AI法律顾问”，输入框上方空会话标题使用“AI法务专家” |
 | DeepSeek API 余额 | 已预置 DSH-money-view 适配版，位于侧栏底部并保持 Host/Client 安全边界 |
+| 会话稳定性 | 半截 JSON 响应按可重试传输错误处理；Deep diving 状态恢复动态动画 |
 | 合规提示 | 每次启动显示一次，可正常关闭 |
 
 ## 使用原则
@@ -117,7 +118,7 @@ AI法律顾问是面向中文企业法律场景的独立社区桌面产品。桌
 | [Cordis](https://github.com/cordiverse/cordis) | 提供插件化、组合式运行时基础及相关生态能力。 | MIT License，以对应上游文件为准。 |
 | [claude-for-legal-ZH](https://github.com/CSlawyer1985/claude-for-legal-ZH) | 提供中国法法律 Agent、Skills、适配器和参考资料快照，集成于 `dsh-plugin-desktop/bundled/legal-zh/`。 | Apache License 2.0，见 `bundled/legal-zh/LICENSE` 和上游声明。 |
 | [claude-for-legal](https://github.com/anthropics/claude-for-legal) | `claude-for-legal-ZH` 所参考或衍生的上游法律工作流项目。 | Apache License 2.0，见上游仓库及其 NOTICE。 |
-| [DSH-money-view](https://github.com/tyche66/DSH-money-view) | 提供 DeepSeek API 余额查询、活动窗口、每日基准和 sidebar footer 卡片；2.0.5 以适配版预置入 Desktop。 | MIT License，见 [`dsh-plugin-desktop/bundled/dsh-money-view/`](dsh-plugin-desktop/bundled/dsh-money-view/) 的 NOTICE、LICENSE 与源码快照。 |
+| [DSH-money-view](https://github.com/tyche66/DSH-money-view) | 提供 DeepSeek API 余额查询、活动窗口、每日基准和 sidebar footer 卡片；2.0.6 以适配版预置入 Desktop。 | MIT License，见 [`dsh-plugin-desktop/bundled/dsh-money-view/`](dsh-plugin-desktop/bundled/dsh-money-view/) 的 NOTICE、LICENSE 与源码快照。 |
 
 这些项目仅表示技术来源、兼容性和归属关系，不代表 AI法律顾问获得 DeepSeek、DSH、DSH Desktop、Anthropic、Claude、Cordis 或 `claude-for-legal-ZH` 的官方背书、合作或商标授权。用户可见品牌统一为 **AI法律顾问**；上游名称只在合规、许可证、源代码和归属说明中按必要范围保留。
 
@@ -158,7 +159,7 @@ corepack yarn dev
 
 **让法律工作更有条理，让业务决策更早看到风险。**
 
-[下载 AI法律顾问 2.0.5](https://github.com/tyche66/AI-Legal-Advisor/actions/runs/32145084226/artifacts/9327634084) · [查看源代码](https://github.com/tyche66/AI-Legal-Advisor)
+[下载 AI法律顾问 2.0.6](https://github.com/tyche66/AI-Legal-Advisor/actions/runs/32145084226/artifacts/9327634084) · [查看源代码](https://github.com/tyche66/AI-Legal-Advisor)
 
 </div>
 
@@ -169,4 +170,4 @@ corepack yarn dev
 [3]: https://github.com/cordiverse/cordis "Cordis 官方仓库"
 [4]: https://github.com/CSlawyer1985/claude-for-legal-ZH "claude-for-legal-ZH 上游仓库"
 [5]: https://github.com/anthropics/claude-for-legal "claude-for-legal 上游仓库"
-[6]: https://github.com/tyche66/AI-Legal-Advisor/actions/runs/32145084226 "AI法律顾问 2.0.5 Windows 构建记录"
+[6]: https://github.com/tyche66/AI-Legal-Advisor/actions/runs/32145084226 "AI法律顾问 2.0.6 Windows 构建记录"
