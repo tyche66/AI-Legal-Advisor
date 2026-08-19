@@ -7,7 +7,7 @@
 **不用装 Node.js，不用配置 Python，不用研究命令行。下载、安装、启动，即可开始整理合同、识别风险、梳理争议材料。**
 
 <p>
-  <a href="https://github.com/tyche66/AI-Legal-Advisor/actions/workflows/ci.yml"><strong>下载 2.0.8 Windows x64 安装程序</strong></a>
+  <a href="https://github.com/tyche66/AI-Legal-Advisor/actions/runs/32214219708/artifacts/9351878056"><strong>下载 2.0.8 Windows x64 安装程序</strong></a>
   ·
   <a href="https://github.com/tyche66/AI-Legal-Advisor/actions/workflows/ci.yml">查看 2.0.8 构建记录</a>
   ·
@@ -67,7 +67,7 @@ AI法律顾问把复杂的法律工作拆成更容易上手的步骤：先明确
 
 | 项目 | 信息 |
 | --- | --- |
-| 当前版本 Windows x64 artifact | [下载 AI法律顾问 2.0.8 Windows installer](https://github.com/tyche66/AI-Legal-Advisor/actions/workflows/ci.yml) |
+| 当前版本 Windows x64 artifact | [下载 AI法律顾问 2.0.8 Windows installer](https://github.com/tyche66/AI-Legal-Advisor/actions/runs/32214219708/artifacts/9351878056) |
 | 安装器文件名 | `AI法律顾问-2.0.8-x64-Setup.exe` |
 | 构建记录 | [GitHub Actions CI 工作流](https://github.com/tyche66/AI-Legal-Advisor/actions/workflows/ci.yml) |
 | 对应提交 | 本次 2.0.8 修复提交（以 GitHub 推送后的提交为准） |
@@ -160,7 +160,7 @@ corepack yarn dev
 
 **让法律工作更有条理，让业务决策更早看到风险。**
 
-[下载 AI法律顾问 2.0.8](https://github.com/tyche66/AI-Legal-Advisor/actions/workflows/ci.yml) · [查看源代码](https://github.com/tyche66/AI-Legal-Advisor)
+[下载 AI法律顾问 2.0.8](https://github.com/tyche66/AI-Legal-Advisor/actions/runs/32214219708/artifacts/9351878056) · [查看源代码](https://github.com/tyche66/AI-Legal-Advisor)
 
 </div>
 
