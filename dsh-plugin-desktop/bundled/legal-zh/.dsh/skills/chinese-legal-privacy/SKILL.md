@@ -13,6 +13,7 @@ This skill lets DeepSeek Harness (`dsh`) use the original `claude-for-legal-ZH/p
 - Domain profile template and shared rules: `privacy-legal/CLAUDE.md`
 - Original skills directory: `privacy-legal/skills`
 - Original plugin description: 个人信息保护实务：处理活动分类、生成个人信息保护影响评估（个保法第55条）、审查个人信息处理协议（作为处理者或受托处理者）、在法定期限内起草个人信息主体权利响应（个保法第44-50条）、监测隐私政策与实践之间的偏差。
+- Shared contract/DPA quality gates: `references/contract-review-quality-gates.md`（事实账本、读取阻断、引用回指和交付前三问）。
 
 ## Path Resolution
 
@@ -23,11 +24,13 @@ The repository-relative paths above resolve against the `claude-for-legal-ZH` re
 
 ## How To Use
 
-1. Read `privacy-legal/CLAUDE.md` before substantive work.
-2. Select the closest original skill from the list below, then read its `SKILL.md`.
-3. Follow that skill's workflow, translating Claude Code slash-command wording into dsh actions and natural conversation.
-4. If multiple original skills apply, execute them in the order implied by the workflow and merge the result.
-5. Do not run Claude-specific plugin commands. Ignore Claude hooks. Use dsh filesystem, shell, web, and MCP tools for local files, verification, document rendering, and user-visible output.
+1. Read `privacy-legal/CLAUDE.md` and, for DPA/contract work, `references/contract-review-quality-gates.md` before substantive work.
+2. Acquire the user file and record source ID, parser status, reading scope and attachment status before analysis.
+3. Build the shared DPA fact ledger before clause review; every role, purpose, data category, subject category, location, subprocessor, cross-border path, incident window, deletion/return, audit and training-use fact must have a source and status.
+4. Select the closest original skill from the list below, then read its `SKILL.md`.
+5. Follow that skill's workflow. For DPA/contract inputs, block on read failure or missing critical attachments unless the user explicitly chooses `[临时模式]`.
+6. If multiple original skills apply, merge only source-bound findings and preserve attachment/read-scope states; run the shared quality-gate three questions before delivery.
+7. Do not run Claude-specific plugin commands. Ignore Claude hooks. Use dsh filesystem, shell, web, and MCP tools for local files, verification, document rendering, and user-visible output.
 
 ## Configuration Compatibility
 
@@ -53,3 +56,4 @@ If the active dsh profile mounts the `chineselaw` or `yuandian` MCP servers (see
 - Mark uncertain legal citations or case references as requiring verification unless verified from a reliable source in this session.
 - For current law, regulatory updates, case retrieval, filing requirements, deadlines, or other time-sensitive legal facts, verify with current sources before relying on them.
 - Preserve the original workflow's escalation, approval, confidentiality, and source-labeling requirements.
+- If file access fails or a quality gate fails, deliver only the failure state and remediation options; never produce a complete-looking DPA or compliance conclusion.
