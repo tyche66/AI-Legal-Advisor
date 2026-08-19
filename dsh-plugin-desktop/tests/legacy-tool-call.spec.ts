@@ -20,6 +20,17 @@ describe('legacy read-file tool-call compatibility', () => {
     }])
   })
 
+  it('converts the screenshot file-read DSML envelope to read_file', () => {
+    const output = '< | DSML | | tool_calls> < | DSML | | invoke name="file-read"> '
+      + '< | DSML | | parameter name="path" string="true">C:\\Users\\WDAGUtilityAccount\\Desktop\\云端数据分析与运营服务合同.md'
+      + '< / | DSML | | parameter> < / | DSML | | invoke> < / | DSML | | tool_calls>'
+    expect(looksLikeLegacyReadFileText(output.slice(0, 52))).toBe(true)
+    expect(parseLegacyReadFileCalls(output)).toEqual([{
+      name: 'read_file',
+      arguments: JSON.stringify({ path: 'C:\\Users\\WDAGUtilityAccount\\Desktop\\云端数据分析与运营服务合同.md' }),
+    }])
+  })
+
   it('handles HTML entities without interpreting arbitrary tool names', () => {
     expect(parseLegacyReadFileCalls('<invoke name="read_file"><parameter name="path">a&amp;b&lt;c.md</parameter></invoke>'))
       .toEqual([{ name: 'read_file', arguments: JSON.stringify({ path: 'a&b<c.md' }) }])

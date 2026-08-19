@@ -176,6 +176,7 @@ describe('published package surface', () => {
       arch: ['x64'],
     }])
     expect(manifest.build?.nsis).toEqual({
+      include: 'build/installer.nsh',
       license: 'THIRD_PARTY_NOTICES.md',
       oneClick: false,
       perMachine: false,
@@ -188,6 +189,10 @@ describe('published package surface', () => {
       useZip: false,
       artifactName: 'AI法律顾问-${version}-${arch}-Setup.${ext}',
     })
+    const installerScript = readFileSync(new URL('build/installer.nsh', packageRoot), 'utf8')
+    expect(installerScript).toContain('!macro preInit')
+    expect(installerScript).toContain('taskkill.exe')
+    expect(installerScript).toContain('AI-Legal-Advisor.exe')
     expect(manifest.build?.linux?.icon).toBe('build/app-icon.png')
   })
 

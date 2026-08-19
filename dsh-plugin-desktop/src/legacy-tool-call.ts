@@ -30,7 +30,7 @@ export function parseLegacyReadFileCalls(text: string): LegacyToolCall[] {
   const invoke = /<\s*invoke\b[^>]*\bname\s*=\s*(?:"([^"]*)"|'([^']*)')[^>]*>([\s\S]*?)(?:<\/\s*invoke\s*>|<\s*invoke\s*>)/gi
   for (const match of normalized.matchAll(invoke)) {
     const name = decodeLegacyToolText(match[1] ?? match[2] ?? '')
-    if (!/^(?:read|read_file)$/i.test(name)) continue
+    if (!/^(?:read|read_file|file-read)$/i.test(name)) continue
     const args: Record<string, string> = {}
     const parameter = /<\s*parameter\b[^>]*\bname\s*=\s*(?:"([^"]*)"|'([^']*)')[^>]*>([\s\S]*?)(?:<\/\s*parameter\s*>|<\s*parameter\s*>)/gi
     for (const item of (match[3] ?? '').matchAll(parameter)) {
@@ -45,5 +45,5 @@ export function parseLegacyReadFileCalls(text: string): LegacyToolCall[] {
 
 /** Return true while a streamed text block still looks like a read envelope. */
 export function looksLikeLegacyReadFileText(text: string): boolean {
-  return /^\s*</.test(text) && (text.trim().length < 32 || /<\s*(?:read|read_file)\b|<\s*\|\s*DSML\b/i.test(text))
+  return /^\s*</.test(text) && (text.trim().length < 32 || /<\s*(?:read|read_file|file-read)\b|<\s*\|\s*DSML\b/i.test(text))
 }

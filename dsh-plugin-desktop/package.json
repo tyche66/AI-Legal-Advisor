@@ -288,6 +288,7 @@
       "icon": "build/app-icon.png"
     },
     "nsis": {
+      "include": "build/installer.nsh",
       "license": "THIRD_PARTY_NOTICES.md",
       "oneClick": false,
       "perMachine": false,

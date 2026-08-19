@@ -28,7 +28,7 @@
 +	const invoke = /<\s*invoke\b[^>]*\bname\s*=\s*(?:"([^"]*)"|'([^']*)')[^>]*>([\s\S]*?)(?:<\/\s*invoke\s*>|<\s*invoke\s*>)/gi;
 +	for (const match of normalised.matchAll(invoke)) {
 +		const name = decodeLegacyToolText(match[1] ?? match[2] ?? "");
-+		if (!/^(?:read|read_file)$/i.test(name)) continue;
++		if (!/^(?:read|read_file|file-read)$/i.test(name)) continue;
 +		const args = {};
 +		const parameter = /<\s*parameter\b[^>]*\bname\s*=\s*(?:"([^"]*)"|'([^']*)')[^>]*>([\s\S]*?)(?:<\/\s*parameter\s*>|<\s*parameter\s*>)/gi;
 +		for (const item of match[3].matchAll(parameter)) {
@@ -42,7 +42,7 @@
 +}
 +
 +function looksLikeLegacyToolText(text) {
-+	return /^\s*</.test(text) && (text.trim().length < 32 || /<\s*(?:read|read_file)\b|<\s*\|\s*DSML\b/i.test(text));
++	return /^\s*</.test(text) && (text.trim().length < 32 || /<\s*(?:read|read_file|file-read)\b|<\s*\|\s*DSML\b/i.test(text));
 +}
  /**
  * Map a terminal pi-ai event to the harness finish reason.
