@@ -7,9 +7,9 @@
 **不用装 Node.js，不用配置 Python，不用研究命令行。下载、安装、启动，即可开始整理合同、识别风险、梳理争议材料。**
 
 <p>
-  <a href="https://github.com/tyche66/AI-Legal-Advisor/actions/runs/32145084226/artifacts/9327634084"><strong>下载 2.0.6 Windows x64 安装程序</strong></a>
+  <a href="https://github.com/tyche66/AI-Legal-Advisor/actions/runs/32208670744/artifacts/9350085122"><strong>下载 2.0.6 Windows x64 安装程序</strong></a>
   ·
-  <a href="https://github.com/tyche66/AI-Legal-Advisor/actions/runs/32145084226">查看 2.0.6 构建记录</a>
+  <a href="https://github.com/tyche66/AI-Legal-Advisor/actions/runs/32208670744">查看 2.0.6 构建记录</a>
   ·
   <a href="docs/user-guide.md">阅读用户指南</a>
 </p>
@@ -67,10 +67,10 @@ AI法律顾问把复杂的法律工作拆成更容易上手的步骤：先明确
 
 | 项目 | 信息 |
 | --- | --- |
-| 当前版本 Windows x64 artifact | [下载 AI法律顾问 2.0.5 Windows installer](https://github.com/tyche66/AI-Legal-Advisor/actions/runs/32145084226/artifacts/9327634084) |
+| 当前版本 Windows x64 artifact | [下载 AI法律顾问 2.0.6 Windows installer](https://github.com/tyche66/AI-Legal-Advisor/actions/runs/32208670744/artifacts/9350085122) |
 | 安装器文件名 | `AI法律顾问-2.0.6-x64-Setup.exe` |
-| 构建记录 | [GitHub Actions CI #32145084226](https://github.com/tyche66/AI-Legal-Advisor/actions/runs/32145084226) |
-| 对应提交 | [`3cd63ee70f`](https://github.com/tyche66/AI-Legal-Advisor/commit/3cd63ee70f1b7d7e33f6f30755ce52e88851acb2) |
+| 构建记录 | [GitHub Actions CI #32208670744](https://github.com/tyche66/AI-Legal-Advisor/actions/runs/32208670744) |
+| 对应提交 | [`0f9f43ac3f`](https://github.com/tyche66/AI-Legal-Advisor/commit/0f9f43ac3fdbd5e5e41316ae2d7f8e0aff4dacb1) |
 | 上一稳定版安装包 | [AI法律顾问-2.0.4-x64-Setup.exe](https://files.manuscdn.com/user_upload_by_module/session_file/310519663749217922/PTixJaHngoCaRVwG.exe) |
 
 下载并解压 artifact 后，可以在 Windows PowerShell 中使用下面的命令校验 2.0.6 安装文件：
@@ -159,7 +159,7 @@ corepack yarn dev
 
 **让法律工作更有条理，让业务决策更早看到风险。**
 
-[下载 AI法律顾问 2.0.6](https://github.com/tyche66/AI-Legal-Advisor/actions/runs/32145084226/artifacts/9327634084) · [查看源代码](https://github.com/tyche66/AI-Legal-Advisor)
+[下载 AI法律顾问 2.0.6](https://github.com/tyche66/AI-Legal-Advisor/actions/runs/32208670744/artifacts/9350085122) · [查看源代码](https://github.com/tyche66/AI-Legal-Advisor)
 
 </div>
 
@@ -170,4 +170,4 @@ corepack yarn dev
 [3]: https://github.com/cordiverse/cordis "Cordis 官方仓库"
 [4]: https://github.com/CSlawyer1985/claude-for-legal-ZH "claude-for-legal-ZH 上游仓库"
 [5]: https://github.com/anthropics/claude-for-legal "claude-for-legal 上游仓库"
-[6]: https://github.com/tyche66/AI-Legal-Advisor/actions/runs/32145084226 "AI法律顾问 2.0.6 Windows 构建记录"
+[6]: https://github.com/tyche66/AI-Legal-Advisor/actions/runs/32208670744 "AI法律顾问 2.0.6 Windows 构建记录"
