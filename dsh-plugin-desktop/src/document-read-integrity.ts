@@ -299,7 +299,7 @@ function blockedReason(evidence: DocumentReadEvidence[]): string {
 
 /** Register the final-message gate. Tool events remain the sole evidence source. */
 export function apply(ctx: Context): void {
-  ctx.on('agent/before-message', async ({ agent, message }, next) => {
+  ctx.on('agent/before-message', async ({ agent }, next) => {
     const candidate = await next()
     try {
       return gateContractReviewMessage(agent.session.events as unknown as EventLike[], candidate)
