@@ -247,10 +247,16 @@ describe('document read integrity', () => {
   })
 
   describe('apply() waterfall contract', () => {
-    async function mountWithListener(listener: Parameters<Context['on']>[1]): Promise<Context> {
+    type BeforeMessageListener = (
+      payload: { agent: Agent; turn: number; step: number; message: AssistantMessage },
+      next: () => Promise<AssistantMessage>,
+    ) => Promise<AssistantMessage>
+
+    async function mountWithListener(listener: BeforeMessageListener): Promise<Context> {
       const ctx = new Context()
       await ctx.plugin({ name: 'document-read-integrity', apply: (inner) => {
-        inner.on('agent/before-message', listener)
+        const on = inner.on as unknown as (name: 'agent/before-message', listener: BeforeMessageListener) => () => boolean
+        on('agent/before-message', listener)
       } })
       return ctx
     }
@@ -262,7 +268,7 @@ describe('document read integrity', () => {
     }
 
     it('passes the assembled message through the listener contract (zero-arg next)', async () => {
-      const inner = vi.fn(async () => makeMessage('default'))
+      const inner = vi.fn<(message: AssistantMessage) => void>()
       const ctx = await mountWithListener(async ({ agent: _agent, message }, next) => {
         const candidate = await next()
         expect(candidate).toBe(message)
