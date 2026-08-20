@@ -2231,7 +2231,6 @@ __metadata:
     "@deepseek-ai/dsh-llm": ^0.1.0-rc.6
     "@deepseek-ai/dsh-settings": ^0.1.0-rc.6
     "@deepseek-ai/dsh-timeout": ^0.1.0-rc.6
-  checksum: 10c0/f9573362c6c2aa2878c54418d8dce619132fc8fb9165f9e6861ba9dbfb3de27ed5f2c7b3012810a5557b7a62810130784faae236644872735343e83af0cd13f9
   languageName: node
   linkType: hard
 
