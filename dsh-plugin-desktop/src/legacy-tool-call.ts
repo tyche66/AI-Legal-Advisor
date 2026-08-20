@@ -81,6 +81,23 @@ export function findLegacyEnvelopes(text: string): LegacyEnvelope[] {
     return false
   }
 
+  // Parse complete read envelopes first. This avoids treating a nested
+  // parameter/path element as the outer envelope while scanning tags.
+  for (const match of normalized.matchAll(/<\s*(read|read_file|file-read)\b([^>]*)>([\s\S]*?)<\s*\/\s*\1\s*>/gi)) {
+    const start = match.index ?? 0
+    const end = start + match[0].length
+    const attrs = match[2] ?? ''
+    const body = (match[3] ?? '').trim()
+    const attrPath = readAttribute(attrs, 'file_path') ?? readAttribute(attrs, 'path')
+      ?? readAttribute(attrs, 'file') ?? readAttribute(attrs, 'filePath')
+    let path = attrPath
+    if (path === undefined) path = pickPath(parsedJsonBody(body)) ?? extractChildPath(body)
+    if (path !== undefined && !overlaps(start, end)) {
+      claim(start, end)
+      envelopes.push({ start, end, call: readCall(path) })
+    }
+  }
+
   for (const match of normalized.matchAll(/<\s*([a-z][\w-]*)\b([^>]*?)\/?\s*>/gi)) {
     const tag = (match[1] ?? '').toLowerCase()
     const attrs = match[2] ?? ''
