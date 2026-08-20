@@ -67,6 +67,13 @@ describe('document read integrity', () => {
     expect(gateContractReviewMessage(events, claimedRead)).toBe(claimedRead)
   })
 
+  it('fails open when an assistant message has no content array', () => {
+    const malformed = { ...claimedRead, content: undefined } as unknown as typeof claimedRead
+    expect(() => gateContractReviewMessage([request], malformed)).not.toThrow()
+    expect(gateContractReviewMessage([request], malformed)).toMatchObject({ content: [] })
+    expect(gateContractReviewMessage([request], malformed)).not.toBe(malformed)
+  })
+
   it('does not use an unrelated successful read as evidence for the requested contract', () => {
     const events = [request, {
       ...readCall(), data: { name: 'read', arguments: JSON.stringify({ file_path: 'C:\\contracts\\other.md' }) },

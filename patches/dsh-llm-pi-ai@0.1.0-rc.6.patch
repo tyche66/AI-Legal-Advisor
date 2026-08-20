@@ -18,7 +18,7 @@
 +// Recover explicit read/invoke envelopes emitted as visible DSML/XML by
 +// gateways that do not populate the native tool-call field.
 +function parseLegacyToolCalls(text) {
-+	const normalised = text.replace(/<\s*(\/?)\s*\|\s*DSML\s*\|\s*\|\s*/gi, "<$1");
++	const normalised = text.replace(/｜/g, "|").replace(/<\s*(\/?)\s*\|\s*DSML\s*\|\s*(?:\|\s*)?/gi, "<$1");
 +	const calls = [];
 +	const directRead = /<\s*(read|read_file|file-read)\b[^>]*\bpath\s*=\s*(?:"([^"]*)"|'([^']*)')[^>]*\/?\s*>/gi;
 +	for (const match of normalised.matchAll(directRead)) {
@@ -43,7 +43,7 @@
 +}
 +
 +function looksLikeLegacyToolText(text) {
-+	return /^\s*</.test(text) && (text.trim().length < 32 || /<\s*(?:read|read_file|file-read)\b|<\s*\|\s*DSML\b/i.test(text));
++	return /^\s*</.test(text) && (text.trim().length < 32 || /<\s*(?:read|read_file|file-read)\b|<\s*[|｜]\s*DSML\b/i.test(text));
 +}
  /**
  * Map a terminal pi-ai event to the harness finish reason.

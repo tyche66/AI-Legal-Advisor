@@ -19,7 +19,9 @@ function decodeLegacyToolText(value: string): string {
  * seam runs inside the upstream pi-ai bundle rather than the desktop package.
  */
 export function parseLegacyReadFileCalls(text: string): LegacyToolCall[] {
-  const normalized = text.replace(/<\s*(\/?)\s*\|\s*DSML\s*\|\s*\|\s*/gi, '<$1')
+  const normalized = text
+    .replace(/｜/g, '|')
+    .replace(/<\s*(\/?)\s*\|\s*DSML\s*\|\s*(?:\|\s*)?/gi, '<$1')
   const calls: LegacyToolCall[] = []
   const directRead = /<\s*(?:read|read_file|file-read)\b[^>]*\bpath\s*=\s*(?:"([^"]*)"|'([^']*)')[^>]*\/?\s*>/gi
   for (const match of normalized.matchAll(directRead)) {
@@ -46,5 +48,5 @@ export function parseLegacyReadFileCalls(text: string): LegacyToolCall[] {
 
 /** Return true while a streamed text block still looks like a read envelope. */
 export function looksLikeLegacyReadFileText(text: string): boolean {
-  return /^\s*</.test(text) && (text.trim().length < 32 || /<\s*(?:read|read_file|file-read)\b|<\s*\|\s*DSML\b/i.test(text))
+  return /^\s*</.test(text) && (text.trim().length < 32 || /<\s*(?:read|read_file|file-read)\b|<\s*[|｜]\s*DSML\b/i.test(text))
 }

@@ -33,6 +33,17 @@ describe('legacy read-file tool-call compatibility', () => {
     }])
   })
 
+  it('converts a full-width DSML envelope emitted by the affected gateway', () => {
+    const output = '<｜DSML｜tool_calls> <｜DSML｜invoke name="read"> '
+      + '<｜DSML｜parameter name="file_path" string="true">C:\\Users\\WDAGUtilityAccount\\Desktop\\云端数据分析与运营服务合同.md'
+      + '<｜DSML｜parameter> <｜DSML｜invoke> <｜DSML｜tool_calls>'
+    expect(looksLikeLegacyReadFileText(output.slice(0, 28))).toBe(true)
+    expect(parseLegacyReadFileCalls(output)).toEqual([{
+      name: 'read',
+      arguments: JSON.stringify({ file_path: 'C:\\Users\\WDAGUtilityAccount\\Desktop\\云端数据分析与运营服务合同.md' }),
+    }])
+  })
+
   it('handles HTML entities without interpreting arbitrary tool names', () => {
     expect(parseLegacyReadFileCalls('<invoke name="read_file"><parameter name="path">a&amp;b&lt;c.md</parameter></invoke>'))
       .toEqual([{ name: 'read', arguments: JSON.stringify({ file_path: 'a&b<c.md' }) }])

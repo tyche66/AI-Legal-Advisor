@@ -48,8 +48,18 @@ declare module '@deepseek-ai/cordis' {
   }
 }
 
-function textOf(message: AssistantMessage): string {
-  return message.content
+function contentOf(message: AssistantMessage | undefined): AssistantMessage['content'] {
+  const content = (message as { content?: unknown } | undefined)?.content
+  return Array.isArray(content) ? content as AssistantMessage['content'] : []
+}
+
+function normalizeAssistantMessage(message: AssistantMessage): AssistantMessage {
+  if (Array.isArray((message as { content?: unknown }).content)) return message
+  return { ...message, content: [] } as AssistantMessage
+}
+
+function textOf(message: AssistantMessage | undefined): string {
+  return contentOf(message)
     .filter(block => block.type === 'text')
     .map(block => block.text)
     .join('\n')
@@ -155,18 +165,33 @@ function supportsCurrentRequest(events: readonly EventLike[], evidence: Document
 
 /** Replace unsupported contract-review prose before it becomes a durable answer. */
 export function gateContractReviewMessage(events: readonly EventLike[], message: AssistantMessage): AssistantMessage {
-  if (!requiresVerifiedRead(events) || message.content.some(block => block.type === 'tool-call')) return message
+  const safeMessage = normalizeAssistantMessage(message)
+  const content = safeMessage.content
+  if (!requiresVerifiedRead(events) || content.some(block => block.type === 'tool-call')) return safeMessage
   const evidence = documentReadEvidence(events)
-  if (supportsCurrentRequest(events, evidence)) return message
-  if (textOf(message).trim().length === 0) return message
-  const { kind: _kind, ...source } = message.source
+  if (supportsCurrentRequest(events, evidence)) return safeMessage
+  if (textOf(safeMessage).trim().length === 0) return safeMessage
+  const { kind: _kind, ...source } = safeMessage.source
   return createAssistantMessage({ content: [{ type: 'text', text: BLOCKED_MESSAGE }], source })
 }
 
 /** Register the final-message gate. Tool events remain the sole evidence source. */
 export function apply(ctx: Context): void {
   ctx.on('agent/before-message', async ({ agent, message }, next) => {
-    const candidate = await next(message)
-    return gateContractReviewMessage(agent.session.events as unknown as EventLike[], candidate)
+    let candidate: AssistantMessage | undefined
+    try {
+      candidate = await next(message)
+    } catch {
+      return normalizeAssistantMessage(message)
+    }
+    // A compatibility hook must never turn a malformed provider response into a
+    // session-ending exception. Normalize the message when a downstream handler
+    // returns no assistant message.
+    if (!candidate) return normalizeAssistantMessage(message)
+    try {
+      return gateContractReviewMessage(agent.session.events as unknown as EventLike[], candidate)
+    } catch {
+      return candidate
+    }
   })
 }
