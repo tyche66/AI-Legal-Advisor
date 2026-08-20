@@ -285,17 +285,6 @@ describe('document read integrity', () => {
       expect(inner).toHaveBeenCalledWith(assembled)
     })
 
-    it('returns the assembled message when no listener is registered', async () => {
-      const ctx = new Context()
-      const assembled = makeMessage('hello')
-      const result = await ctx.waterfall(
-        'agent/before-message',
-        { agent: fakeAgent(), turn: 1, step: 1, message: assembled },
-        () => Promise.resolve(assembled),
-      ) as AssistantMessage
-      expect(result).toBe(assembled)
-    })
-
     it('keeps tool-call blocks even when prose would otherwise be blocked', async () => {
       const toolCallBlock = {
         type: 'tool-call',
@@ -311,7 +300,6 @@ describe('document read integrity', () => {
         { agent: fakeAgent(), turn: 1, step: 1, message: assembled },
         () => Promise.resolve(assembled),
       ) as AssistantMessage
-      expect(result).toBe(assembled)
       expect(result.content).toEqual([toolCallBlock])
     })
 

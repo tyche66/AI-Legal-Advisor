@@ -197,7 +197,7 @@ function readCall(path: string): LegacyToolCall {
 
 function parseInvokeBody(inner: string): Record<string, string> {
   const args: Record<string, string> = {}
-  for (const m of inner.matchAll(/<\s*parameter\b([^>]*)>([\s\S]*?)<\s*\/\s*parameter\s*>/gi)) {
+  for (const m of inner.matchAll(/<\s*parameter\b([^>]*)>([\s\S]*?)(?:<\s*\/\s*parameter\s*>|<\s*parameter\s*>)/gi)) {
     const attrs = m[1] ?? ''
     const key = readAttribute(attrs, 'name')
     if (key === undefined || key.length === 0) continue
