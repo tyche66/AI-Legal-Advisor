@@ -1,0 +1,24 @@
+--- a/lib/index.js
++++ b/lib/index.js
+@@ -642,8 +642,13 @@ var ReactLoopAgent = class {
+-			const message = createAssistantMessage({
+-				content: assembler.blocks(),
+-				source: {
+-					provider: request.provider,
+-					model: request.model,
+-					...assembler.replayState !== void 0 ? { replayState: assembler.replayState } : {}
+-				}
+-			});
++			const message = await this.loopCtx.waterfall("agent/before-message", {
++				agent: this,
++				turn,
++				step,
++				message: createAssistantMessage({
++					content: assembler.blocks(),
++					source: {
++						provider: request.provider,
++						model: request.model,
++						...assembler.replayState !== void 0 ? { replayState: assembler.replayState } : {}
++					}
++				}),
++			}, (candidate) => Promise.resolve(candidate));

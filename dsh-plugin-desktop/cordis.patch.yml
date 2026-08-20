@@ -17,6 +17,8 @@
       name: dsh-plugin-desktop/updates
     - id: deepseek-balance
       name: dsh-plugin-desktop/deepseek-balance
+    - id: document-read-integrity
+      name: dsh-plugin-desktop/document-read-integrity
 
 # A desktop launch has no terminal operator waiting for the Web readiness line.
 - id: web-runtime
