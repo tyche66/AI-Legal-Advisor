@@ -613,7 +613,6 @@ __metadata:
     "@deepseek-ai/dsh-settings": ^0.1.0-rc.6
     "@deepseek-ai/dsh-system-prompt": ^0.1.0-rc.6
     "@deepseek-ai/dsh-tools": ^0.1.0-rc.6
-  checksum: 10c0/2205e917e50ab3e6516d9238e1fb971a72a794f33f70b3d891eb8762ebf181b236f2897bd14324bb8626ae861763d73a9a5e3b795c5b3c1affe5ce3c7d1b76a4
   languageName: node
   linkType: hard
 
@@ -2232,7 +2231,6 @@ __metadata:
     "@deepseek-ai/dsh-llm": ^0.1.0-rc.6
     "@deepseek-ai/dsh-settings": ^0.1.0-rc.6
     "@deepseek-ai/dsh-timeout": ^0.1.0-rc.6
-  checksum: 10c0/c92161cb80d680b21605aa97750a4610588b0d89887ae29db2e40222943d34b61baffe94576a009ba446c5d573e38604c35c0e6b43afc2b25772c8c57425535e
   languageName: node
   linkType: hard
 
