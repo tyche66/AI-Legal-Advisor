@@ -113,7 +113,7 @@ export function findLegacyEnvelopes(text: string): LegacyEnvelope[] {
     }
     if (isSelfClosing) continue
     if (!['invoke', 'tool_call', 'tool-call', 'read', 'read_file', 'file-read'].includes(tag)) continue
-    const closer = new RegExp(`<\\s*/\\s*${escapeRegex(tag)}\\s*>`, 'i')
+    const closer = new RegExp(`(?:<\\s*/\\s*${escapeRegex(tag)}\\s*>|<\\s*${escapeRegex(tag)}\\s*>)`, 'i')
     const tail = normalized.slice(tagEnd)
     const closerMatch = tail.match(closer)
     if (closerMatch === null || closerMatch.index === undefined) continue

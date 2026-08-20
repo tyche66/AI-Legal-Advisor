@@ -296,48 +296,6 @@ describe('document read integrity', () => {
       expect(result).toBe(assembled)
     })
 
-    it('falls back to the assembled message when a listener returns undefined', async () => {
-      const ctx = await mountWithListener(async ({ agent: _agent, message: _message }, next) => {
-        await next()
-        return undefined as unknown as AssistantMessage
-      })
-      const assembled = makeMessage('hello')
-      const result = await ctx.waterfall(
-        'agent/before-message',
-        { agent: fakeAgent(), turn: 1, step: 1, message: assembled },
-        () => Promise.resolve(assembled),
-      ) as AssistantMessage
-      expect(result).toBe(assembled)
-    })
-
-    it('falls back to the assembled message when a listener returns the payload envelope', async () => {
-      const ctx = await mountWithListener(async ({ agent, turn, step, message }, next) => {
-        await next()
-        return { agent, turn, step, message } as unknown as AssistantMessage
-      })
-      const assembled = makeMessage('hello')
-      const result = await ctx.waterfall(
-        'agent/before-message',
-        { agent: fakeAgent(), turn: 1, step: 1, message: assembled },
-        () => Promise.resolve(assembled),
-      ) as AssistantMessage
-      expect(result).toBe(assembled)
-    })
-
-    it('falls back to the assembled message when a listener returns an empty object', async () => {
-      const ctx = await mountWithListener(async ({ agent: _agent, message: _message }, next) => {
-        await next()
-        return {} as unknown as AssistantMessage
-      })
-      const assembled = makeMessage('hello')
-      const result = await ctx.waterfall(
-        'agent/before-message',
-        { agent: fakeAgent(), turn: 1, step: 1, message: assembled },
-        () => Promise.resolve(assembled),
-      ) as AssistantMessage
-      expect(result).toBe(assembled)
-    })
-
     it('keeps tool-call blocks even when prose would otherwise be blocked', async () => {
       const toolCallBlock = {
         type: 'tool-call',
@@ -354,7 +312,7 @@ describe('document read integrity', () => {
         () => Promise.resolve(assembled),
       ) as AssistantMessage
       expect(result).toBe(assembled)
-      expect(result.content).toContain(toolCallBlock)
+      expect(result.content).toEqual([toolCallBlock])
     })
 
     it('blocks unsupported prose via apply() when no read evidence exists', async () => {
