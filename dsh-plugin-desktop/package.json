@@ -51,6 +51,10 @@
       "types": "./lib/types/deepseek-balance.d.ts",
       "default": "./lib/deepseek-balance.js"
     },
+    "./document-read-integrity": {
+      "types": "./lib/types/document-read-integrity.d.ts",
+      "default": "./lib/document-read-integrity.js"
+    },
     "./profiles": {
       "types": "./lib/types/profiles.d.ts",
       "default": "./lib/profiles.js"
