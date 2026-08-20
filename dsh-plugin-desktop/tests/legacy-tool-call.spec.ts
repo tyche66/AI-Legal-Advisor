@@ -18,7 +18,8 @@ describe('legacy read-file tool-call compatibility', () => {
   })
 
   it('converts the JSON-body read_file form', () => {
-    expect(parseLegacyReadFileCalls('<read_file>{"file_path":"C:\\Users\\Qiqi\\Desktop\\云端数据分析与运营服务合同.md"}</read_file>'))
+    const body = JSON.stringify({ file_path: 'C:\\Users\\Qiqi\\Desktop\\云端数据分析与运营服务合同.md' })
+    expect(parseLegacyReadFileCalls(`<read_file>${body}</read_file>`))
       .toEqual([{ name: 'read', arguments: JSON.stringify({ file_path: 'C:\\Users\\Qiqi\\Desktop\\云端数据分析与运营服务合同.md' }) }])
   })
 
