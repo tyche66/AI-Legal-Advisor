@@ -7,7 +7,10 @@ import type { AssistantMessage } from '@deepseek-ai/dsh-llm'
 
 export const name = 'document-read-integrity'
 
-const BLOCKED_MESSAGE = '尚未获得该文件的真实读取结果，因此不能确认文件内容，也不能开始正式合同审查。\n请重新发送文件、选择可访问的文件路径，或明确粘贴需要临时审查的正文。'
+const BLOCKED_NO_EVIDENCE = '本轮尚未读取任何文件，因此不能确认文件内容，也不能开始正式合同审查。\n请重新发送文件、选择可访问的文件路径，或明确粘贴需要临时审查的正文。'
+const BLOCKED_PARTIAL = (covered: number, total: number): string =>
+  `文件读取不完整：已覆盖第 1–${covered} 行 / 共 ${total} 行。请补读剩余部分后再继续审查。`
+const BLOCKED_FAILED = '文件读取失败。请确认路径可访问、文件存在且不为空，然后再试。'
 
 export type DocumentReadStatus = 'complete' | 'partial' | 'empty' | 'failed' | 'unavailable'
 
@@ -17,6 +20,7 @@ export interface DocumentReadEvidence {
   status: DocumentReadStatus
   totalLines?: number
   returnedLines?: number
+  coveredLines?: number
 }
 
 interface ReadCall {
@@ -39,26 +43,27 @@ interface EventLike {
 
 declare module '@deepseek-ai/cordis' {
   interface Events {
+    /**
+     * Final-message gate before the assistant message is persisted.
+     * The waterfall contract is zero-arg `next`: cordis drops the inner's
+     * arguments when it composes the chain, so listeners must call
+     * `await next()` with no arguments to receive the assembled message
+     * (carried by the `message` field of the payload closure).
+     */
     'agent/before-message'(payload: {
       agent: Agent
       turn: number
       step: number
       message: AssistantMessage
-    }, next: (message: AssistantMessage) => Promise<AssistantMessage>): Promise<AssistantMessage>
+    }, next: () => Promise<AssistantMessage>): Promise<AssistantMessage>
   }
 }
 
-function contentOf(message: AssistantMessage | undefined): AssistantMessage['content'] {
-  const content = (message as { content?: unknown } | undefined)?.content
-  return Array.isArray(content) ? content as AssistantMessage['content'] : []
+function contentOf(message: AssistantMessage): AssistantMessage['content'] {
+  return Array.isArray(message.content) ? message.content : []
 }
 
-function normalizeAssistantMessage(message: AssistantMessage): AssistantMessage {
-  if (Array.isArray((message as { content?: unknown }).content)) return message
-  return { ...message, content: [] } as AssistantMessage
-}
-
-function textOf(message: AssistantMessage | undefined): string {
+function textOf(message: AssistantMessage): string {
   return contentOf(message)
     .filter(block => block.type === 'text')
     .map(block => block.text)
@@ -92,29 +97,37 @@ function readMeta(value: unknown): ReadMeta | undefined {
   return { path: meta.path, offset: meta.offset, lines, totalLines: meta.totalLines }
 }
 
-function statusFromResult(call: ReadCall, result: EventLike): DocumentReadEvidence {
-  const message = result.data.message
-  if (message === null || typeof message !== 'object' || (message as Record<string, unknown>).isError === true) {
-    return { requestedPath: call.path, status: 'failed' }
-  }
-  const meta = readMeta(result.data.meta)
-  if (meta === undefined) return { requestedPath: call.path, status: 'unavailable' }
-  if (meta.totalLines === 0) return { requestedPath: call.path, resolvedPath: meta.path, status: 'empty', totalLines: 0, returnedLines: 0 }
-  const returnedLines = meta.lines.length
-  const lastLine = meta.lines.at(-1)?.number ?? 0
-  return {
-    requestedPath: call.path,
-    resolvedPath: meta.path,
-    status: meta.offset === 1 && returnedLines > 0 && lastLine >= meta.totalLines ? 'complete' : 'partial',
-    totalLines: meta.totalLines,
-    returnedLines,
+interface ReadWindow {
+  requestedPath: string
+  resolvedPath?: string
+  totalLines: number
+  covered: Set<number>
+  failed: boolean
+  unavailable: boolean
+}
+
+function emptyWindow(requestedPath: string): ReadWindow {
+  return { requestedPath, totalLines: 0, covered: new Set(), failed: false, unavailable: false }
+}
+
+function applyWindow(window: ReadWindow, meta: ReadMeta): void {
+  if (window.totalLines === 0) window.totalLines = meta.totalLines
+  if (window.resolvedPath === undefined && meta.path !== '') window.resolvedPath = meta.path
+  for (const line of meta.lines) {
+    if (line.number >= 1 && line.number <= meta.totalLines) window.covered.add(line.number)
   }
 }
 
-/** Derive read evidence exclusively from a paired durable read call and result. */
+/**
+ * Derive read evidence by merging every read result that targets the same
+ * path. Long files split across multiple `read` calls are marked `complete`
+ * only when the union of returned line numbers covers `[1..totalLines]`;
+ * anything less is `partial` with `coveredLines` reported.
+ */
 export function documentReadEvidence(events: readonly EventLike[]): DocumentReadEvidence[] {
   const calls = new Map<number, ReadCall>()
-  const evidence: DocumentReadEvidence[] = []
+  const windows = new Map<string, ReadWindow>()
+  const order: string[] = []
   for (const event of events) {
     if (event.type === 'tool/call' && event.data.name === 'read') {
       const path = pathFromArguments(event.data.arguments)
@@ -125,17 +138,87 @@ export function documentReadEvidence(events: readonly EventLike[]): DocumentRead
     const callSeq = event.sourceEventSeqs?.[0]
     if (callSeq === undefined) continue
     const call = calls.get(callSeq)
-    if (call !== undefined) evidence.push(statusFromResult(call, event))
+    if (call === undefined) continue
+    if (event.data.message !== null && typeof event.data.message === 'object'
+      && (event.data.message as Record<string, unknown>).isError === true) {
+      let window = windows.get(call.path)
+      if (window === undefined) {
+        window = emptyWindow(call.path)
+        windows.set(call.path, window)
+        order.push(call.path)
+      }
+      window.failed = true
+      continue
+    }
+    const meta = readMeta(event.data.meta)
+    if (meta === undefined) {
+      let window = windows.get(call.path)
+      if (window === undefined) {
+        window = emptyWindow(call.path)
+        windows.set(call.path, window)
+        order.push(call.path)
+      }
+      window.unavailable = true
+      continue
+    }
+    let window = windows.get(call.path)
+    if (window === undefined) {
+      window = emptyWindow(call.path)
+      windows.set(call.path, window)
+      order.push(call.path)
+    }
+    applyWindow(window, meta)
+  }
+  const evidence: DocumentReadEvidence[] = []
+  for (const path of order) {
+    const window = windows.get(path)
+    if (window === undefined) continue
+    if (window.failed) {
+      evidence.push({ requestedPath: window.requestedPath, status: 'failed' })
+      continue
+    }
+    if (window.unavailable) {
+      evidence.push({
+        requestedPath: window.requestedPath,
+        ...(window.resolvedPath !== undefined ? { resolvedPath: window.resolvedPath } : {}),
+        status: 'unavailable',
+      })
+      continue
+    }
+    if (window.totalLines === 0) {
+      evidence.push({
+        requestedPath: window.requestedPath,
+        ...(window.resolvedPath !== undefined ? { resolvedPath: window.resolvedPath } : {}),
+        status: 'empty',
+        totalLines: 0,
+        returnedLines: 0,
+      })
+      continue
+    }
+    const covered = window.covered.size
+    let contiguous = 0
+    while (window.covered.has(contiguous + 1)) contiguous++
+    const status: DocumentReadStatus = contiguous >= window.totalLines ? 'complete' : 'partial'
+    evidence.push({
+      requestedPath: window.requestedPath,
+      ...(window.resolvedPath !== undefined ? { resolvedPath: window.resolvedPath } : {}),
+      status,
+      totalLines: window.totalLines,
+      returnedLines: covered,
+      coveredLines: contiguous,
+    })
   }
   return evidence
 }
 
-/** True only for a file-backed contract review request, not ordinary legal Q&A. */
+/** True for a file-backed contract review request, not ordinary legal Q&A. */
 export function requiresVerifiedRead(events: readonly EventLike[]): boolean {
   const userText = userTextFrom(events)
-  return /合同|协议|contract/iu.test(userText)
-    && /审查|审核|review/iu.test(userText)
-    && /文件|附件|路径|\.docx?\b|\.pdf\b|\.md\b/iu.test(userText)
+  const mentionsContract = /合同|协议|contract/iu.test(userText)
+  const mentionsReview = /审查|审核|review/iu.test(userText)
+  if (mentionsContract && mentionsReview) return true
+  const fileHint = /文件|附件|路径|这份|此份|本合同|\.docx?\b|\.pdf\b|\.md\b/iu.test(userText)
+  return mentionsContract && fileHint
 }
 
 function userTextFrom(events: readonly EventLike[]): string {
@@ -151,43 +234,73 @@ function userTextFrom(events: readonly EventLike[]): string {
     .join('\n')
 }
 
+function normalizePath(path: string): string {
+  return path.replaceAll('/', '\\').replace(/\\+/g, '\\').toLowerCase()
+}
+
 function requestedPaths(events: readonly EventLike[]): string[] {
-  const matches = userTextFrom(events).match(/[A-Za-z]:\\[^\s"'，。；]+|(?:\\|\/)[^\s"'，。；]+(?:\.docx?|\.pdf|\.md)/giu) ?? []
-  return matches.map(path => path.replaceAll('/', '\\').toLowerCase())
+  const userText = userTextFrom(events)
+  const matches = userText.match(/[A-Za-z]:\\[^\s"'，。；]+|(?:\\|\/)[^\s"'，。；]+(?:\.docx?|\.pdf|\.md)/giu) ?? []
+  const seen = new Set<string>()
+  const result: string[] = []
+  for (const path of matches) {
+    const key = normalizePath(path)
+    if (!seen.has(key)) {
+      seen.add(key)
+      result.push(path)
+    }
+  }
+  return result
+}
+
+function basename(path: string): string {
+  const idx = Math.max(path.lastIndexOf('\\'), path.lastIndexOf('/'))
+  return idx >= 0 ? path.slice(idx + 1) : path
 }
 
 function supportsCurrentRequest(events: readonly EventLike[], evidence: DocumentReadEvidence[]): boolean {
   const requested = requestedPaths(events)
-  if (requested.length === 0) return false
-  return evidence.some(item => item.status === 'complete'
-    && requested.includes(item.requestedPath.replaceAll('/', '\\').toLowerCase()))
+  if (requested.length > 0) {
+    return evidence.some(item => {
+      if (item.status !== 'complete') return false
+      const candidates = [
+        normalizePath(item.requestedPath),
+        ...(item.resolvedPath !== undefined ? [normalizePath(item.resolvedPath)] : []),
+      ]
+      return requested.some(req => candidates.includes(normalizePath(req))
+        || candidates.some(c => c.endsWith('\\' + basename(req).toLowerCase())))
+    })
+  }
+  return evidence.some(item => item.status === 'complete')
 }
 
 /** Replace unsupported contract-review prose before it becomes a durable answer. */
 export function gateContractReviewMessage(events: readonly EventLike[], message: AssistantMessage): AssistantMessage {
-  const safeMessage = normalizeAssistantMessage(message)
-  const content = safeMessage.content
-  if (!requiresVerifiedRead(events) || content.some(block => block.type === 'tool-call')) return safeMessage
+  const content = contentOf(message)
+  if (!requiresVerifiedRead(events) || content.some(block => block.type === 'tool-call')) return message
   const evidence = documentReadEvidence(events)
-  if (supportsCurrentRequest(events, evidence)) return safeMessage
-  if (textOf(safeMessage).trim().length === 0) return safeMessage
-  const { kind: _kind, ...source } = safeMessage.source
-  return createAssistantMessage({ content: [{ type: 'text', text: BLOCKED_MESSAGE }], source })
+  if (supportsCurrentRequest(events, evidence)) return message
+  if (textOf(message).trim().length === 0) return message
+  const blocked = blockedReason(evidence)
+  const { kind: _kind, ...source } = message.source
+  return createAssistantMessage({ content: [{ type: 'text', text: blocked }], source })
+}
+
+function blockedReason(evidence: DocumentReadEvidence[]): string {
+  const failed = evidence.find(item => item.status === 'failed')
+  if (failed !== undefined) return BLOCKED_FAILED
+  const partial = evidence.find(item => item.status === 'partial' && item.totalLines !== undefined)
+  if (partial !== undefined) {
+    const covered = partial.coveredLines ?? 0
+    return BLOCKED_PARTIAL(covered, partial.totalLines ?? 0)
+  }
+  return BLOCKED_NO_EVIDENCE
 }
 
 /** Register the final-message gate. Tool events remain the sole evidence source. */
 export function apply(ctx: Context): void {
   ctx.on('agent/before-message', async ({ agent, message }, next) => {
-    let candidate: AssistantMessage | undefined
-    try {
-      candidate = await next(message)
-    } catch {
-      return normalizeAssistantMessage(message)
-    }
-    // A compatibility hook must never turn a malformed provider response into a
-    // session-ending exception. Normalize the message when a downstream handler
-    // returns no assistant message.
-    if (!candidate) return normalizeAssistantMessage(message)
+    const candidate = await next()
     try {
       return gateContractReviewMessage(agent.session.events as unknown as EventLike[], candidate)
     } catch {

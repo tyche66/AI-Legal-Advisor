@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { looksLikeLegacyReadFileText, parseLegacyReadFileCalls } from '../src/legacy-tool-call.ts'
+import { looksLikeLegacyReadFileText, parseLegacyReadFileCalls, splitLegacyToolText } from '../src/legacy-tool-call.ts'
 
 describe('legacy read-file tool-call compatibility', () => {
   it('converts the direct read tag shown by affected models', () => {
@@ -10,6 +10,16 @@ describe('legacy read-file tool-call compatibility', () => {
   it('converts a direct file-read tag to the real read tool', () => {
     expect(parseLegacyReadFileCalls('<file-read path="C:\\Users\\Qiqi\\Desktop\\合同.md">'))
       .toEqual([{ name: 'read', arguments: JSON.stringify({ file_path: 'C:\\Users\\Qiqi\\Desktop\\合同.md' }) }])
+  })
+
+  it('converts the child-element read_file form', () => {
+    expect(parseLegacyReadFileCalls('<read_file>\n<path>C:\\Users\\Qiqi\\Desktop\\云端数据分析与运营服务合同.md</path>\n</read_file>'))
+      .toEqual([{ name: 'read', arguments: JSON.stringify({ file_path: 'C:\\Users\\Qiqi\\Desktop\\云端数据分析与运营服务合同.md' }) }])
+  })
+
+  it('converts the JSON-body read_file form', () => {
+    expect(parseLegacyReadFileCalls('<read_file>{"file_path":"C:\\Users\\Qiqi\\Desktop\\云端数据分析与运营服务合同.md"}</read_file>'))
+      .toEqual([{ name: 'read', arguments: JSON.stringify({ file_path: 'C:\\Users\\Qiqi\\Desktop\\云端数据分析与运营服务合同.md' }) }])
   })
 
   it('converts the DSML invoke envelope and maps file to path', () => {
@@ -56,5 +66,15 @@ describe('legacy read-file tool-call compatibility', () => {
     expect(looksLikeLegacyReadFileText('< | DSML')).toBe(true)
     expect(looksLikeLegacyReadFileText('合同审查结论：')).toBe(false)
     expect(parseLegacyReadFileCalls('合同审查结论：未发现伪工具调用。')).toEqual([])
+    expect(parseLegacyReadFileCalls('违约金 < 合同总额 5%')).toEqual([])
+    expect(parseLegacyReadFileCalls('<foo_bar><x>1</x></foo_bar>')).toEqual([])
+  })
+
+  it('preserves prose around a recovered envelope', () => {
+    const text = '好的，我先读取合同文件。\n\n<read_file><path>C:\\合同.md</path></read_file>'
+    expect(splitLegacyToolText(text)).toEqual({
+      prose: '好的，我先读取合同文件。\n\n',
+      calls: [{ name: 'read', arguments: JSON.stringify({ file_path: 'C:\\合同.md' }) }],
+    })
   })
 })

@@ -1,11 +1,9 @@
 --- a/lib/index.js
 +++ b/lib/index.js
-@@ -394,9 +394,47 @@
+@@ -394,9 +394,63 @@ function classifyPiAiError(message) {
  	if (/\b5\d\d\b/.test(message)) return "SERVER";
  	if (/\btime(?:d)?\s*out\b|timeout/i.test(message)) return "TIMEOUT";
  	if (/stream ended (?:before|without)\b/i.test(message)) return "TRANSPORT";
-+	// A provider response that ends while its JSON payload is still being parsed
-+	// is a stream truncation, not a permanent model error.
 +	if (/unexpected end of json input/i.test(message)) return "TRANSPORT";
  	if (/\b(?:network|connection|socket|fetch)\b|\bECONN[A-Z]+\b/i.test(message) || /\b(?:other side closed|HTTP2 request did not get a response|WebSocket closed unexpectedly)\b/i.test(message) || /\bterminated\b|premature close/i.test(message)) return "TRANSPORT";
  	return "PI_AI_ERROR";
@@ -15,40 +13,58 @@
 +	return value.replace(/&quot;/gi, '"').replace(/&#39;/gi, "'").replace(/&lt;/gi, "<").replace(/&gt;/gi, ">").replace(/&amp;/gi, "&").trim();
 +}
 +
-+// Recover explicit read/invoke envelopes emitted as visible DSML/XML by
-+// gateways that do not populate the native tool-call field.
++function normalizeLegacyToolText(value) {
++	return value.replace(/｜/g, "|").replace(/<\s*(\/?)\s*\|\s*DSML\s*\|\s*(?:\|\s*)?/gi, "<$1");
++}
++
 +function parseLegacyToolCalls(text) {
-+	const normalised = text.replace(/｜/g, "|").replace(/<\s*(\/?)\s*\|\s*DSML\s*\|\s*(?:\|\s*)?/gi, "<$1");
++	const normalized = normalizeLegacyToolText(text);
 +	const calls = [];
-+	const directRead = /<\s*(read|read_file|file-read)\b[^>]*\bpath\s*=\s*(?:"([^"]*)"|'([^']*)')[^>]*\/?\s*>/gi;
-+	for (const match of normalised.matchAll(directRead)) {
-+		const path = decodeLegacyToolText(match[2] ?? match[3] ?? "");
-+		if (path.length > 0) calls.push({ name: "read", arguments: JSON.stringify({ file_path: path }) });
-+	}
-+	const invoke = /<\s*invoke\b[^>]*\bname\s*=\s*(?:"([^"]*)"|'([^']*)')[^>]*>([\s\S]*?)(?:<\/\s*invoke\s*>|<\s*invoke\s*>)/gi;
-+	for (const match of normalised.matchAll(invoke)) {
-+		const name = decodeLegacyToolText(match[1] ?? match[2] ?? "");
-+		if (!/^(?:read|read_file|file-read)$/i.test(name)) continue;
-+		const args = {};
-+		const parameter = /<\s*parameter\b[^>]*\bname\s*=\s*(?:"([^"]*)"|'([^']*)')[^>]*>([\s\S]*?)(?:<\/\s*parameter\s*>|<\s*parameter\s*>)/gi;
-+		for (const item of match[3].matchAll(parameter)) {
-+			const key = decodeLegacyToolText(item[1] ?? item[2] ?? "");
-+			if (key) args[key] = decodeLegacyToolText(item[3] ?? "");
++	const pathFrom = (value) => typeof value === "string" && value.trim() ? decodeLegacyToolText(value) : void 0;
++	const read = (path) => ({ name: "read", arguments: JSON.stringify({ file_path: path }) });
++	for (const match of normalized.matchAll(/<\s*(read|read_file|file-read)\b([^>]*?)(?:\/?>)([\s\S]*?)<\s*\/\s*\1\s*>/gi)) {
++		const attrs = match[2] ?? "";
++		const attr = attrs.match(/\b(?:file_path|path|file|filePath)\s*=\s*(?:"([^"]*)"|'([^']*)')/i);
++		let path = pathFrom(attr?.[1] ?? attr?.[2]);
++		const body = (match[3] ?? "").trim();
++		if (path === void 0) {
++			try {
++				const json = JSON.parse(body);
++				path = pathFrom(json.file_path ?? json.path ?? json.file ?? json.filePath);
++			} catch {
++				const child = body.match(/<\s*(?:file_path|path|file|filePath)\s*>([\s\S]*?)<\s*\/\s*(?:file_path|path|file|filePath)\s*>/i);
++				path = pathFrom(child?.[1]);
++			}
 +		}
-+		if (args.file_path === undefined && typeof args.path === "string") args.file_path = args.path;
-+		if (args.file_path === undefined && typeof args.file === "string") args.file_path = args.file;
-+		if (typeof args.file_path === "string") calls.push({ name: "read", arguments: JSON.stringify({ file_path: args.file_path }) });
++		if (path !== void 0) calls.push(read(path));
++	}
++	for (const match of normalized.matchAll(/<\s*(read|read_file|file-read)\b([^>]*)\/>/gi)) {
++		const attr = (match[2] ?? "").match(/\b(?:file_path|path|file|filePath)\s*=\s*(?:"([^"]*)"|'([^']*)')/i);
++		const path = pathFrom(attr?.[1] ?? attr?.[2]);
++		if (path !== void 0) calls.push(read(path));
++	}
++	for (const match of normalized.matchAll(/<\s*invoke\b([^>]*)>([\s\S]*?)<\s*\/\s*invoke\s*>/gi)) {
++		const name = (match[1] ?? "").match(/\bname\s*=\s*(?:"([^"]*)"|'([^']*)')/i);
++		if (!/^(?:read|read_file|file-read)$/i.test(name?.[1] ?? name?.[2] ?? "")) continue;
++		const body = match[2] ?? "";
++		const params = {};
++		for (const item of body.matchAll(/<\s*parameter\b([^>]*)>([\s\S]*?)<\s*\/\s*parameter\s*>/gi)) {
++			const key = (item[1] ?? "").match(/\bname\s*=\s*(?:"([^"]*)"|'([^']*)')/i);
++			if (key?.[1] ?? key?.[2]) params[key[1] ?? key[2]] = decodeLegacyToolText(item[2] ?? "");
++		}
++		const path = pathFrom(params.file_path ?? params.path ?? params.file ?? params.filePath);
++		if (path !== void 0) calls.push(read(path));
 +	}
 +	return calls;
 +}
 +
 +function looksLikeLegacyToolText(text) {
-+	return /^\s*</.test(text) && (text.trim().length < 32 || /<\s*(?:read|read_file|file-read)\b|<\s*[|｜]\s*DSML\b/i.test(text));
++	return /<\s*(?:read|read_file|file-read|invoke)\b|<\s*[|｜]\s*DSML\b/i.test(text);
 +}
  /**
  * Map a terminal pi-ai event to the harness finish reason.
  * @param message - the assistant message carried by the `done` or `error` event.
-@@ -458,32 +495,52 @@
+@@ -458,32 +512,53 @@ function mapStopReason(message, contextWindow) {
  */
  async function* toStreamChunks(events, contextWindow) {
  	const toolIds = /* @__PURE__ */ new Map();
@@ -62,7 +78,8 @@
 -				index: event.contentIndex,
 -				blockType: "text"
 -			};
-+			textBuffers.set(event.contentIndex, "");
++			yield { type: "block-start", index: event.contentIndex, blockType: "text" };
++			textBuffers.set(event.contentIndex, { raw: "", emitted: 0 });
  			break;
 -		case "text_delta":
 -			yield {
@@ -71,18 +88,21 @@
 -				text: event.delta
 -			};
 +		case "text_delta": {
-+			const buffered = textBuffers.get(event.contentIndex);
-+			if (buffered === void 0) {
++			const state = textBuffers.get(event.contentIndex);
++			if (state === void 0) {
 +				yield { type: "text-delta", index: event.contentIndex, text: event.delta };
 +				break;
 +			}
-+			const combined = buffered + event.delta;
-+			if (buffered.length === 0 && !looksLikeLegacyToolText(combined)) {
-+				textBuffers.delete(event.contentIndex);
-+				yield { type: "block-start", index: event.contentIndex, blockType: "text" };
-+				yield { type: "text-delta", index: event.contentIndex, text: combined };
-+			} else {
-+				textBuffers.set(event.contentIndex, combined);
++			state.raw += event.delta;
++			const marker = state.raw.lastIndexOf("<");
++			const safe = marker < 0 ? state.raw.length : marker;
++			if (safe > state.emitted) {
++				yield { type: "text-delta", index: event.contentIndex, text: state.raw.slice(state.emitted, safe) };
++				state.emitted = safe;
++			}
++			if (state.raw.length - state.emitted > 8192) {
++				yield { type: "text-delta", index: event.contentIndex, text: state.raw.slice(state.emitted) };
++				state.emitted = state.raw.length;
 +			}
  			break;
 -		case "text_end":
@@ -96,19 +116,16 @@
 -			};
 +		}
 +		case "text_end": {
-+			const buffered = textBuffers.get(event.contentIndex);
-+			if (buffered === void 0) {
-+				yield { type: "block-end", index: event.contentIndex, block: { type: "text", text: event.content } };
-+				break;
-+			}
++			const state = textBuffers.get(event.contentIndex);
 +			textBuffers.delete(event.contentIndex);
-+			const legacyCalls = parseLegacyToolCalls(buffered);
++			const combined = state === void 0 ? event.content : state.raw;
++			const legacyCalls = parseLegacyToolCalls(combined);
 +			if (legacyCalls.length === 0) {
-+				yield { type: "block-start", index: event.contentIndex, blockType: "text" };
-+				if (buffered.length > 0) yield { type: "text-delta", index: event.contentIndex, text: buffered };
-+				yield { type: "block-end", index: event.contentIndex, block: { type: "text", text: buffered } };
++				if (state !== void 0 && state.emitted < combined.length) yield { type: "text-delta", index: event.contentIndex, text: combined.slice(state.emitted) };
++				yield { type: "block-end", index: event.contentIndex, block: { type: "text", text: combined } };
 +				break;
 +			}
++			yield { type: "block-end", index: event.contentIndex, block: { type: "text", text: combined.replace(/<\s*(?:read|read_file|file-read|invoke)\b[\s\S]*?(?:<\s*\/\s*(?:read|read_file|file-read|invoke)\s*>|\/>)/gi, "").trim() } };
 +			for (const call of legacyCalls) {
 +				const index = nextLegacyToolIndex++;
 +				const id = `legacy-${event.contentIndex}-${index}`;

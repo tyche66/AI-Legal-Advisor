@@ -599,7 +599,7 @@ __metadata:
 
 "@deepseek-ai/dsh-agent-loop@patch:@deepseek-ai/dsh-agent-loop@npm%3A0.1.0-rc.6#./patches/dsh-agent-loop@0.1.0-rc.6.patch::locator=deepseek-harness-desktop%40workspace%3A.":
   version: 0.1.0-rc.6
-  resolution: "@deepseek-ai/dsh-agent-loop@patch:@deepseek-ai/dsh-agent-loop@npm%3A0.1.0-rc.6#./patches/dsh-agent-loop@0.1.0-rc.6.patch::version=0.1.0-rc.6&hash=b5fcfa&locator=deepseek-harness-desktop%40workspace%3A."
+  resolution: "@deepseek-ai/dsh-agent-loop@patch:@deepseek-ai/dsh-agent-loop@npm%3A0.1.0-rc.6#./patches/dsh-agent-loop@0.1.0-rc.6.patch::version=0.1.0-rc.6&hash=24965b&locator=deepseek-harness-desktop%40workspace%3A."
   dependencies:
     "@deepseek-ai/schemastery": "npm:^3.18.1"
   peerDependencies:
@@ -2219,7 +2219,7 @@ __metadata:
 
 "@deepseek-ai/dsh-llm-pi-ai@patch:@deepseek-ai/dsh-llm-pi-ai@npm%3A0.1.0-rc.6#./patches/dsh-llm-pi-ai@0.1.0-rc.6.patch::locator=deepseek-harness-desktop%40workspace%3A.":
   version: 0.1.0-rc.6
-  resolution: "@deepseek-ai/dsh-llm-pi-ai@patch:@deepseek-ai/dsh-llm-pi-ai@npm%3A0.1.0-rc.6#./patches/dsh-llm-pi-ai@0.1.0-rc.6.patch::version=0.1.0-rc.6&hash=c4f445&locator=deepseek-harness-desktop%40workspace%3A."
+  resolution: "@deepseek-ai/dsh-llm-pi-ai@patch:@deepseek-ai/dsh-llm-pi-ai@npm%3A0.1.0-rc.6#./patches/dsh-llm-pi-ai@0.1.0-rc.6.patch::version=0.1.0-rc.6&hash=0416ea&locator=deepseek-harness-desktop%40workspace%3A."
   dependencies:
     "@deepseek-ai/schemastery": "npm:^3.18.1"
     "@earendil-works/pi-ai": "npm:^0.82.1"

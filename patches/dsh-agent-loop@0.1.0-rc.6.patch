@@ -1,24 +1,26 @@
 --- a/lib/index.js
 +++ b/lib/index.js
-@@ -642,8 +642,13 @@ var ReactLoopAgent = class {
+@@ -639,7 +639,7 @@ var ReactLoopAgent = class {
+ 				if (action?.kind !== "retry") throw new LlmError(finish.failure.message, finish.failure.code, finish.failure);
+ 				continue;
+ 			}
 -			const message = createAssistantMessage({
--				content: assembler.blocks(),
--				source: {
--					provider: request.provider,
--					model: request.model,
--					...assembler.replayState !== void 0 ? { replayState: assembler.replayState } : {}
--				}
--			});
-+			const message = await this.loopCtx.waterfall("agent/before-message", {
-+				agent: this,
-+				turn,
-+				step,
-+				message: createAssistantMessage({
-+					content: assembler.blocks(),
-+					source: {
-+						provider: request.provider,
-+						model: request.model,
-+						...assembler.replayState !== void 0 ? { replayState: assembler.replayState } : {}
-+					}
-+				}),
-+			}, (candidate) => Promise.resolve(candidate));
++			const assembled = createAssistantMessage({
+ 				content: assembler.blocks(),
+ 				source: {
+ 					provider: request.provider,
+@@ -647,6 +647,14 @@ var ReactLoopAgent = class {
+ 					...assembler.replayState !== void 0 ? { replayState: assembler.replayState } : {}
+ 				}
+ 			});
++			const gated = await this.dispatch.waterfall(
++				"agent/before-message",
++				{ turn, step, message: assembled },
++				() => Promise.resolve(assembled)
++			);
++			const message = gated !== null && typeof gated === "object" && gated.role === "assistant" && Array.isArray(gated.content)
++				? gated
++				: assembled;
+ 			this.session.append("assistant/message", {
+ 				turn,
+ 				step,
