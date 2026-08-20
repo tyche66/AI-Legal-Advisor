@@ -69,13 +69,14 @@ function pathFromArguments(raw: unknown): string | undefined {
 function readMeta(value: unknown): ReadMeta | undefined {
   if (value === null || typeof value !== 'object' || Array.isArray(value)) return undefined
   const meta = value as Record<string, unknown>
-  if (typeof meta.path !== 'string' || !Number.isInteger(meta.offset) || !Number.isInteger(meta.totalLines)
+  if (typeof meta.path !== 'string' || typeof meta.offset !== 'number' || !Number.isInteger(meta.offset)
+    || typeof meta.totalLines !== 'number' || !Number.isInteger(meta.totalLines)
     || !Array.isArray(meta.lines)) return undefined
   const lines: Array<{ number: number, text: string }> = []
   for (const line of meta.lines) {
     if (line === null || typeof line !== 'object' || Array.isArray(line)) return undefined
     const item = line as Record<string, unknown>
-    if (!Number.isInteger(item.number) || typeof item.text !== 'string') return undefined
+    if (typeof item.number !== 'number' || !Number.isInteger(item.number) || typeof item.text !== 'string') return undefined
     lines.push({ number: item.number, text: item.text })
   }
   return { path: meta.path, offset: meta.offset, lines, totalLines: meta.totalLines }
@@ -158,7 +159,8 @@ export function gateContractReviewMessage(events: readonly EventLike[], message:
   const evidence = documentReadEvidence(events)
   if (supportsCurrentRequest(events, evidence)) return message
   if (textOf(message).trim().length === 0) return message
-  return createAssistantMessage({ content: [{ type: 'text', text: BLOCKED_MESSAGE }], source: message.source })
+  const { kind: _kind, ...source } = message.source
+  return createAssistantMessage({ content: [{ type: 'text', text: BLOCKED_MESSAGE }], source })
 }
 
 /** Register the final-message gate. Tool events remain the sole evidence source. */
